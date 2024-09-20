@@ -1,0 +1,37 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+    desc "Deploy to firebase distribution"
+    lane :distribute_firebase do
+
+        sh("flutter", "pub", "get")
+        sh("flutter", "pub", "run", "build_runner", "build", "--delete-conflicting-outputs")
+#         sh("flutter", "pub", "run", "intl_utils:generate")
+        sh("dart pub global activate flutter_gen")
+        sh("fluttergen")
+        sh("flutter", "build", "apk", "-t", "lib/main.dart")
+
+        release = firebase_app_distribution(
+            app: "1:642372589261:android:633273852bc2d134f6bb84",
+            firebase_cli_token: "1//0eBGhCFZyCIQICgYIARAAGA4SNwF-L9IrAdOSFLRlyzwUHiWVYsR2mjZrorMPQ8QfPtjlyQ7DKJJ2Uk78DMXDGnKWzBR-zXHYuao",
+            groups: "SSocial",
+            android_artifact_path: "../build/app/outputs/flutter-apk/app-release.apk",
+            release_notes: "Son test release"
+        )
+    end
+end

@@ -1,0 +1,23 @@
+{
+  "an_error_occur": "An error occur!",
+  "email": "Email",
+  "enter_your_email": "Enter your email",
+  "password": "Password",
+  "enter_your_password": "Enter your password",
+  "login": "Login",
+  "or": "Or",
+  "do_not_have_account": "Don't have account?",
+  "create_now": "Create now",
+  "sign_up_success": "Sign up success. Please login",
+  "invalid_email_format": "Invalid email format",
+  "the_password_must_be_longer_than": "The password must be longer than {minLength} characters",
+  "passwords_do_not_match": "Passwords do not match",
+  "sign_up": "Sign up",
+  "already_have_an_account": "Already have an account!",
+  "login_now": "Login now",
+  "confirm_password": "Confirm password",
+  "re_enter_password": "Re-enter password",
+  "hello": "Hello {username}",
+  "hello_user": "hello user",
+  "logout": "Logout"
+}

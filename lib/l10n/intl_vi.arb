@@ -1,0 +1,23 @@
+{
+  "an_error_occur": "Đã có lỗi xảy ra!",
+  "email": "Email",
+  "enter_your_email": "Nhập email của bạn",
+  "password": "Mật khẩu",
+  "enter_your_password": "Nhập mật khẩu của bạn",
+  "login": "Đăng nhập",
+  "or": "Hoặc",
+  "do_not_have_account": "Chưa có tài khoản?",
+  "create_now": "Tạo tài khoản",
+  "sign_up_success": "Đăng ký thành công. Vui lòng đăng nhập",
+  "invalid_email_format": "Sai định dạng email",
+  "the_password_must_be_longer_than": "Mật khẩu phải dài hơn {minLength} ký tự",
+  "passwords_do_not_match": "Mật khẩu không trùng khớp",
+  "sign_up": "Đăng ký",
+  "already_have_an_account": "Đã có tài khoản!",
+  "login_now": "Đăng nhập",
+  "confirm_password": "Xác nhận mật khẩu",
+  "re_enter_password": "Nhập lại mật khẩu",
+  "hello": "Xin chào {username}",
+  "hello_user": "xin chào người dùng",
+  "logout": "Đăng xuất"
+}

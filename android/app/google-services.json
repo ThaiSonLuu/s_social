@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "642372589261",
+    "project_id": "fir-social-3f174",
+    "storage_bucket": "fir-social-3f174.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:642372589261:android:633273852bc2d134f6bb84",
+        "android_client_info": {
+          "package_name": "com.sanryoo.s_social"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXw7NDl9kfsG5Iplgce4lqYs3hA4j4KDI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

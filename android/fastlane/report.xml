@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="fastlane.lanes">
+    
+    
+    
+      
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000287779">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="1: flutter pub get" time="2.357692341">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="2: flutter pub run build_runner build --delete-conflicting-outputs" time="5.159422432">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="3: dart pub global activate flutter_gen" time="1.708192879">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="4: fluttergen" time="0.23987447">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="5: flutter build apk -t lib/main.dart" time="44.466374452">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="6: firebase_app_distribution" time="14.10235863">
+        
+      </testcase>
+    
+  </testsuite>
+</testsuites>
