@@ -33,57 +33,84 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Map<String, String>> newsFeedData = [
+      {
+        'title': 'Post 1',
+        'description': 'This is the first post description.',
+        'image': 'https://via.placeholder.com/150',
+      },
+      {
+        'title': 'Post 2',
+        'description': 'This is the second post description.',
+        'image': 'https://via.placeholder.com/150',
+      },
+      {
+        'title': 'Post 3',
+        'description': 'This is the third post description.',
+        'image': 'https://via.placeholder.com/150',
+      },
+    ];
+
     return Scaffold(
-      body: SizedBox(
-        width: double.maxFinite,
-        height: double.maxFinite,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(context.read<AppLanguageCubit>().state.languageCode),
-                const SizedBox(width: 20),
-                Switch(
-                  value: context.read<AppLanguageCubit>().state.languageCode ==
-                      "en",
-                  onChanged: (value) {
-                    context
-                        .read<AppLanguageCubit>()
-                        .setLanguageCode(value ? "en" : "vi");
-                  },
-                ),
-              ],
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(context.read<AppThemeCubit>().state.isDarkTheme ? "Dark" :"Light"),
-                const SizedBox(width: 20),
-                Switch(
-                  value: context.read<AppThemeCubit>().state.isDarkTheme,
-                  onChanged: (value) {
-                    context
-                        .read<AppThemeCubit>()
-                        .setTheme(value);
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Text(username != null ? S.of(context).hello(username!) : S.of(context).hello_user),
-            const SizedBox(height: 30),
-            FilledButton(
-              onPressed: () {
-                context.read<AuthCubit>().logout();
+      appBar: AppBar(
+        title: Text(S.of(context).news_feed),
+      ),
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          // Language and Theme Switches
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(context.read<AppLanguageCubit>().state.languageCode),
+              const SizedBox(width: 20),
+              Switch(
+                value: context.read<AppLanguageCubit>().state.languageCode == "en",
+                onChanged: (value) {
+                  context.read<AppLanguageCubit>().setLanguageCode(value ? "en" : "vi");
+                },
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(context.read<AppThemeCubit>().state.isDarkTheme ? "Dark" : "Light"),
+              const SizedBox(width: 20),
+              Switch(
+                value: context.read<AppThemeCubit>().state.isDarkTheme,
+                onChanged: (value) {
+                  context.read<AppThemeCubit>().setTheme(value);
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+
+          // Displaying the Username
+          Text(
+            username != null ? S.of(context).hello(username!) : S.of(context).hello_user,
+            style: const TextStyle(fontSize: 18),
+          ),
+          const SizedBox(height: 30),
+
+          // News Feed Section
+          Expanded(
+            child: ListView.builder(
+              itemCount: newsFeedData.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  margin: const EdgeInsets.all(10),
+                  child: ListTile(
+                    leading: Image.network(newsFeedData[index]['image']!),
+                    title: Text(newsFeedData[index]['title']!),
+                    subtitle: Text(newsFeedData[index]['description']!),
+                  ),
+                );
               },
-              child: Text(S.of(context).logout),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

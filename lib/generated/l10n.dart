@@ -259,6 +259,15 @@ class S {
       args: [],
     );
   }
+
+  String get news_feed {
+    return Intl.message(
+      'news feed',
+      name: 'news_feed',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
