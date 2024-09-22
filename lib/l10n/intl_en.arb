@@ -18,6 +18,6 @@
   "confirm_password": "Confirm password",
   "re_enter_password": "Re-enter password",
   "hello": "Hello {username}",
-  "hello_user": "hello user",
+  "hello_user": "Hello user",
   "logout": "Logout"
 }

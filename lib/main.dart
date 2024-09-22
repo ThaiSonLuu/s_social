@@ -37,42 +37,46 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => _authCubit),
         BlocProvider(
           create: (context) => AppLanguageCubit()..loadLanguageCode(),
         ),
         BlocProvider(
           create: (context) => AppThemeCubit()..loadTheme(),
         ),
+        BlocProvider(
+          create: (context) => _authCubit,
+        ),
       ],
       child: BlocBuilder<AppLanguageCubit, AppLanguageState>(
         builder: (context, appLanguageState) {
           return BlocBuilder<AppThemeCubit, AppThemeState>(
-              builder: (context, themeState) {
-            return MaterialApp.router(
-              debugShowCheckedModeBanner: false,
-              themeMode: themeState.isDarkTheme ? ThemeMode.dark : ThemeMode.light,
-              locale: Locale(appLanguageState.languageCode),
-              supportedLocales: S.delegate.supportedLocales,
-              localizationsDelegates: const [
-                S.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              theme: ThemeData(
-                brightness: Brightness.light,
-                colorScheme: lightColorScheme,
-                useMaterial3: true,
-              ),
-              darkTheme: ThemeData(
-                brightness: Brightness.dark,
-                colorScheme: darkColorScheme,
-                useMaterial3: true,
-              ),
-              routerConfig: _appRouter.routers,
-            );
-          });
+            builder: (context, themeState) {
+              return MaterialApp.router(
+                debugShowCheckedModeBanner: false,
+                themeMode:
+                    themeState.isDarkTheme ? ThemeMode.dark : ThemeMode.light,
+                locale: Locale(appLanguageState.languageCode),
+                supportedLocales: S.delegate.supportedLocales,
+                localizationsDelegates: const [
+                  S.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                theme: ThemeData(
+                  brightness: Brightness.light,
+                  colorScheme: lightColorScheme,
+                  useMaterial3: true,
+                ),
+                darkTheme: ThemeData(
+                  brightness: Brightness.dark,
+                  colorScheme: darkColorScheme,
+                  useMaterial3: true,
+                ),
+                routerConfig: _appRouter.routers,
+              );
+            },
+          );
         },
       ),
     );

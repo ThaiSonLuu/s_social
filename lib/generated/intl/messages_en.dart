@@ -42,7 +42,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enter_your_password":
             MessageLookupByLibrary.simpleMessage("Enter your password"),
         "hello": m0,
-        "hello_user": MessageLookupByLibrary.simpleMessage("hello user"),
+        "hello_user": MessageLookupByLibrary.simpleMessage("Hello user"),
         "invalid_email_format":
             MessageLookupByLibrary.simpleMessage("Invalid email format"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),

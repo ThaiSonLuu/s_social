@@ -18,6 +18,6 @@
   "confirm_password": "Xác nhận mật khẩu",
   "re_enter_password": "Nhập lại mật khẩu",
   "hello": "Xin chào {username}",
-  "hello_user": "xin chào người dùng",
+  "hello_user": "Xin chào người dùng",
   "logout": "Đăng xuất"
 }

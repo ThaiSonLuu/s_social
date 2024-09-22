@@ -42,7 +42,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Nhập mật khẩu của bạn"),
         "hello": m0,
         "hello_user":
-            MessageLookupByLibrary.simpleMessage("xin chào người dùng"),
+            MessageLookupByLibrary.simpleMessage("Xin chào người dùng"),
         "invalid_email_format":
             MessageLookupByLibrary.simpleMessage("Sai định dạng email"),
         "login": MessageLookupByLibrary.simpleMessage("Đăng nhập"),

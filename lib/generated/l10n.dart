@@ -240,10 +240,10 @@ class S {
     );
   }
 
-  /// `hello user`
+  /// `Hello user`
   String get hello_user {
     return Intl.message(
-      'hello user',
+      'Hello user',
       name: 'hello_user',
       desc: '',
       args: [],
