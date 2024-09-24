@@ -20,4 +20,5 @@
   "hello": "Xin chào {username}",
   "hello_user": "Xin chào người dùng",
   "logout": "Đăng xuất"
+  "new_post": "Bạn đang nghĩ gì?"
 }
