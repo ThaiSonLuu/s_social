@@ -20,4 +20,5 @@
   "hello": "Hello {username}",
   "hello_user": "Hello user",
   "logout": "Logout"
+  "new_post": "What\'s on your mind?"
 }

@@ -7,6 +7,7 @@ import 'package:s_social/core/widgets/bottom_navigation.dart';
 import 'package:s_social/features/auth/presentation/login/view/login_screen.dart';
 import 'package:s_social/features/auth/presentation/sign_up/view/signup_screen.dart';
 import 'package:s_social/features/news_feed/presentation/news_feed_screen.dart';
+import 'package:s_social/features/screen/home/home_screen.dart';
 
 abstract class RouterUri {
   static const login = "/login";
@@ -16,6 +17,7 @@ abstract class RouterUri {
   static const notifications = "/notifications";
   static const settings = "/settings";
   static const profile = "/profile";
+  static const home = "/home";
 }
 
 class AppRouter {
@@ -40,10 +42,16 @@ class AppRouter {
         ),
         ShellRoute(
           routes: [
+            // GoRoute(
+            //   path: RouterUri.newsFeeds,
+            //   pageBuilder: (context, state) => const NoTransitionPage<void>(
+            //     child: NewsFeedScreen(),
+            //   ),
+            // ),
             GoRoute(
-              path: RouterUri.newsFeeds,
+              path: RouterUri.home,
               pageBuilder: (context, state) => const NoTransitionPage<void>(
-                child: NewsFeedScreen(),
+                child: HomeScreen(),
               ),
             ),
             GoRoute(
@@ -66,7 +74,8 @@ class AppRouter {
               path: RouterUri.settings,
               pageBuilder: (context, state) => const NoTransitionPage<void>(
                 child: Center(
-                  child: Text("Settings"),
+                  // child: Text("Settings"),
+                  child: NewsFeedScreen(),
                 ),
               ),
             ),
@@ -89,8 +98,12 @@ class AppRouter {
           return RouterUri.login;
         }
 
+        // if (isLoggedIn && isLoggingIn) {
+        //   return RouterUri.newsFeeds;
+        // }
+
         if (isLoggedIn && isLoggingIn) {
-          return RouterUri.newsFeeds;
+          return RouterUri.home;
         }
 
         return null;

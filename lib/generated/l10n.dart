@@ -259,6 +259,16 @@ class S {
       args: [],
     );
   }
+  /// `New Post`
+  String get new_post {
+    return Intl.message(
+      'New Post',
+      name: 'new_post',
+      desc: '',
+      args: [],
+    );
+  }
+
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

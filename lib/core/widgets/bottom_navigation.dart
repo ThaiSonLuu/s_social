@@ -6,10 +6,11 @@ class BottomNavigation extends StatelessWidget {
   BottomNavigation({super.key});
 
   final items = [
-    (icon: Icons.home_filled, route: RouterUri.newsFeeds),
-    (icon: Icons.message, route: RouterUri.messages),
-    (icon: Icons.notifications, route: RouterUri.notifications),
-    (icon: Icons.settings, route: RouterUri.settings)
+    // (icon: Icons.home_filled, route: RouterUri.newsFeeds),
+    (icon: Icons.home_outlined, route: RouterUri.home),
+    (icon: Icons.wechat_rounded, route: RouterUri.messages),
+    (icon: Icons.notifications_outlined, route: RouterUri.notifications),
+    (icon: Icons.settings_outlined, route: RouterUri.settings)
   ];
 
   @override
