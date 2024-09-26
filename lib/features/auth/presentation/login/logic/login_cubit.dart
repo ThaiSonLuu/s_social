@@ -145,6 +145,7 @@ class LoginCubit extends Cubit<LoginState> {
           email: user.email,
           username: defaultUserName,
           avatarUrl: user.photoURL,
+          signInType: signInType,
         ),
       );
     }

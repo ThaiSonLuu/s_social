@@ -39,14 +39,14 @@ class UserModel {
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 
   UserModel copyWith({
+    SignInType? signInType,
     String? id,
     String? email,
     String? username,
     String? avatarUrl,
     String? backgroundUrl,
     String? bio,
-    List<String>? follower,
-    List<String>? following,
+    List<String>? fcmTokens,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -55,6 +55,8 @@ class UserModel {
       avatarUrl: avatarUrl ?? this.avatarUrl,
       backgroundUrl: backgroundUrl ?? this.backgroundUrl,
       bio: bio ?? this.bio,
+      signInType: signInType ?? this.signInType,
+      fcmTokens: fcmTokens ?? this.fcmTokens,
     );
   }
 }

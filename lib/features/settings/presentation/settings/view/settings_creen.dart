@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:s_social/core/domain/model/user_model.dart';
 import 'package:s_social/core/presentation/logic/cubit/app_language/app_language_cubit.dart';
 import 'package:s_social/core/presentation/logic/cubit/app_theme/app_theme_cubit.dart';
 import 'package:s_social/core/presentation/logic/cubit/auth/auth_cubit.dart';
@@ -162,16 +163,20 @@ class _SettingsScreenState extends State<_SettingsScreen> {
       ),
       child: Column(
         children: [
-          _buildActionItem(
+          if (context.read<ProfileUserCubit>().currentUser?.signInType ==
+              SignInType.emailAndPassword) ...[
+            _buildActionItem(
               icon: const Icon(Icons.password),
               label: S.of(context).change_password,
               onTap: () {},
-              trailing: const Icon(Icons.arrow_forward_ios_outlined)),
-          Divider(
-            color: Theme.of(context).colorScheme.onSurface.withAlpha(50),
-            height: 1,
-            thickness: 1,
-          ),
+              trailing: const Icon(Icons.arrow_forward_ios_outlined),
+            ),
+            Divider(
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(50),
+              height: 1,
+              thickness: 1,
+            ),
+          ],
           _buildActionItem(
             icon: const Icon(Icons.language),
             label: S.of(context).language,
