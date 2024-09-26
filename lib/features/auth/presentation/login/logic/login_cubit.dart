@@ -3,11 +3,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:s_social/core/domain/model/user_model.dart';
+import 'package:s_social/core/domain/repository/user_repository.dart';
+import 'package:s_social/generated/l10n.dart';
 
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  LoginCubit() : super(LoginInitial());
+  LoginCubit({
+    required UserRepository userRepository,
+  })  : _userRepository = userRepository,
+        super(LoginInitial());
+
+  final UserRepository _userRepository;
 
   Future<void> loginWithAccount({
     required String email,
@@ -32,6 +40,10 @@ class LoginCubit extends Cubit<LoginState> {
         return;
       }
 
+      await _handleUserExist(
+        signInType: SignInType.emailAndPassword,
+        user: userCredential.user!,
+      );
       emit(LoginLoaded());
     } catch (e) {
       emit(LoginError(e.toString()));
@@ -59,11 +71,16 @@ class LoginCubit extends Cubit<LoginState> {
       final userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
 
-      if (userCredential.user != null) {
-        emit(LoginLoaded());
-      } else {
+      if (userCredential.user == null) {
         emit(const LoginError("An error occur"));
+        return;
       }
+
+      await _handleUserExist(
+        signInType: SignInType.google,
+        user: userCredential.user!,
+      );
+      emit(LoginLoaded());
     } catch (e) {
       emit(LoginError(e.toString()));
     }
@@ -87,13 +104,49 @@ class LoginCubit extends Cubit<LoginState> {
       final userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
 
-      if (userCredential.user != null) {
-        emit(LoginLoaded());
-      } else {
+      if (userCredential.user == null) {
         emit(const LoginError("An error occur"));
+        return;
       }
+
+      await _handleUserExist(
+        signInType: SignInType.facebook,
+        user: userCredential.user!,
+      );
+      emit(LoginLoaded());
     } catch (e) {
       emit(LoginError(e.toString()));
+    }
+  }
+
+  Future<void> _handleUserExist({
+    required SignInType signInType,
+    required User user,
+  }) async {
+    String? defaultUserName;
+    if (user.displayName != null) {
+      defaultUserName = user.displayName;
+    } else {
+      final splitEmail = user.email?.split("@") ?? [];
+      if (splitEmail.isNotEmpty) {
+        defaultUserName = splitEmail.first;
+      }
+    }
+
+    defaultUserName ??= user.email;
+
+    final foundUser = await _userRepository.getUserById(user.uid);
+
+    // If this is the first time login
+    if (foundUser == null) {
+      await _userRepository.createUser(
+        UserModel(
+          id: user.uid,
+          email: user.email,
+          username: defaultUserName,
+          avatarUrl: user.photoURL,
+        ),
+      );
     }
   }
 }

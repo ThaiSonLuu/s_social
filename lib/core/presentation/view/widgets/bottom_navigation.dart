@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:s_social/core/app_router/app_router.dart';
+import 'package:s_social/core/utils/app_router/app_router.dart';
 
 class BottomNavigation extends StatelessWidget {
   BottomNavigation({super.key});

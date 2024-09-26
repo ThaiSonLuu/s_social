@@ -30,12 +30,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Đã có tài khoản!"),
         "an_error_occur":
             MessageLookupByLibrary.simpleMessage("Đã có lỗi xảy ra!"),
+        "change_password": MessageLookupByLibrary.simpleMessage("Đổi mật khẩu"),
         "confirm_password":
             MessageLookupByLibrary.simpleMessage("Xác nhận mật khẩu"),
         "create_now": MessageLookupByLibrary.simpleMessage("Tạo tài khoản"),
+        "dark_theme": MessageLookupByLibrary.simpleMessage("Giao diện tối"),
         "do_not_have_account":
             MessageLookupByLibrary.simpleMessage("Chưa có tài khoản?"),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
+        "english": MessageLookupByLibrary.simpleMessage("Tiếng anh"),
         "enter_your_email":
             MessageLookupByLibrary.simpleMessage("Nhập email của bạn"),
         "enter_your_password":
@@ -45,18 +48,22 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Xin chào người dùng"),
         "invalid_email_format":
             MessageLookupByLibrary.simpleMessage("Sai định dạng email"),
+        "language": MessageLookupByLibrary.simpleMessage("Ngôn ngữ"),
         "login": MessageLookupByLibrary.simpleMessage("Đăng nhập"),
         "login_now": MessageLookupByLibrary.simpleMessage("Đăng nhập"),
         "logout": MessageLookupByLibrary.simpleMessage("Đăng xuất"),
+        "new_post": MessageLookupByLibrary.simpleMessage("Bạn đang nghĩ gì?"),
         "or": MessageLookupByLibrary.simpleMessage("Hoặc"),
         "password": MessageLookupByLibrary.simpleMessage("Mật khẩu"),
         "passwords_do_not_match":
             MessageLookupByLibrary.simpleMessage("Mật khẩu không trùng khớp"),
         "re_enter_password":
             MessageLookupByLibrary.simpleMessage("Nhập lại mật khẩu"),
+        "settings": MessageLookupByLibrary.simpleMessage("Cài đặt"),
         "sign_up": MessageLookupByLibrary.simpleMessage("Đăng ký"),
         "sign_up_success": MessageLookupByLibrary.simpleMessage(
             "Đăng ký thành công. Vui lòng đăng nhập"),
-        "the_password_must_be_longer_than": m1
+        "the_password_must_be_longer_than": m1,
+        "vietnamese": MessageLookupByLibrary.simpleMessage("Tiếng việt")
       };
 }

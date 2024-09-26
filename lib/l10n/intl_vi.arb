@@ -1,5 +1,4 @@
 {
-  "an_error_occur": "Đã có lỗi xảy ra!",
   "email": "Email",
   "enter_your_email": "Nhập email của bạn",
   "password": "Mật khẩu",
@@ -19,6 +18,13 @@
   "re_enter_password": "Nhập lại mật khẩu",
   "hello": "Xin chào {username}",
   "hello_user": "Xin chào người dùng",
-  "logout": "Đăng xuất"
-  "new_post": "Bạn đang nghĩ gì?"
+  "settings": "Cài đặt",
+  "logout": "Đăng xuất",
+  "new_post": "Bạn đang nghĩ gì?",
+  "an_error_occur": "Đã có lỗi xảy ra!",
+  "change_password": "Đổi mật khẩu",
+  "language": "Ngôn ngữ",
+  "english": "Tiếng anh",
+  "vietnamese": "Tiếng việt",
+  "dark_theme": "Giao diện tối"
 }

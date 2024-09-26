@@ -1,5 +1,4 @@
 {
-  "an_error_occur": "An error occur!",
   "email": "Email",
   "enter_your_email": "Enter your email",
   "password": "Password",
@@ -19,6 +18,13 @@
   "re_enter_password": "Re-enter password",
   "hello": "Hello {username}",
   "hello_user": "Hello user",
-  "logout": "Logout"
-  "new_post": "What\'s on your mind?"
+  "settings": "Settings",
+  "logout": "Logout",
+  "new_post": "What's on your mind?",
+  "an_error_occur": "An error occur",
+  "change_password": "Change password",
+  "language": "Language",
+  "english": "English",
+  "vietnamese": "Vietnamese",
+  "dark_theme": "Dark theme"
 }

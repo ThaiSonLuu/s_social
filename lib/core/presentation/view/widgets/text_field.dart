@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:s_social/gen/assets.gen.dart';
 
 class STextField extends StatelessWidget {
   const STextField({

@@ -30,13 +30,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "already_have_an_account":
             MessageLookupByLibrary.simpleMessage("Already have an account!"),
         "an_error_occur":
-            MessageLookupByLibrary.simpleMessage("An error occur!"),
+            MessageLookupByLibrary.simpleMessage("An error occur"),
+        "change_password":
+            MessageLookupByLibrary.simpleMessage("Change password"),
         "confirm_password":
             MessageLookupByLibrary.simpleMessage("Confirm password"),
         "create_now": MessageLookupByLibrary.simpleMessage("Create now"),
+        "dark_theme": MessageLookupByLibrary.simpleMessage("Dark theme"),
         "do_not_have_account":
             MessageLookupByLibrary.simpleMessage("Don\'t have account?"),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
+        "english": MessageLookupByLibrary.simpleMessage("English"),
         "enter_your_email":
             MessageLookupByLibrary.simpleMessage("Enter your email"),
         "enter_your_password":
@@ -45,18 +49,23 @@ class MessageLookup extends MessageLookupByLibrary {
         "hello_user": MessageLookupByLibrary.simpleMessage("Hello user"),
         "invalid_email_format":
             MessageLookupByLibrary.simpleMessage("Invalid email format"),
+        "language": MessageLookupByLibrary.simpleMessage("Language"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "login_now": MessageLookupByLibrary.simpleMessage("Login now"),
         "logout": MessageLookupByLibrary.simpleMessage("Logout"),
+        "new_post":
+            MessageLookupByLibrary.simpleMessage("What\'s on your mind?"),
         "or": MessageLookupByLibrary.simpleMessage("Or"),
         "password": MessageLookupByLibrary.simpleMessage("Password"),
         "passwords_do_not_match":
             MessageLookupByLibrary.simpleMessage("Passwords do not match"),
         "re_enter_password":
             MessageLookupByLibrary.simpleMessage("Re-enter password"),
+        "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "sign_up": MessageLookupByLibrary.simpleMessage("Sign up"),
         "sign_up_success": MessageLookupByLibrary.simpleMessage(
             "Sign up success. Please login"),
-        "the_password_must_be_longer_than": m1
+        "the_password_must_be_longer_than": m1,
+        "vietnamese": MessageLookupByLibrary.simpleMessage("Vietnamese")
       };
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:s_social/core/cubit/app_theme/app_theme_cubit.dart';
+import 'package:s_social/core/presentation/logic/cubit/app_theme/app_theme_cubit.dart';
 import 'package:s_social/features/screen/home/model/post_data.dart';
 import 'package:s_social/features/screen/home/model/post_widget.dart';
 import 'package:s_social/features/screen/home/post_screen.dart';
