@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:s_social/core/presentation/logic/cubit/app_language/app_language_cubit.dart';
 import 'package:s_social/core/presentation/logic/cubit/app_theme/app_theme_cubit.dart';
 import 'package:s_social/core/presentation/logic/cubit/auth/auth_cubit.dart';
+import 'package:s_social/core/presentation/logic/cubit/profile_user/profile_user_cubit.dart';
 import 'package:s_social/core/utils/app_localize/app_theme.dart';
 import 'package:s_social/core/utils/app_router/app_router.dart';
 import 'package:s_social/di/injection_container.dart';
@@ -47,6 +48,9 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider(
           create: (context) => _authCubit,
+        ),
+        BlocProvider(
+          create: (context) => ProfileUserCubit(userRepository: serviceLocator())..getUserInfo(),
         ),
       ],
       child: BlocBuilder<AppLanguageCubit, AppLanguageState>(
