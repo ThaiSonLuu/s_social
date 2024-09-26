@@ -10,6 +10,7 @@ const lightColorScheme = ColorScheme(
   onError: Colors.white,
   surface: Colors.white,
   onSurface: Colors.black,
+  surfaceContainer: Color(0xFFE7E7E7),
 );
 
 const darkColorScheme = ColorScheme(
@@ -22,4 +23,5 @@ const darkColorScheme = ColorScheme(
   onError: Colors.white,
   surface: Colors.black,
   onSurface: Colors.white,
+  surfaceContainer: Color(0xFF363636),
 );

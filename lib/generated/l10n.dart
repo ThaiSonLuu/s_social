@@ -50,16 +50,6 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
-  /// `An error occur!`
-  String get an_error_occur {
-    return Intl.message(
-      'An error occur!',
-      name: 'an_error_occur',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Email`
   String get email {
     return Intl.message(
@@ -250,6 +240,16 @@ class S {
     );
   }
 
+  /// `Settings`
+  String get settings {
+    return Intl.message(
+      'Settings',
+      name: 'settings',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Logout`
   String get logout {
     return Intl.message(
@@ -259,16 +259,76 @@ class S {
       args: [],
     );
   }
-  /// `New Post`
+
+  /// `What's on your mind?`
   String get new_post {
     return Intl.message(
-      'New Post',
+      'What\'s on your mind?',
       name: 'new_post',
       desc: '',
       args: [],
     );
   }
 
+  /// `An error occur`
+  String get an_error_occur {
+    return Intl.message(
+      'An error occur',
+      name: 'an_error_occur',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change password`
+  String get change_password {
+    return Intl.message(
+      'Change password',
+      name: 'change_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Language`
+  String get language {
+    return Intl.message(
+      'Language',
+      name: 'language',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `English`
+  String get english {
+    return Intl.message(
+      'English',
+      name: 'english',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vietnamese`
+  String get vietnamese {
+    return Intl.message(
+      'Vietnamese',
+      name: 'vietnamese',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dark theme`
+  String get dark_theme {
+    return Intl.message(
+      'Dark theme',
+      name: 'dark_theme',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

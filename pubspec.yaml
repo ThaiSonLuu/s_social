@@ -13,6 +13,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   cupertino_icons: ^1.0.6
+  get_it: ^8.0.0
   firebase_core: ^3.4.0
   firebase_auth: ^5.2.0
   cloud_firestore: ^5.4.0
@@ -26,14 +27,16 @@ dependencies:
   another_flushbar: ^1.12.30
   email_validator: ^3.0.0
   shared_preferences: ^2.3.2
+  json_annotation: ^4.9.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
   flutter_launcher_icons: ^0.13.1
-  build_runner:
+  build_runner: ^2.4.11
   flutter_gen_runner:
+  json_serializable: ^6.8.0
 
 flutter_intl:
   enabled: true

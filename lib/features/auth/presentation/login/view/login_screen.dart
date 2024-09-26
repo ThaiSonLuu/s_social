@@ -2,10 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:s_social/core/app_router/app_router.dart';
-import 'package:s_social/core/cubit/auth/auth_cubit.dart';
+import 'package:s_social/core/presentation/logic/cubit/auth/auth_cubit.dart';
+import 'package:s_social/core/presentation/view/widgets/text_field.dart';
+import 'package:s_social/core/utils/app_router/app_router.dart';
 import 'package:s_social/core/utils/snack_bar.dart';
-import 'package:s_social/core/widgets/text_field.dart';
+import 'package:s_social/di/injection_container.dart';
 import 'package:s_social/features/auth/presentation/login/logic/login_cubit.dart';
 import 'package:s_social/gen/assets.gen.dart';
 import 'package:s_social/generated/l10n.dart';
@@ -16,7 +17,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LoginCubit(),
+      create: (context) => LoginCubit(userRepository: serviceLocator()),
       child: const _LoginScreen(),
     );
   }
