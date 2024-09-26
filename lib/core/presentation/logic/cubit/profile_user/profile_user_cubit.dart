@@ -34,4 +34,19 @@ class ProfileUserCubit extends Cubit<ProfileUserState> {
       emit(ProfileUserError(e.toString()));
     }
   }
+
+  void removeUserInfo() {
+    emit(ProfileUserInitial());
+  }
+
+  /// Get current user logged in
+  /// Return null if no user logged in
+  UserModel? get currentUser {
+    if (state is ProfileUserLoaded) {
+      return (state as ProfileUserLoaded).user;
+    }
+
+    return null;
+  }
+
 }

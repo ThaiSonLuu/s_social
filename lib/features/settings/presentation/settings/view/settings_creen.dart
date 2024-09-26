@@ -235,6 +235,7 @@ class _SettingsScreenState extends State<_SettingsScreen> {
         label: S.of(context).logout,
         onTap: () {
           context.read<AuthCubit>().logout();
+          context.read<ProfileUserCubit>().removeUserInfo();
         },
         trailing: const SizedBox.shrink(),
       ),
