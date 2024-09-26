@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:s_social/core/presentation/logic/cubit/auth/auth_cubit.dart';
+import 'package:s_social/core/presentation/logic/cubit/profile_user/profile_user_cubit.dart';
 import 'package:s_social/core/presentation/view/widgets/text_field.dart';
 import 'package:s_social/core/utils/app_router/app_router.dart';
 import 'package:s_social/core/utils/snack_bar.dart';
@@ -58,6 +59,7 @@ class _LoginScreenState extends State<_LoginScreen> {
         listener: (context, state) {
           if (state is LoginLoaded) {
             context.read<AuthCubit>().login();
+            context.read<ProfileUserCubit>().getUserInfo();
           }
 
           if (state is LoginError) {

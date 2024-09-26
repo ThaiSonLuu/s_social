@@ -4,7 +4,6 @@ import 'package:s_social/core/presentation/logic/cubit/app_language/app_language
 import 'package:s_social/core/presentation/logic/cubit/app_theme/app_theme_cubit.dart';
 import 'package:s_social/core/presentation/logic/cubit/auth/auth_cubit.dart';
 import 'package:s_social/core/presentation/logic/cubit/profile_user/profile_user_cubit.dart';
-import 'package:s_social/di/injection_container.dart';
 import 'package:s_social/generated/l10n.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -12,11 +11,7 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          ProfileUserCubit(userRepository: serviceLocator())..getUserInfo(),
-      child: const _SettingsScreen(),
-    );
+    return const _SettingsScreen();
   }
 }
 
@@ -35,12 +30,20 @@ class _SettingsScreenState extends State<_SettingsScreen> {
         title: Text(S.of(context).settings),
         automaticallyImplyLeading: false,
       ),
-      body: Column(
-        children: [
-          _buildUserInfoLabel(),
-          _buildActions(),
-          _buildLogoutButton(),
-        ],
+      body: RefreshIndicator(
+        onRefresh: () async {
+          context.read<ProfileUserCubit>().getUserInfo();
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              _buildUserInfoLabel(),
+              _buildActions(),
+              _buildLogoutButton(),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -72,28 +75,69 @@ class _SettingsScreenState extends State<_SettingsScreen> {
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                 ),
-                child: Image.network(
-                  avatarUrl ?? "-",
-                  width: 60,
-                  height: 60,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(color: Colors.white70);
-                  },
-                ),
+                child: avatarUrl == null
+                    ? Container(
+                        width: 60,
+                        height: 60,
+                        color: Theme.of(context).colorScheme.surface,
+                      )
+                    : Image.network(
+                        avatarUrl,
+                        width: 60,
+                        height: 60,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          return Container(
+                            width: 60,
+                            height: 60,
+                            color: Theme.of(context).colorScheme.surface,
+                            child: child,
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            width: 60,
+                            height: 60,
+                            color: Theme.of(context).colorScheme.surface,
+                          );
+                        },
+                        frameBuilder:
+                            (context, child, frame, wasSynchronouslyLoaded) {
+                          return child;
+                        },
+                      ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      username ?? "",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    Text(email ?? ""),
+                    username == null
+                        ? Container(
+                            width: 100,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4.0),
+                              color: Theme.of(context).colorScheme.surface,
+                            ),
+                          )
+                        : Text(
+                            username,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                    const SizedBox(height: 4.0),
+                    email == null
+                        ? Container(
+                            width: 200,
+                            height: 18,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4.0),
+                              color: Theme.of(context).colorScheme.surface,
+                            ),
+                          )
+                        : Text(email),
                   ],
                 ),
               ),
@@ -191,6 +235,7 @@ class _SettingsScreenState extends State<_SettingsScreen> {
         label: S.of(context).logout,
         onTap: () {
           context.read<AuthCubit>().logout();
+          context.read<ProfileUserCubit>().removeUserInfo();
         },
         trailing: const SizedBox.shrink(),
       ),
