@@ -45,7 +45,6 @@ class UserDataSource {
 
   Future<UserModel> deleteUser(UserModel user) async {
     try {
-      final result = _usersCollection.where("field", isEqualTo: "");
       DocumentReference<dynamic> userDoc = _usersCollection.doc(user.id);
       await userDoc.delete();
       return user;
