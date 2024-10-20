@@ -54,107 +54,113 @@ class _SettingsScreenState extends State<_SettingsScreen> {
   }
 
   Widget _buildUserInfoLabel() {
-    return Container(
-      margin: const EdgeInsets.all(16.0),
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainer,
-        borderRadius: BorderRadius.circular(14.0),
-      ),
-      child: BlocBuilder<ProfileUserCubit, ProfileUserState>(
-        builder: (context, state) {
-          String? avatarUrl;
-          String? username;
-          String? email;
+    return GestureDetector(
+      onTap: () {
+        final uid = context.read<ProfileUserCubit>().currentUser?.id;
+        context.push("${RouterUri.profile}/$uid");
+      },
+      child: Container(
+        margin: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainer,
+          borderRadius: BorderRadius.circular(14.0),
+        ),
+        child: BlocBuilder<ProfileUserCubit, ProfileUserState>(
+          builder: (context, state) {
+            String? avatarUrl;
+            String? username;
+            String? email;
 
-          if (state is ProfileUserLoaded) {
-            avatarUrl = state.user.avatarUrl;
-            username = state.user.username;
-            email = state.user.email;
-          }
+            if (state is ProfileUserLoaded) {
+              avatarUrl = state.user.avatarUrl;
+              username = state.user.username;
+              email = state.user.email;
+            }
 
-          return Row(
-            children: [
-              Container(
-                clipBehavior: Clip.hardEdge,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                ),
-                child: avatarUrl == null
-                    ? SizedBox(
-                        width: 60,
-                        height: 60,
-                        child: TextToImage(
-                          text: username?[0].toUpperCase() ?? "S",
-                        ),
-                      )
-                    : Image.network(
-                        avatarUrl,
-                        width: 60,
-                        height: 60,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          return Container(
-                            width: 60,
-                            height: 60,
-                            color: Theme.of(context).colorScheme.surface,
-                            child: child,
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            width: 60,
-                            height: 60,
-                            color: Theme.of(context).colorScheme.surface,
-                          );
-                        },
-                        frameBuilder:
-                            (context, child, frame, wasSynchronouslyLoaded) {
-                          return child;
-                        },
-                      ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    username == null
-                        ? Container(
-                            width: 100,
-                            height: 20,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4.0),
-                              color: Theme.of(context).colorScheme.surface,
-                            ),
-                          )
-                        : Text(
-                            username,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(fontWeight: FontWeight.bold),
+            return Row(
+              children: [
+                Container(
+                  clipBehavior: Clip.hardEdge,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: avatarUrl == null
+                      ? SizedBox(
+                          width: 60,
+                          height: 60,
+                          child: TextToImage(
+                            text: username?[0].toUpperCase() ?? "S",
                           ),
-                    const SizedBox(height: 4.0),
-                    email == null
-                        ? Container(
-                            width: 200,
-                            height: 18,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4.0),
+                        )
+                      : Image.network(
+                          avatarUrl,
+                          width: 60,
+                          height: 60,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            return Container(
+                              width: 60,
+                              height: 60,
                               color: Theme.of(context).colorScheme.surface,
-                            ),
-                          )
-                        : Text(email),
-                  ],
+                              child: child,
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: 60,
+                              height: 60,
+                              color: Theme.of(context).colorScheme.surface,
+                            );
+                          },
+                          frameBuilder:
+                              (context, child, frame, wasSynchronouslyLoaded) {
+                            return child;
+                          },
+                        ),
                 ),
-              ),
-              const Icon(
-                Icons.keyboard_arrow_right,
-                size: 35,
-              ),
-            ],
-          );
-        },
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      username == null
+                          ? Container(
+                              width: 100,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4.0),
+                                color: Theme.of(context).colorScheme.surface,
+                              ),
+                            )
+                          : Text(
+                              username,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                      const SizedBox(height: 4.0),
+                      email == null
+                          ? Container(
+                              width: 200,
+                              height: 18,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4.0),
+                                color: Theme.of(context).colorScheme.surface,
+                              ),
+                            )
+                          : Text(email),
+                    ],
+                  ),
+                ),
+                const Icon(
+                  Icons.keyboard_arrow_right,
+                  size: 35,
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

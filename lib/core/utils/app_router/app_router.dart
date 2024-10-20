@@ -10,6 +10,7 @@ import 'package:s_social/features/messages/presentation/messages/view/message_li
 import 'package:s_social/features/screen/home/home_screen.dart';
 import 'package:s_social/features/settings/presentation/change_password/view/change_password_screen.dart';
 import 'package:s_social/features/settings/presentation/settings/view/settings_creen.dart';
+import 'package:s_social/features/user_profile/presentation/view/s_user_profile_screen.dart';
 
 abstract class RouterUri {
   static const login = "/login";
@@ -92,6 +93,12 @@ class AppRouter {
         path: RouterUri.changePassword,
         pageBuilder: (context, state) => const MaterialPage<void>(
           child: ChangePasswordScreen(),
+        ),
+      ),
+      GoRoute(
+        path: "${RouterUri.profile}/:uid",
+        pageBuilder: (context, state) => MaterialPage<void>(
+          child: SUserProfileScreen(uid: state.pathParameters["uid"]),
         ),
       ),
     ],

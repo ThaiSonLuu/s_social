@@ -41,6 +41,10 @@ dev_dependencies:
 flutter_intl:
   enabled: true
 
+flutter_gen:
+  output: lib/gen/
+  line_length: 80
+
 flutter:
   uses-material-design: true
 
@@ -51,4 +55,4 @@ flutter:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/icons/app_icon.png"  # Đường dẫn tới biểu tượng của bạn
+  image_path: "assets/icons/app_icon.png"

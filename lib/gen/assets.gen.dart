@@ -12,6 +12,46 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/background_default_1.png
+  AssetGenImage get backgroundDefault1 =>
+      const AssetGenImage('assets/images/background_default_1.png');
+
+  /// File path: assets/images/background_default_10.png
+  AssetGenImage get backgroundDefault10 =>
+      const AssetGenImage('assets/images/background_default_10.png');
+
+  /// File path: assets/images/background_default_2.png
+  AssetGenImage get backgroundDefault2 =>
+      const AssetGenImage('assets/images/background_default_2.png');
+
+  /// File path: assets/images/background_default_3.png
+  AssetGenImage get backgroundDefault3 =>
+      const AssetGenImage('assets/images/background_default_3.png');
+
+  /// File path: assets/images/background_default_4.png
+  AssetGenImage get backgroundDefault4 =>
+      const AssetGenImage('assets/images/background_default_4.png');
+
+  /// File path: assets/images/background_default_5.png
+  AssetGenImage get backgroundDefault5 =>
+      const AssetGenImage('assets/images/background_default_5.png');
+
+  /// File path: assets/images/background_default_6.png
+  AssetGenImage get backgroundDefault6 =>
+      const AssetGenImage('assets/images/background_default_6.png');
+
+  /// File path: assets/images/background_default_7.png
+  AssetGenImage get backgroundDefault7 =>
+      const AssetGenImage('assets/images/background_default_7.png');
+
+  /// File path: assets/images/background_default_8.png
+  AssetGenImage get backgroundDefault8 =>
+      const AssetGenImage('assets/images/background_default_8.png');
+
+  /// File path: assets/images/background_default_9.png
+  AssetGenImage get backgroundDefault9 =>
+      const AssetGenImage('assets/images/background_default_9.png');
+
   /// File path: assets/images/invisible.png
   AssetGenImage get invisible =>
       const AssetGenImage('assets/images/invisible.png');
@@ -31,8 +71,23 @@ class $AssetsImagesGen {
   AssetGenImage get visible => const AssetGenImage('assets/images/visible.png');
 
   /// List of all assets
-  List<AssetGenImage> get values =>
-      [invisible, logoFacebook, logoGoogle, logoS, visible];
+  List<AssetGenImage> get values => [
+        backgroundDefault1,
+        backgroundDefault10,
+        backgroundDefault2,
+        backgroundDefault3,
+        backgroundDefault4,
+        backgroundDefault5,
+        backgroundDefault6,
+        backgroundDefault7,
+        backgroundDefault8,
+        backgroundDefault9,
+        invisible,
+        logoFacebook,
+        logoGoogle,
+        logoS,
+        visible
+      ];
 }
 
 class Assets {
@@ -71,7 +126,7 @@ class AssetGenImage {
     ImageRepeat repeat = ImageRepeat.noRepeat,
     Rect? centerSlice,
     bool matchTextDirection = false,
-    bool gaplessPlayback = false,
+    bool gaplessPlayback = true,
     bool isAntiAlias = false,
     String? package,
     FilterQuality filterQuality = FilterQuality.low,
