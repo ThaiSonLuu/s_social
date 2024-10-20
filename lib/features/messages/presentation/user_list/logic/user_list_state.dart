@@ -16,7 +16,7 @@ final class UserListLoading extends UserListState {}
 final class UserListLoaded extends UserListState {
   const UserListLoaded(this.users);
 
-  final List<UserModel> users;
+  final List<Map<String, dynamic>> users;
 
   @override
   List<Object?> get props => [users];

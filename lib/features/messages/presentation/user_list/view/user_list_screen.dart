@@ -30,6 +30,12 @@ class _UserListScreen extends StatefulWidget {
 
 class _UserListScreenState extends State<_UserListScreen> {
   @override
+  void initState() {
+    context.read<UserListCubit>().getUserList();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -38,15 +44,9 @@ class _UserListScreenState extends State<_UserListScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
+          context.read<UserListCubit>().getUserList();
         },
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            children: [
-              _buildUserList(),
-            ],
-          ),
-        ),
+        child: _buildUserList(),
       ),
     );
   }
@@ -60,6 +60,7 @@ class _UserListScreenState extends State<_UserListScreen> {
           );
         } else if (state is UserListLoaded) {
           return ListView.builder(
+            physics: const AlwaysScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: state.users.length,
             itemBuilder: (context, index) {
@@ -72,7 +73,7 @@ class _UserListScreenState extends State<_UserListScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => ChatScreen(
-                          recipientEmail: user.email,
+                          recipient: user,
                         )),
                       );
                     },

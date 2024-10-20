@@ -10,16 +10,15 @@ class UserListCubit extends Cubit<UserListState> {
   // get instance of firestore
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // get user stream
-  Stream<List<Map<String, dynamic>>> getUserStream() {
-    return _firestore.collection(FirestoreCollectionConstants.users).snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
-        // Go through each user
-        final user = doc.data();
-
-        // Return user
-        return user;
-      }).toList();
-    });
+  // Get user list from firestore
+  Future<void> getUserList() async {
+    emit(UserListLoading());
+    try {
+      final users = await _firestore.collection(FirestoreCollectionConstants.users).get();
+      final userList = users.docs.map((doc) => doc.data()).toList();
+      emit(UserListLoaded(userList));
+    } catch (e) {
+      emit(UserListError(e.toString()));
+    }
   }
 }
