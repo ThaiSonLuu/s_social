@@ -59,6 +59,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "login_now": MessageLookupByLibrary.simpleMessage("Login now"),
         "logout": MessageLookupByLibrary.simpleMessage("Logout"),
+        "message": MessageLookupByLibrary.simpleMessage("Message"),
         "new_password": MessageLookupByLibrary.simpleMessage("New password"),
         "new_post":
             MessageLookupByLibrary.simpleMessage("What\'s on your mind?"),

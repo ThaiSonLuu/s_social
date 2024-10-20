@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/domain/model/user_model.dart';
+
 class UserTile extends StatelessWidget {
-  final String text;
+  final UserModel user;
   final void Function()? onTap;
-  const UserTile({super.key, required this.text, required this.onTap});
+  const UserTile({super.key, required this.user, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +20,6 @@ class UserTile extends StatelessWidget {
           children: [
             // Avatar
             Icon(Icons.person),
-
-            // Name
-            Text(text)
           ],
         ),
       )

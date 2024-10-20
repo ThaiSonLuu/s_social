@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatelessWidget {
-  final String recipientEmail;
+  final String? recipientEmail;
   const ChatScreen({
     super.key,
     required this.recipientEmail

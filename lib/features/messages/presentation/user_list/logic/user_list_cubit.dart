@@ -1,8 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:s_social/common/app_constants/firestore_collection_constants.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ChatService {
+import '../../../../../common/app_constants/firestore_collection_constants.dart';
+import 'user_list_state.dart';
+
+class UserListCubit extends Cubit<UserListState> {
+  UserListCubit() : super(UserListInitial());
+
   // get instance of firestore
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -18,8 +22,4 @@ class ChatService {
       }).toList();
     });
   }
-
-  // send message
-
-  // get message
 }
