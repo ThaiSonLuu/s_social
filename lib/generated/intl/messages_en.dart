@@ -33,6 +33,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("An error occur"),
         "change_password":
             MessageLookupByLibrary.simpleMessage("Change password"),
+        "change_password_success":
+            MessageLookupByLibrary.simpleMessage("Change password success"),
         "confirm_password":
             MessageLookupByLibrary.simpleMessage("Confirm password"),
         "create_now": MessageLookupByLibrary.simpleMessage("Create now"),
@@ -41,6 +43,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Don\'t have account?"),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
         "english": MessageLookupByLibrary.simpleMessage("English"),
+        "enter_new_password":
+            MessageLookupByLibrary.simpleMessage("Enter your new password"),
+        "enter_old_password":
+            MessageLookupByLibrary.simpleMessage("Enter your old password"),
         "enter_your_email":
             MessageLookupByLibrary.simpleMessage("Enter your email"),
         "enter_your_password":
@@ -53,8 +59,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "login_now": MessageLookupByLibrary.simpleMessage("Login now"),
         "logout": MessageLookupByLibrary.simpleMessage("Logout"),
+        "new_password": MessageLookupByLibrary.simpleMessage("New password"),
         "new_post":
             MessageLookupByLibrary.simpleMessage("What\'s on your mind?"),
+        "old_password": MessageLookupByLibrary.simpleMessage("Old password"),
+        "old_password_invalid":
+            MessageLookupByLibrary.simpleMessage("Old password invalid"),
         "or": MessageLookupByLibrary.simpleMessage("Or"),
         "password": MessageLookupByLibrary.simpleMessage("Password"),
         "passwords_do_not_match":

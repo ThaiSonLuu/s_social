@@ -26,5 +26,11 @@
   "language": "Ngôn ngữ",
   "english": "Tiếng anh",
   "vietnamese": "Tiếng việt",
-  "dark_theme": "Giao diện tối"
+  "dark_theme": "Giao diện tối",
+  "old_password": "Mật khẩu cũ",
+  "enter_old_password": "Nhập mật khẩu cũ",
+  "new_password": "Mật khẩu mới",
+  "enter_new_password": "Nhập mật khẩu cũ",
+  "change_password_success": "Đổi mật khẩu thành công",
+  "old_password_invalid": "Mật khẩu cũ không hợp lệ"
 }

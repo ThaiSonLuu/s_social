@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:s_social/core/domain/model/user_model.dart';
 import 'package:s_social/core/presentation/logic/cubit/app_language/app_language_cubit.dart';
 import 'package:s_social/core/presentation/logic/cubit/app_theme/app_theme_cubit.dart';
 import 'package:s_social/core/presentation/logic/cubit/auth/auth_cubit.dart';
 import 'package:s_social/core/presentation/logic/cubit/profile_user/profile_user_cubit.dart';
+import 'package:s_social/core/utils/app_router/app_router.dart';
+import 'package:s_social/core/utils/snack_bar.dart';
 import 'package:s_social/generated/l10n.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -168,7 +171,12 @@ class _SettingsScreenState extends State<_SettingsScreen> {
             _buildActionItem(
               icon: const Icon(Icons.password),
               label: S.of(context).change_password,
-              onTap: () {},
+              onTap: () async {
+                final result = await context.push(RouterUri.changePassword);
+                if (result == true && mounted) {
+                  context.showSnackBarSuccess(text: S.of(context).change_password_success);
+                }
+              },
               trailing: const Icon(Icons.arrow_forward_ios_outlined),
             ),
             Divider(

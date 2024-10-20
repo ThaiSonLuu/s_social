@@ -31,6 +31,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "an_error_occur":
             MessageLookupByLibrary.simpleMessage("Đã có lỗi xảy ra!"),
         "change_password": MessageLookupByLibrary.simpleMessage("Đổi mật khẩu"),
+        "change_password_success":
+            MessageLookupByLibrary.simpleMessage("Đổi mật khẩu thành công"),
         "confirm_password":
             MessageLookupByLibrary.simpleMessage("Xác nhận mật khẩu"),
         "create_now": MessageLookupByLibrary.simpleMessage("Tạo tài khoản"),
@@ -39,6 +41,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Chưa có tài khoản?"),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
         "english": MessageLookupByLibrary.simpleMessage("Tiếng anh"),
+        "enter_new_password":
+            MessageLookupByLibrary.simpleMessage("Nhập mật khẩu cũ"),
+        "enter_old_password":
+            MessageLookupByLibrary.simpleMessage("Nhập mật khẩu cũ"),
         "enter_your_email":
             MessageLookupByLibrary.simpleMessage("Nhập email của bạn"),
         "enter_your_password":
@@ -52,7 +58,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "login": MessageLookupByLibrary.simpleMessage("Đăng nhập"),
         "login_now": MessageLookupByLibrary.simpleMessage("Đăng nhập"),
         "logout": MessageLookupByLibrary.simpleMessage("Đăng xuất"),
+        "new_password": MessageLookupByLibrary.simpleMessage("Mật khẩu mới"),
         "new_post": MessageLookupByLibrary.simpleMessage("Bạn đang nghĩ gì?"),
+        "old_password": MessageLookupByLibrary.simpleMessage("Mật khẩu cũ"),
+        "old_password_invalid":
+            MessageLookupByLibrary.simpleMessage("Mật khẩu cũ không hợp lệ"),
         "or": MessageLookupByLibrary.simpleMessage("Hoặc"),
         "password": MessageLookupByLibrary.simpleMessage("Mật khẩu"),
         "passwords_do_not_match":

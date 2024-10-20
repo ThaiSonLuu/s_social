@@ -329,6 +329,66 @@ class S {
       args: [],
     );
   }
+
+  /// `Old password`
+  String get old_password {
+    return Intl.message(
+      'Old password',
+      name: 'old_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your old password`
+  String get enter_old_password {
+    return Intl.message(
+      'Enter your old password',
+      name: 'enter_old_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New password`
+  String get new_password {
+    return Intl.message(
+      'New password',
+      name: 'new_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your new password`
+  String get enter_new_password {
+    return Intl.message(
+      'Enter your new password',
+      name: 'enter_new_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change password success`
+  String get change_password_success {
+    return Intl.message(
+      'Change password success',
+      name: 'change_password_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Old password invalid`
+  String get old_password_invalid {
+    return Intl.message(
+      'Old password invalid',
+      name: 'old_password_invalid',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
