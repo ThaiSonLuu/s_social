@@ -166,25 +166,38 @@ class _SettingsScreenState extends State<_SettingsScreen> {
       ),
       child: Column(
         children: [
-          if (context.read<ProfileUserCubit>().currentUser?.signInType ==
-              SignInType.emailAndPassword) ...[
-            _buildActionItem(
-              icon: const Icon(Icons.password),
-              label: S.of(context).change_password,
-              onTap: () async {
-                final result = await context.push(RouterUri.changePassword);
-                if (result == true && mounted) {
-                  context.showSnackBarSuccess(text: S.of(context).change_password_success);
-                }
-              },
-              trailing: const Icon(Icons.arrow_forward_ios_outlined),
-            ),
-            Divider(
-              color: Theme.of(context).colorScheme.onSurface.withAlpha(50),
-              height: 1,
-              thickness: 1,
-            ),
-          ],
+          BlocBuilder<ProfileUserCubit, ProfileUserState>(
+            builder: (context, state) {
+              if (state is ProfileUserLoaded &&
+                  state.user.signInType == SignInType.emailAndPassword) {
+                return Column(
+                  children: [
+                    _buildActionItem(
+                      icon: const Icon(Icons.password),
+                      label: S.of(context).change_password,
+                      onTap: () async {
+                        final result =
+                            await context.push(RouterUri.changePassword);
+                        if (result == true && context.mounted) {
+                          context.showSnackBarSuccess(
+                              text: S.of(context).change_password_success);
+                        }
+                      },
+                      trailing: const Icon(Icons.arrow_forward_ios_outlined),
+                    ),
+                    Divider(
+                      color:
+                          Theme.of(context).colorScheme.onSurface.withAlpha(50),
+                      height: 1,
+                      thickness: 1,
+                    ),
+                  ],
+                );
+              }
+
+              return const SizedBox();
+            },
+          ),
           _buildActionItem(
             icon: const Icon(Icons.language),
             label: S.of(context).language,
