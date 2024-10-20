@@ -32,5 +32,6 @@
   "new_password": "Mật khẩu mới",
   "enter_new_password": "Nhập mật khẩu cũ",
   "change_password_success": "Đổi mật khẩu thành công",
-  "old_password_invalid": "Mật khẩu cũ không hợp lệ"
+  "old_password_invalid": "Mật khẩu cũ không hợp lệ",
+  "message": "Tin nhắn"
 }

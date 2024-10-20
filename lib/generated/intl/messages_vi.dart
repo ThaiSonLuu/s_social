@@ -58,6 +58,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "login": MessageLookupByLibrary.simpleMessage("Đăng nhập"),
         "login_now": MessageLookupByLibrary.simpleMessage("Đăng nhập"),
         "logout": MessageLookupByLibrary.simpleMessage("Đăng xuất"),
+        "message": MessageLookupByLibrary.simpleMessage("Tin nhắn"),
         "new_password": MessageLookupByLibrary.simpleMessage("Mật khẩu mới"),
         "new_post": MessageLookupByLibrary.simpleMessage("Bạn đang nghĩ gì?"),
         "old_password": MessageLookupByLibrary.simpleMessage("Mật khẩu cũ"),
