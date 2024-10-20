@@ -6,6 +6,7 @@ import 'package:s_social/core/presentation/logic/cubit/app_language/app_language
 import 'package:s_social/core/presentation/logic/cubit/app_theme/app_theme_cubit.dart';
 import 'package:s_social/core/presentation/logic/cubit/auth/auth_cubit.dart';
 import 'package:s_social/core/presentation/logic/cubit/profile_user/profile_user_cubit.dart';
+import 'package:s_social/core/presentation/view/widgets/text_to_image.dart';
 import 'package:s_social/core/utils/app_router/app_router.dart';
 import 'package:s_social/core/utils/snack_bar.dart';
 import 'package:s_social/generated/l10n.dart';
@@ -80,10 +81,12 @@ class _SettingsScreenState extends State<_SettingsScreen> {
                   shape: BoxShape.circle,
                 ),
                 child: avatarUrl == null
-                    ? Container(
+                    ? SizedBox(
                         width: 60,
                         height: 60,
-                        color: Theme.of(context).colorScheme.surface,
+                        child: TextToImage(
+                          text: username?[0].toUpperCase() ?? "S",
+                        ),
                       )
                     : Image.network(
                         avatarUrl,
