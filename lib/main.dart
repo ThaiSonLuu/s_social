@@ -28,12 +28,16 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   late final AuthCubit _authCubit;
   late final AppRouter _appRouter;
+  late final ProfileUserCubit _profileUserCubit;
 
   @override
   void initState() {
     super.initState();
     _authCubit = AuthCubit()..checkLogin();
     _appRouter = AppRouter(_authCubit);
+    _profileUserCubit = ProfileUserCubit(userRepository: serviceLocator());
+
+    _profileUserCubit.getUserInfo();
   }
 
   @override
@@ -50,7 +54,7 @@ class _MyAppState extends State<MyApp> {
           create: (context) => _authCubit,
         ),
         BlocProvider(
-          create: (context) => ProfileUserCubit(userRepository: serviceLocator())..getUserInfo(),
+          create: (context) => _profileUserCubit,
         ),
       ],
       child: BlocBuilder<AppLanguageCubit, AppLanguageState>(

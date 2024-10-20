@@ -16,8 +16,6 @@ class ProfileUserCubit extends Cubit<ProfileUserState> {
 
   Future<void> getUserInfo() async {
     try {
-      emit(ProfileUserLoading());
-
       final currentUid = FirebaseAuth.instance.currentUser?.uid;
       if (currentUid == null) {
         return;

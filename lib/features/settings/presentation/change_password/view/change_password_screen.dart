@@ -177,11 +177,11 @@ class _ChangePasswordScreenState extends State<_ChangePasswordScreen> {
           builder: (context, state) {
             if (state is ChangePasswordLoading) {
               return const SizedBox(
-                width: 28,
-                height: 28,
+                width: 24,
+                height: 24,
                 child: CircularProgressIndicator(
                   color: Colors.white,
-                  strokeWidth: 3,
+                  strokeWidth: 2.5,
                 ),
               );
             }
