@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:s_social/features/auth/presentation/login/logic/login_cubit.dart';
+import 'package:s_social/features/messages/presentation/messages/view/user_tile.dart';
 
+import '../logic/chat_service.dart';
 import 'chat_screen.dart';
 
 class MessageList extends StatelessWidget {
@@ -19,63 +22,59 @@ class _MessageList extends StatefulWidget {
 }
 
 class _MessageListState extends State<_MessageList> {
+  final ChatService _chatService = ChatService();
+  final LoginCubit _authService = LoginCubit(userRepository: userRepository);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Messages love you'),
+        title: Text('Message'),
         automaticallyImplyLeading: false,
       ),
-      body: SafeArea(
-        child: ListView.builder(
-          itemCount: 10,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  const CircleAvatar(
-                    backgroundImage: NetworkImage('https://via.placeholder.com/150'),
-                    radius: 24,
-                  ),
-                  const SizedBox(width: 8),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('User $index'),
-                      const SizedBox(height: 4),
-                      Text('This is the content of message $index'),
-                    ],
-                  ),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ChatScreen(),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          textBaseline: TextBaseline.alphabetic,
-                          children: const [
-                            Icon(Icons.check),
-                            Text('12:00 PM'),
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            );
-          },
-        ),
-      )
+      body: _buildUserList(),
+    );
+  }
+
+  Widget _buildUserList() {
+    return StreamBuilder(
+      stream: _chatService.getUserStream(),
+      builder: (context, snapshot) {
+        // Error
+        if (snapshot.hasError) {
+          return Center(
+            child: Text('Error: ${snapshot.error}'),
+          );
+        }
+
+        // Loading
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        // Return list of users
+        return ListView(
+          children: snapshot.data!.map<Widget>((userData) => _buildUserListItem(
+            userData,
+            context,
+          )).toList(),
+        );
+      },
+    );
+  }
+
+  Widget _buildUserListItem(Map<String, dynamic> userData, BuildContext context) {
+    // Display all users except the current user
+    return UserTile(
+      text: userData["email"],
+      // On tap, navigate to chat screen
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(
+          recipientEmail: userData["email"],
+        )));
+      }
     );
   }
 }
