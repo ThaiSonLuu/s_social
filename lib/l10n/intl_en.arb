@@ -26,5 +26,11 @@
   "language": "Language",
   "english": "English",
   "vietnamese": "Vietnamese",
-  "dark_theme": "Dark theme"
+  "dark_theme": "Dark theme",
+  "old_password": "Old password",
+  "enter_old_password": "Enter your old password",
+  "new_password": "New password",
+  "enter_new_password": "Enter your new password",
+  "change_password_success": "Change password success",
+  "old_password_invalid": "Old password invalid"
 }
