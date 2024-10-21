@@ -31,6 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Already have an account!"),
         "an_error_occur":
             MessageLookupByLibrary.simpleMessage("An error occur"),
+        "anonymous": MessageLookupByLibrary.simpleMessage("Anonymous user"),
         "change_password":
             MessageLookupByLibrary.simpleMessage("Change password"),
         "change_password_success":

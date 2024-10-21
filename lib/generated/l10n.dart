@@ -399,6 +399,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Anonymous user`
+  String get anonymous {
+    return Intl.message(
+      'Anonymous user',
+      name: 'anonymous',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -33,5 +33,6 @@
   "enter_new_password": "Nhập mật khẩu cũ",
   "change_password_success": "Đổi mật khẩu thành công",
   "old_password_invalid": "Mật khẩu cũ không hợp lệ",
-  "message": "Tin nhắn"
+  "message": "Tin nhắn",
+  "anonymous": "Người dùng ẩn danh"
 }

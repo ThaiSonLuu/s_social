@@ -33,5 +33,6 @@
   "enter_new_password": "Enter your new password",
   "change_password_success": "Change password success",
   "old_password_invalid": "Old password invalid",
-  "message": "Message"
+  "message": "Message",
+  "anonymous": "Anonymous user"
 }
