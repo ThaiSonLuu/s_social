@@ -6,7 +6,7 @@ import 'package:s_social/core/presentation/logic/cubit/auth/auth_cubit.dart';
 import 'package:s_social/core/presentation/view/widgets/bottom_navigation.dart';
 import 'package:s_social/features/auth/presentation/login/view/login_screen.dart';
 import 'package:s_social/features/auth/presentation/sign_up/view/signup_screen.dart';
-import 'package:s_social/features/screen/home/home_screen.dart';
+import 'package:s_social/features/screen/home/view/home_screen.dart';
 import 'package:s_social/features/settings/presentation/settings/view/settings_creen.dart';
 
 abstract class RouterUri {

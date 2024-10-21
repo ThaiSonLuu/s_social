@@ -26,5 +26,6 @@
   "language": "Language",
   "english": "English",
   "vietnamese": "Vietnamese",
-  "dark_theme": "Dark theme"
+  "dark_theme": "Dark theme",
+  "anonymous": "Anonymous user"
 }
