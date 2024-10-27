@@ -12,6 +12,10 @@ import 'package:s_social/core/domain/repository/post_repository.dart';
 import 'package:s_social/core/domain/repository/upload_file_repository.dart';
 import 'package:s_social/core/domain/repository/user_repository.dart';
 
+import '../core/data/data_source/chat_data_source.dart';
+import '../core/data/repository/chat_repository_impl.dart';
+import '../core/domain/repository/chat_repository.dart';
+
 final GetIt serviceLocator = GetIt.instance;
 
 Future<void> initializeDependencies() async {
@@ -20,6 +24,7 @@ Future<void> initializeDependencies() async {
   serviceLocator.registerLazySingleton(() => PostDataSource());
   serviceLocator.registerLazySingleton(() => CommentDataSource());
   serviceLocator.registerLazySingleton(() => UpLoadFileDataSource());
+  serviceLocator.registerLazySingleton(() => ChatDataSource());
 
   // Repository
   serviceLocator.registerLazySingleton<UserRepository>(
@@ -36,5 +41,9 @@ Future<void> initializeDependencies() async {
 
   serviceLocator.registerLazySingleton<UploadFileRepository>(
     () => UploadFileRepositoryImpl(dataSource: serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton<ChatRepository>(
+     () => ChatRepositoryImpl(chatDataSource: serviceLocator()),
   );
 }

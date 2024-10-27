@@ -5,4 +5,6 @@ class FirestoreCollectionConstants {
   static const posts = "posts";
   static const comments = "comments";
 
+  static const chats = "chats";
+
 }
