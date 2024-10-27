@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:s_social/core/presentation/logic/cubit/profile_user/profile_user_cubit.dart';
 import 'package:s_social/generated/l10n.dart';
 import '../../../../core/domain/model/post_model.dart';
-import 'package:uuid/uuid.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
 import '../logic/post_cubit.dart';
 
 class NewPostScreen extends StatefulWidget {
@@ -18,7 +18,7 @@ class _NewPostState extends State<NewPostScreen> {
   final TextEditingController _contentController = TextEditingController();
   bool postAnonymous = false;
   String? username;
-  var uuid = Uuid();
+  String? userId;
   File? _selectedImg;
   final ImagePicker _imagePicker = ImagePicker();
 
@@ -59,6 +59,7 @@ class _NewPostState extends State<NewPostScreen> {
                 builder: (context, state) {
                   if (state is ProfileUserLoaded) {
                     username = postAnonymous ? S.of(context).anonymous : state.user.username;
+                    userId = state.user.id;
                   }
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -122,16 +123,17 @@ class _NewPostState extends State<NewPostScreen> {
                     print('Selected image path: ${_selectedImg!.path}');
                     imgUrl = await context.read<PostCubit>().uploadImageToFirebase(_selectedImg!);
                   }
-                  
+
+                  DocumentReference docRef = FirebaseFirestore.instance.collection('posts').doc();
                   final newPost = PostModel(
-                    id: uuid.v4(),
-                    userId: username,
+                    id: docRef.id,
+                    userId: userId,
                     postContent: _contentController.text,
                     // postImage: _selectedImg != null ? _selectedImg!.path : null,
                     postImage: imgUrl,
                     createdAt: DateTime.now(),
                     comments: [],
-                    like: null,
+                    like: 0,
                   );
                   await context.read<PostCubit>().createPost(newPost);
                   Navigator.pop(context, newPost);

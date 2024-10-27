@@ -1,47 +1,48 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:s_social/core/domain/model/post_model.dart';
 import 'package:s_social/core/domain/repository/post_repository.dart';
+import '../../../../core/domain/model/user_model.dart';
 
 class PostCubit extends Cubit<List<PostModel>> {
   final PostRepository postRepository;
+  final Map<String, UserModel> userCache = {};
 
   PostCubit({required this.postRepository}) : super([]);
 
   Future<void> loadPosts() async {
-    final posts = await postRepository.getPosts();
-    emit(posts ?? []);
-  }
-
-  // Future<void> createPost(PostModel post) async {
-  //   await postRepository.createPost(post);
-  //   loadPosts();
-  // }
-
-  Future<void> createPost(PostModel post) async {
     try {
-      await FirebaseFirestore.instance.collection('posts').add({
-        'id': post.id,
-        'userId': post.userId,
-        'postContent': post.postContent,
-        'postImage': post.postImage, // Lưu URL ảnh ở đây
-        'createdAt': post.createdAt?.toIso8601String(),
-        'comments': post.comments, // có thể là mảng rỗng hoặc null
-        'like': post.like,
-      });
-      loadPosts(); // Sau khi thêm, load lại danh sách post
+      final posts = await postRepository.getPosts();
+      if (posts != null) {
+        emit(posts);
+      } else {
+        print("No posts available in repository.");
+        emit([]);
+      }
     } catch (e) {
-      print('Error saving post: $e');
+      print("Error loading posts: $e");
+      emit([]);
     }
   }
 
+  Future<void> createPost(PostModel post) async {
+    try {
+      await postRepository.createPost(post);
+      await loadPosts();
+    } catch (e) {
+      print("Error creating post: $e");
+    }
+  }
 
   Future<void> deletePost(PostModel postId) async {
-    await postRepository.deletePost(postId);
-    loadPosts();
+    try {
+      await postRepository.deletePost(postId);
+      await loadPosts();
+    } catch (e) {
+      print("Error deleting post: $e");
+    }
   }
 
   Future<String?> uploadImageToFirebase(File imageFile) async {
@@ -66,5 +67,32 @@ class PostCubit extends Cubit<List<PostModel>> {
     }
   }
 
+  Future<UserModel> getUserById(String userId) async {
+    if (userCache.containsKey(userId)) {
+      return userCache[userId]!;
+    } else {
+      final user = await fetchUserData(userId);
+      userCache[userId] = user;
+      return user;
+    }
+  }
 
+  Future<UserModel> fetchUserData(String userId) async {
+    try {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+      if (userDoc.exists) {
+        return UserModel(
+          id: userId,
+          username: userDoc['username'],
+          avatarUrl: userDoc['avatarUrl'],
+        );
+      } else {
+        throw Exception('User not found');
+      }
+    } catch (e) {
+      print("Error fetching user data: $e");
+      throw Exception('Failed to fetch user data');
+    }
+  }
 }

@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:s_social/core/domain/model/post_model.dart';
+import 'package:s_social/core/domain/model/user_model.dart';
+import 'package:s_social/core/presentation/logic/cubit/app_language/app_language_cubit.dart';
+import 'package:s_social/features/screen/home/logic/post_cubit.dart';
 
 class PostWidget extends StatelessWidget {
-  final PostModel data;
+  final PostModel postData;
+  final UserModel userData;
   final VoidCallback onTap;
 
   const PostWidget({
     Key? key,
-    required this.data,
+    required this.postData,
+    required this.userData,
     required this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Format the post creation date
-    String formattedDate = data.createdAt != null
-        ? DateFormat('dd/MM/yyyy HH:mm').format(data.createdAt!)
+    String formattedDate = postData.createdAt != null
+        ? DateFormat('dd/MM/yyyy HH:mm').format(postData.createdAt!)
         : 'Unknown date';
 
     return Card(
@@ -31,10 +37,14 @@ class PostWidget extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 20,
-                  // Placeholder for user avatar
-                  backgroundImage: AssetImage('assets/avatar_placeholder.png'), // Add avatar image here
+                  backgroundImage: NetworkImage(
+                    userData.avatarUrl ?? 'https://placehold.co/80x80',
+                  ),
+                  onBackgroundImageError: (error, stackTrace) {
+                    // Handle error when loading avatar
+                  },
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -42,7 +52,7 @@ class PostWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        data.userId ?? 'Unknown',
+                        userData.username ?? 'Unknown User', // Show username from UserModel
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -64,30 +74,31 @@ class PostWidget extends StatelessWidget {
           ),
 
           // Post content
-          if (data.postContent != null && data.postContent!.isNotEmpty)
+          if (postData.postContent != null && postData.postContent!.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
               child: Text(
-                data.postContent!,
+                postData.postContent!,
                 style: const TextStyle(fontSize: 14),
               ),
             ),
 
           // Post image (if available)
-          if (data.postImage != null && data.postImage!.isNotEmpty)
+          if (postData.postImage != null && postData.postImage!.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Image.network(
-                data.postImage!,
+                postData.postImage!,
                 height: 200,
                 width: double.infinity,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  return const Text('Image failed to load');
+                  return const Center(child: Text('Image failed to load'));
                 },
               ),
             ),
 
+          // Post actions
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
@@ -102,7 +113,7 @@ class PostWidget extends StatelessWidget {
                       },
                     ),
                     IconButton(
-                      icon: const Icon(Icons.mode_comment_outlined),
+                      icon: const Icon(Icons.comment_outlined),
                       onPressed: () {
                         // Logic for commenting on a post
                       },

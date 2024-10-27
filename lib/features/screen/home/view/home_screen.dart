@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:s_social/core/domain/model/user_model.dart';
 import 'package:s_social/features/screen/home/view/new_post_screen.dart';
 import 'package:s_social/features/screen/home/view/widget/post_widget.dart';
 import 'package:s_social/core/domain/model/post_model.dart';
@@ -80,16 +81,32 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: posts.length,
                     itemBuilder: (context, index) {
                       final post = posts[index];
-
                       posts.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
-                      return PostWidget(
-                        data: post,
-                        onTap: () {
-                          // Logic to handle post taps (e.g., navigate to detail screen)
+
+                      return FutureBuilder<UserModel>(
+                        future: context.read<PostCubit>().getUserById(post.userId!),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return const Center(child: Text('Error fetching user.'));
+                          } else if (!snapshot.hasData) {
+                            return const Center(child: Text('User not found.'));
+                          }
+
+                          final user = snapshot.data!;
+
+                          return PostWidget(
+                            postData: post,
+                            userData: user,
+                            onTap: () {
+                              // Logic to handle post taps (e.g., navigate to detail screen)
+                            },
+                          );
                         },
                       );
                     },
-                    separatorBuilder: (context, index) => const Divider(),
+                    separatorBuilder: (context, index) => const Divider(thickness: 0.2),
                   );
                 },
               ),
