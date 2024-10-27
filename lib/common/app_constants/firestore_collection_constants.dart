@@ -7,4 +7,6 @@ class FirestoreCollectionConstants {
 
   static const chats = "chats";
 
+  static const chats = "chats";
+
 }

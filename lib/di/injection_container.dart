@@ -31,6 +31,10 @@ Future<void> initializeDependencies() async {
     () => UserRepositoryImpl(userDataSource: serviceLocator()),
   );
 
+  serviceLocator.registerLazySingleton<ChatRepository>(
+     () => ChatRepositoryImpl(chatDataSource: serviceLocator()),
+  );
+
   serviceLocator.registerLazySingleton<PostRepository>(
     () => PostRepositoryImpl(postDataSource: serviceLocator()),
   );
@@ -41,9 +45,5 @@ Future<void> initializeDependencies() async {
 
   serviceLocator.registerLazySingleton<UploadFileRepository>(
     () => UploadFileRepositoryImpl(dataSource: serviceLocator()),
-  );
-
-  serviceLocator.registerLazySingleton<ChatRepository>(
-     () => ChatRepositoryImpl(chatDataSource: serviceLocator()),
   );
 }
