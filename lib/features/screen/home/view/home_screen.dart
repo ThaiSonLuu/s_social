@@ -29,7 +29,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        title: Text(S.of(context).home),
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
@@ -58,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          S.of(context).new_post,
+                          S.of(context).new_post_box,
                           style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                         ),
                       ),

@@ -1,16 +1,22 @@
 import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:s_social/core/domain/model/post_model.dart';
 import 'package:s_social/core/domain/repository/post_repository.dart';
+import 'package:s_social/core/domain/repository/upload_file_repository.dart';
+
 import '../../../../core/domain/model/user_model.dart';
 
 class PostCubit extends Cubit<List<PostModel>> {
   final PostRepository postRepository;
+  final UploadFileRepository uploadFileRepository;
   final Map<String, UserModel> userCache = {};
 
-  PostCubit({required this.postRepository}) : super([]);
+  PostCubit({
+    required this.postRepository,
+    required this.uploadFileRepository,
+  }) : super([]);
 
   Future<void> loadPosts() async {
     try {
@@ -47,22 +53,9 @@ class PostCubit extends Cubit<List<PostModel>> {
 
   Future<String?> uploadImageToFirebase(File imageFile) async {
     try {
-      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      Reference storageRef = FirebaseStorage.instance.ref().child('uploads/$fileName');
-      UploadTask uploadTask = storageRef.putFile(imageFile);
-
-      uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
-        print('Task state: ${snapshot.state}');
-        print('Progress: ${(snapshot.bytesTransferred / snapshot.totalBytes) * 100} %');
-      });
-
-      TaskSnapshot taskSnapshot = await uploadTask;
-      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-
-      print('Download URL: $downloadUrl');
-      return downloadUrl;
+      final url = uploadFileRepository.postFile(imageFile);
+      return url;
     } catch (e) {
-      print("Error uploading image: $e");
       return null;
     }
   }
@@ -79,7 +72,10 @@ class PostCubit extends Cubit<List<PostModel>> {
 
   Future<UserModel> fetchUserData(String userId) async {
     try {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
 
       if (userDoc.exists) {
         return UserModel(

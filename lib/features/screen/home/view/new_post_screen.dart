@@ -48,7 +48,8 @@ class _NewPostState extends State<NewPostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('New Post'),
+        title: Text(S.of(context).new_post),
+        automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -82,7 +83,7 @@ class _NewPostState extends State<NewPostScreen> {
               TextField(
                 controller: _contentController,
                 decoration: InputDecoration(
-                  labelText: S.of(context).new_post,
+                  labelText: S.of(context).new_post_box,
                   border: const OutlineInputBorder(),
                 ),
                 maxLines: 2,
@@ -138,7 +139,7 @@ class _NewPostState extends State<NewPostScreen> {
                   await context.read<PostCubit>().createPost(newPost);
                   Navigator.pop(context, newPost);
                 },
-                child: const Text('Post'),
+                child: Text(S.of(context).post),
               ),
             ],
           ),

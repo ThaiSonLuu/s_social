@@ -20,12 +20,12 @@
   "hello_user": "Xin chào người dùng",
   "settings": "Cài đặt",
   "logout": "Đăng xuất",
-  "new_post": "Bạn đang nghĩ gì?",
+  "new_post_box": "Bạn đang nghĩ gì?",
   "an_error_occur": "Đã có lỗi xảy ra!",
   "change_password": "Đổi mật khẩu",
   "language": "Ngôn ngữ",
-  "english": "Tiếng anh",
-  "vietnamese": "Tiếng việt",
+  "english": "Tiếng Anh",
+  "vietnamese": "Tiếng Việt",
   "dark_theme": "Giao diện tối",
   "old_password": "Mật khẩu cũ",
   "enter_old_password": "Nhập mật khẩu cũ",
@@ -34,5 +34,8 @@
   "change_password_success": "Đổi mật khẩu thành công",
   "old_password_invalid": "Mật khẩu cũ không hợp lệ",
   "message": "Tin nhắn",
-  "anonymous": "Người dùng ẩn danh"
+  "anonymous": "Người dùng ẩn danh",
+  "home": "Trang chủ",
+  "post": "Đăng",
+  "new_post": "Bài viết mới"
 }

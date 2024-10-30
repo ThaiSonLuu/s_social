@@ -54,6 +54,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Enter your password"),
         "hello": m0,
         "hello_user": MessageLookupByLibrary.simpleMessage("Hello user"),
+        "home": MessageLookupByLibrary.simpleMessage("Home"),
         "invalid_email_format":
             MessageLookupByLibrary.simpleMessage("Invalid email format"),
         "language": MessageLookupByLibrary.simpleMessage("Language"),
@@ -62,7 +63,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "logout": MessageLookupByLibrary.simpleMessage("Logout"),
         "message": MessageLookupByLibrary.simpleMessage("Message"),
         "new_password": MessageLookupByLibrary.simpleMessage("New password"),
-        "new_post":
+        "new_post": MessageLookupByLibrary.simpleMessage("New post"),
+        "new_post_box":
             MessageLookupByLibrary.simpleMessage("What\'s on your mind?"),
         "old_password": MessageLookupByLibrary.simpleMessage("Old password"),
         "old_password_invalid":
@@ -71,6 +73,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "password": MessageLookupByLibrary.simpleMessage("Password"),
         "passwords_do_not_match":
             MessageLookupByLibrary.simpleMessage("Passwords do not match"),
+        "post": MessageLookupByLibrary.simpleMessage("Post"),
         "re_enter_password":
             MessageLookupByLibrary.simpleMessage("Re-enter password"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),

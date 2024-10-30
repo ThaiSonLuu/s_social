@@ -58,7 +58,10 @@ class _MyAppState extends State<MyApp> {
           create: (context) => _profileUserCubit,
         ),
         BlocProvider(
-          create: (context) => PostCubit(postRepository: serviceLocator()), // Đảm bảo rằng PostCubit được cung cấp
+          create: (context) => PostCubit(
+            postRepository: serviceLocator(),
+            uploadFileRepository: serviceLocator(),
+          ),
         ),
       ],
       child: BlocBuilder<AppLanguageCubit, AppLanguageState>(

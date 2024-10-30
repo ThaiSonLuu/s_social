@@ -261,10 +261,10 @@ class S {
   }
 
   /// `What's on your mind?`
-  String get new_post {
+  String get new_post_box {
     return Intl.message(
       'What\'s on your mind?',
-      name: 'new_post',
+      name: 'new_post_box',
       desc: '',
       args: [],
     );
@@ -405,6 +405,36 @@ class S {
     return Intl.message(
       'Anonymous user',
       name: 'anonymous',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Home`
+  String get home {
+    return Intl.message(
+      'Home',
+      name: 'home',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Post`
+  String get post {
+    return Intl.message(
+      'Post',
+      name: 'post',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New post`
+  String get new_post {
+    return Intl.message(
+      'New post',
+      name: 'new_post',
       desc: '',
       args: [],
     );
