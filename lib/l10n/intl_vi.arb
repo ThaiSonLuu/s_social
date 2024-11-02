@@ -37,5 +37,9 @@
   "anonymous": "Người dùng ẩn danh",
   "home": "Trang chủ",
   "post": "Đăng",
-  "new_post": "Bài viết mới"
+  "new_post": "Bài viết mới",
+  "post_by": "Đăng bởi",
+  "like": "Thích",
+  "comment": "Bình luận",
+  "share": "Chia sẻ"
 }

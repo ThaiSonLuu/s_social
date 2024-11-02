@@ -34,6 +34,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "change_password": MessageLookupByLibrary.simpleMessage("Đổi mật khẩu"),
         "change_password_success":
             MessageLookupByLibrary.simpleMessage("Đổi mật khẩu thành công"),
+        "comment": MessageLookupByLibrary.simpleMessage("Bình luận"),
         "confirm_password":
             MessageLookupByLibrary.simpleMessage("Xác nhận mật khẩu"),
         "create_now": MessageLookupByLibrary.simpleMessage("Tạo tài khoản"),
@@ -57,6 +58,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "invalid_email_format":
             MessageLookupByLibrary.simpleMessage("Sai định dạng email"),
         "language": MessageLookupByLibrary.simpleMessage("Ngôn ngữ"),
+        "like": MessageLookupByLibrary.simpleMessage("Thích"),
         "login": MessageLookupByLibrary.simpleMessage("Đăng nhập"),
         "login_now": MessageLookupByLibrary.simpleMessage("Đăng nhập"),
         "logout": MessageLookupByLibrary.simpleMessage("Đăng xuất"),
@@ -73,9 +75,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "passwords_do_not_match":
             MessageLookupByLibrary.simpleMessage("Mật khẩu không trùng khớp"),
         "post": MessageLookupByLibrary.simpleMessage("Đăng"),
+        "post_by": MessageLookupByLibrary.simpleMessage("Đăng bởi"),
         "re_enter_password":
             MessageLookupByLibrary.simpleMessage("Nhập lại mật khẩu"),
         "settings": MessageLookupByLibrary.simpleMessage("Cài đặt"),
+        "share": MessageLookupByLibrary.simpleMessage("Chia sẻ"),
         "sign_up": MessageLookupByLibrary.simpleMessage("Đăng ký"),
         "sign_up_success": MessageLookupByLibrary.simpleMessage(
             "Đăng ký thành công. Vui lòng đăng nhập"),

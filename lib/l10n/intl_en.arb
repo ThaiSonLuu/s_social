@@ -37,5 +37,9 @@
   "anonymous": "Anonymous user",
   "home": "Home",
   "post": "Post",
-  "new_post": "New post"
+  "new_post": "New post",
+  "post_by": "Post by",
+  "like": "Like",
+  "comment": "Comment",
+  "share": "Share"
 }

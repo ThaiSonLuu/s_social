@@ -19,7 +19,7 @@ class CommentScreen extends StatelessWidget {
                 itemCount: comments.length,
                 itemBuilder: (context, index) {
                   final comment = comments[index];
-                  return ListTile(title: Text(comment.content ?? ''));
+                  return ListTile(title: Text(comment.commentText ?? ''));
                 },
               ),
             ),

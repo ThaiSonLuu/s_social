@@ -7,14 +7,18 @@ class CommentModel {
   final String? id;
   final String? postId;
   final String? userId;
-  final String? content;
+  final String? commentText;
+  final String? commentImg;
+  final List<String>? replyComment;
   final DateTime? createdAt;
 
   CommentModel({
     required this.id,
     required this.postId,
     required this.userId,
-    required this.content,
+    required this.commentText,
+    required this.commentImg,
+    required this.replyComment,
     required this.createdAt,
   });
 
@@ -27,14 +31,18 @@ class CommentModel {
     String? id,
     String? postId,
     String? userId,
-    String? content,
+    String? commentText,
+    String? commentImg,
+    List<String>? replyComment,
     DateTime? createAt,
   }) {
     return CommentModel(
         id: id ?? this.id,
         postId: postId ?? this.postId,
         userId: userId ?? this.userId,
-        content: content ?? this.content,
+        commentText: commentText ?? this.commentText,
+        commentImg: commentImg ?? this.commentImg,
+        replyComment: replyComment ?? this.replyComment,
         createdAt: createdAt ?? this.createdAt,
     );
   }

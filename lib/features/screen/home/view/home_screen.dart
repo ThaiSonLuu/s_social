@@ -4,6 +4,7 @@ import 'package:s_social/core/domain/model/user_model.dart';
 import 'package:s_social/features/screen/home/view/new_post_screen.dart';
 import 'package:s_social/features/screen/home/view/widget/post_widget.dart';
 import 'package:s_social/core/domain/model/post_model.dart';
+import '../../../../core/presentation/logic/cubit/profile_user/profile_user_cubit.dart';
 import '../../../../generated/l10n.dart';
 import '../logic/post_cubit.dart';
 
@@ -31,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text(S.of(context).home),
         automaticallyImplyLeading: false,
+        backgroundColor: Theme.of(context).colorScheme.onPrimary,
       ),
       body: Column(
         children: [
@@ -78,11 +80,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (posts.isEmpty) {
                     return const Center(child: Text('No posts available.'));
                   }
+
+                  final sortedPosts = List<PostModel>.from(posts)
+                    ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+
                   return ListView.separated(
                     itemCount: posts.length,
                     itemBuilder: (context, index) {
-                      final post = posts[index];
-                      posts.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+                      final post = sortedPosts[index];
 
                       return FutureBuilder<UserModel>(
                         future: context.read<PostCubit>().getUserById(post.userId!),

@@ -1,42 +1,25 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:s_social/core/domain/model/post_model.dart';
 import 'package:s_social/core/domain/model/user_model.dart';
-import 'package:s_social/core/presentation/logic/cubit/app_language/app_language_cubit.dart';
-import 'package:s_social/features/screen/home/logic/post_cubit.dart';
-import 'package:s_social/features/screen/home/view/widget/full_screen_img.dart';
+import 'package:s_social/core/domain/model/comment_model.dart';
 
-import '../../../../../generated/l10n.dart';
-
-class PostWidget extends StatelessWidget {
+class CommentWidget extends StatelessWidget {
+  final CommentModel commentData;
   final PostModel postData;
   final UserModel userData;
   final VoidCallback onTap;
 
-  const PostWidget({
+  const CommentWidget({
     Key? key,
+    required this.commentData,
     required this.postData,
     required this.userData,
     required this.onTap,
   }) : super(key: key);
 
-  Future<ImageInfo> _getImageInfo(String imageUrl) async {
-    final Completer<ImageInfo> completer = Completer();
-    final ImageStream stream = NetworkImage(imageUrl).resolve(const ImageConfiguration());
-    stream.addListener(
-      ImageStreamListener((ImageInfo info, _) => completer.complete(info)),
-    );
-    return completer.future;
-  }
-
   @override
   Widget build(BuildContext context) {
-    String displayName = postData.postAnonymous == true
-        ? S.of(context).anonymous : userData.username ?? 'Unknown User';
-
     // Format the post creation date
     String formattedDate = postData.createdAt != null
         ? DateFormat('dd/MM/yyyy HH:mm').format(postData.createdAt!)
@@ -48,7 +31,7 @@ class PostWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Avatar, username, and post time
+          // Avatar, username
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
@@ -56,9 +39,7 @@ class PostWidget extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 20,
-                  backgroundImage: NetworkImage(
-                    userData.avatarUrl ?? 'https://placehold.co/80x80',
-                  ),
+                  backgroundImage: NetworkImage(userData.avatarUrl!),
                   onBackgroundImageError: (error, stackTrace) {
                     // Handle error when loading avatar
                   },
@@ -69,7 +50,7 @@ class PostWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        displayName, // Show username from UserModel
+                        userData.username!,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -104,48 +85,14 @@ class PostWidget extends StatelessWidget {
           if (postData.postImage != null && postData.postImage!.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FullScreenImg(imageUrl: postData.postImage!),
-                    ),
-                  );
+              child: Image.network(
+                postData.postImage!,
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Center(child: Text('Image failed to load'));
                 },
-                child: FutureBuilder<ImageInfo>(
-                  future: _getImageInfo(postData.postImage!),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    if (snapshot.hasError || !snapshot.hasData) {
-                      return const Center(child: Text('Image failed to load'));
-                    }
-                    final imageInfo = snapshot.data!;
-                    final imageAspectRatio = imageInfo.image.width / imageInfo.image.height;
-
-                    double aspectRatio;
-                    if (imageAspectRatio > 4 / 3) {
-                      aspectRatio = 4 / 3;
-                    } else if (imageAspectRatio < 3 / 4) {
-                      aspectRatio = 3 / 4;
-                    } else {
-                      aspectRatio = imageAspectRatio;
-                    }
-
-                    return AspectRatio(
-                      aspectRatio: aspectRatio,
-                      child: Image.network(
-                        postData.postImage!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Center(child: Text('Image failed to load'));
-                        },
-                      ),
-                    );
-                  },
-                ),
               ),
             ),
 
@@ -163,29 +110,12 @@ class PostWidget extends StatelessWidget {
                         // Logic for liking a post
                       },
                     ),
-                    Text(postData.like.toString() + ' ' + S.of(context).like),
-                  ],
-                ),
-                Row(
-                  children: [
                     IconButton(
                       icon: const Icon(Icons.comment_outlined),
                       onPressed: () {
                         // Logic for commenting on a post
                       },
                     ),
-                    Text(S.of(context).comment),
-                  ],
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.share_outlined),
-                      onPressed: () {
-                        // Logic for sharing a post
-                      },
-                    ),
-                    Text(S.of(context).share)
                   ],
                 ),
               ],

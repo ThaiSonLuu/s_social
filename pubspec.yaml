@@ -56,7 +56,7 @@ flutter:
     - assets/images/
     - assets/icons/
 
-flutter_launcher_icons:
+flutter_icons:
   android: true
   ios: true
   image_path: "assets/icons/app_icon.png"

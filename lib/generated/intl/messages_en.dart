@@ -36,6 +36,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Change password"),
         "change_password_success":
             MessageLookupByLibrary.simpleMessage("Change password success"),
+        "comment": MessageLookupByLibrary.simpleMessage("Comment"),
         "confirm_password":
             MessageLookupByLibrary.simpleMessage("Confirm password"),
         "create_now": MessageLookupByLibrary.simpleMessage("Create now"),
@@ -58,6 +59,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "invalid_email_format":
             MessageLookupByLibrary.simpleMessage("Invalid email format"),
         "language": MessageLookupByLibrary.simpleMessage("Language"),
+        "like": MessageLookupByLibrary.simpleMessage("Like"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "login_now": MessageLookupByLibrary.simpleMessage("Login now"),
         "logout": MessageLookupByLibrary.simpleMessage("Logout"),
@@ -74,9 +76,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "passwords_do_not_match":
             MessageLookupByLibrary.simpleMessage("Passwords do not match"),
         "post": MessageLookupByLibrary.simpleMessage("Post"),
+        "post_by": MessageLookupByLibrary.simpleMessage("Post by"),
         "re_enter_password":
             MessageLookupByLibrary.simpleMessage("Re-enter password"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+        "share": MessageLookupByLibrary.simpleMessage("Share"),
         "sign_up": MessageLookupByLibrary.simpleMessage("Sign up"),
         "sign_up_success": MessageLookupByLibrary.simpleMessage(
             "Sign up success. Please login"),

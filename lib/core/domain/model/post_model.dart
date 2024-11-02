@@ -11,6 +11,7 @@ class PostModel {
   final DateTime? createdAt;
   final int? like;
   final List<String>? comments;
+  final bool? postAnonymous;
 
   PostModel({
     required this.id,
@@ -20,6 +21,7 @@ class PostModel {
     required this.createdAt,
     required this.like,
     required this.comments,
+    required this.postAnonymous,
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) =>
@@ -35,6 +37,7 @@ class PostModel {
     DateTime? createdAt,
     int? like,
     List<String>? comments,
+    bool? postAnonymous,
   }) {
     return PostModel(
         id: id ?? this.id,
@@ -44,6 +47,7 @@ class PostModel {
         createdAt: createdAt ?? this.createdAt,
         like: like ?? this.like,
         comments: comments ?? this.comments,
+        postAnonymous: postAnonymous ?? this.postAnonymous,
     );
   }
 }
