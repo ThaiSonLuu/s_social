@@ -7,7 +7,7 @@ import 'package:s_social/core/presentation/view/widgets/bottom_navigation.dart';
 import 'package:s_social/features/auth/presentation/login/view/login_screen.dart';
 import 'package:s_social/features/auth/presentation/sign_up/view/signup_screen.dart';
 import 'package:s_social/features/messages/presentation/user_list/view/user_list_screen.dart';
-import 'package:s_social/features/screen/home/home_screen.dart';
+import 'package:s_social/features/screen/home/view/home_screen.dart';
 import 'package:s_social/features/settings/presentation/change_password/view/change_password_screen.dart';
 import 'package:s_social/features/settings/presentation/settings/view/settings_creen.dart';
 import 'package:s_social/features/user_profile/presentation/view/s_user_profile_screen.dart';

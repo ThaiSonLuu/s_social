@@ -20,7 +20,7 @@
   "hello_user": "Hello user",
   "settings": "Settings",
   "logout": "Logout",
-  "new_post": "What's on your mind?",
+  "new_post_box": "What's on your mind?",
   "an_error_occur": "An error occur",
   "change_password": "Change password",
   "language": "Language",
@@ -33,5 +33,13 @@
   "enter_new_password": "Enter your new password",
   "change_password_success": "Change password success",
   "old_password_invalid": "Old password invalid",
-  "message": "Message"
+  "message": "Message",
+  "anonymous": "Anonymous user",
+  "home": "Home",
+  "post": "Post",
+  "new_post": "New post",
+  "post_by": "Post by",
+  "like": "Like",
+  "comment": "Comment",
+  "share": "Share"
 }
