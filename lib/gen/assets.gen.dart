@@ -9,6 +9,16 @@
 
 import 'package:flutter/widgets.dart';
 
+class $AssetsIconsGen {
+  const $AssetsIconsGen();
+
+  /// File path: assets/icons/app_icon.png
+  AssetGenImage get appIcon => const AssetGenImage('assets/icons/app_icon.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [appIcon];
+}
+
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
@@ -93,6 +103,7 @@ class $AssetsImagesGen {
 class Assets {
   Assets._();
 
+  static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
 }
 
@@ -126,7 +137,7 @@ class AssetGenImage {
     ImageRepeat repeat = ImageRepeat.noRepeat,
     Rect? centerSlice,
     bool matchTextDirection = false,
-    bool gaplessPlayback = true,
+    bool gaplessPlayback = false,
     bool isAntiAlias = false,
     String? package,
     FilterQuality filterQuality = FilterQuality.low,

@@ -87,6 +87,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "sign_up_success": MessageLookupByLibrary.simpleMessage(
             "Sign up success. Please login"),
         "the_password_must_be_longer_than": m1,
+        "type_message":
+            MessageLookupByLibrary.simpleMessage("Type your message"),
         "vietnamese": MessageLookupByLibrary.simpleMessage("Vietnamese")
       };
 }
