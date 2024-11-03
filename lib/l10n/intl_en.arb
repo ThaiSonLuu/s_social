@@ -41,5 +41,7 @@
   "post_by": "Post by",
   "like": "Like",
   "comment": "Comment",
-  "share": "Share"
+  "share": "Share",
+  "edit": "Edit",
+  "save": "Save"
 }

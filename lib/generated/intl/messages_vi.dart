@@ -41,6 +41,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "dark_theme": MessageLookupByLibrary.simpleMessage("Giao diện tối"),
         "do_not_have_account":
             MessageLookupByLibrary.simpleMessage("Chưa có tài khoản?"),
+        "edit": MessageLookupByLibrary.simpleMessage("Chỉnh sửa"),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
         "english": MessageLookupByLibrary.simpleMessage("Tiếng Anh"),
         "enter_new_password":
@@ -78,6 +79,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "post_by": MessageLookupByLibrary.simpleMessage("Đăng bởi"),
         "re_enter_password":
             MessageLookupByLibrary.simpleMessage("Nhập lại mật khẩu"),
+        "save": MessageLookupByLibrary.simpleMessage("Lưu"),
         "settings": MessageLookupByLibrary.simpleMessage("Cài đặt"),
         "share": MessageLookupByLibrary.simpleMessage("Chia sẻ"),
         "sign_up": MessageLookupByLibrary.simpleMessage("Đăng ký"),

@@ -10,7 +10,8 @@ import 'package:s_social/features/messages/presentation/user_list/view/user_list
 import 'package:s_social/features/screen/home/view/home_screen.dart';
 import 'package:s_social/features/settings/presentation/change_password/view/change_password_screen.dart';
 import 'package:s_social/features/settings/presentation/settings/view/settings_creen.dart';
-import 'package:s_social/features/user_profile/presentation/view/s_user_profile_screen.dart';
+import 'package:s_social/features/user_profile/presentation/edit_user_profile/view/edit_user_profile_screen.dart';
+import 'package:s_social/features/user_profile/presentation/user_profile/view/s_user_profile_screen.dart';
 
 abstract class RouterUri {
   static const login = "/login";
@@ -19,6 +20,7 @@ abstract class RouterUri {
   static const notifications = "/notifications";
   static const settings = "/settings";
   static const profile = "/profile";
+  static const editProfile = "/editProfile";
   static const changePassword = "/changePassword";
   static const home = "/home";
   static const chat = "/chat";
@@ -100,6 +102,12 @@ class AppRouter {
         path: "${RouterUri.profile}/:uid",
         pageBuilder: (context, state) => MaterialPage<void>(
           child: SUserProfileScreen(uid: state.pathParameters["uid"]),
+        ),
+      ),
+      GoRoute(
+        path: "${RouterUri.editProfile}/:uid",
+        pageBuilder: (context, state) => MaterialPage<void>(
+          child: EditUserProfileScreen(uid: state.pathParameters["uid"]),
         ),
       ),
     ],
