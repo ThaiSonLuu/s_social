@@ -10,9 +10,9 @@ class STextField extends StatelessWidget {
     this.hintText,
     this.obscureText = false,
     this.validator,
-    this.minLines,
-    this.maxLines,
-    this.enable,
+    this.minLines = 1,
+    this.maxLines = 1,
+    this.enable = true,
   });
 
   final TextEditingController controller;
