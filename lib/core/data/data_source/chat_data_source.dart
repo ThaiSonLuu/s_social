@@ -56,7 +56,7 @@ class ChatDataSource {
     }
   }
 
-  Stream<QuerySnapshot> getMessages(String chatId) {
+  Stream<QuerySnapshot> getMessageStream(String chatId) {
     return _chatCollection
         .doc(chatId)
         .collection(FirestoreCollectionConstants.messages)

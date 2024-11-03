@@ -63,9 +63,8 @@ class _UserListScreenState extends State<_UserListScreen> {
           );
         } else if (state is UserListLoaded) {
           // Skip the current user
-          return ListView.separated(
+          return ListView.builder(
             physics: const AlwaysScrollableScrollPhysics(),
-            shrinkWrap: true,
             itemCount: state.users.length - 1,
             itemBuilder: (context, index) {
               final user = state.users[index];
@@ -73,27 +72,25 @@ class _UserListScreenState extends State<_UserListScreen> {
               if (userEmail == currentUserEmail) {
                 return const SizedBox();
               }
-              return Column (
-                children: [
-                  UserTile(
-                    user: user,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ChatScreen(
-                          recipient: user,
-                        )),
-                      );
-                    },
-                  ),
-                ],
+              return Container(
+                padding: const EdgeInsets.all(8),
+                child: Column (
+                  children: [
+                    UserTile(
+                      user: user,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ChatScreen(
+                            recipient: user,
+                          )),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               );
             },
-            separatorBuilder: (context, index) => Divider(
-              color: Theme.of(context).colorScheme.onSurface.withAlpha(50),
-              height: 1,
-              thickness: 1,
-            ),
           );
         } else if (state is UserListError) {
           return Center(

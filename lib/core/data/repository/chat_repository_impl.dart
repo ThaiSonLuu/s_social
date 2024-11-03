@@ -39,7 +39,11 @@ class ChatRepositoryImpl implements ChatRepository {
   }
 
   @override
-  Stream<QuerySnapshot> getMessages(String chatId) {
-    return _chatDataSource.getMessages(chatId);
+  Stream<QuerySnapshot> getMessageStream(String chatId) {
+    try {
+      return _chatDataSource.getMessageStream(chatId);
+    } catch (_) {
+      throw Exception();
+    }
   }
 }
