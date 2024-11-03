@@ -6,5 +6,5 @@ abstract interface class ChatRepository {
   Future<ChatSessionModel?> createChatSession(ChatSessionModel chatSession);
   Future<ChatSessionModel?> getChatSession(String chatId);
   Future<void> sendMessage(String chatId, MessageModel message);
-  Stream<QuerySnapshot> getMessages(String chatId);
+  Stream<QuerySnapshot> getMessageStream(String chatId);
 }

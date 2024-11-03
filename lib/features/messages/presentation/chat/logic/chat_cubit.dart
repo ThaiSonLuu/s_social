@@ -33,7 +33,6 @@ class ChatCubit extends Cubit<ChatState> {
   }
 
   Future<void> sendMessage(String chatId, String senderEmail, String recipientEmail, String content) async {
-    emit(ChatLoading());
     try {
       const uuid = Uuid();
       final message = MessageModel(
@@ -44,13 +43,12 @@ class ChatCubit extends Cubit<ChatState> {
         createdAt: DateTime.now(),
       );
       await _chatRepository.sendMessage(chatId, message);
-      emit(ChatLoaded());
     } catch (e) {
       emit(ChatError(e.toString()));
     }
   }
 
-  Stream<QuerySnapshot> getMessages(String chatId) {
-    return _chatRepository.getMessages(chatId);
+  Stream<QuerySnapshot> getMessageStream(String chatId) {
+    return _chatRepository.getMessageStream(chatId);
   }
 }

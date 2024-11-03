@@ -1,6 +1,10 @@
 import 'dart:core';
 
+import 'package:chat_bubbles/bubbles/bubble_normal.dart';
+import 'package:chat_bubbles/bubbles/bubble_special_one.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
+import 'package:chat_bubbles/message_bars/message_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,6 +44,7 @@ class _ChatScreenState extends State<_ChatScreen> {
   // Create chat session id by joining the current user id and the recipient id
   final _auth = FirebaseAuth.instance;
   final messageCtrl = TextEditingController();
+  final Stream<QuerySnapshot> _messageStream = FirebaseFirestore.instance.collection('messages').snapshots();
   @override
   void initState() {
     context.read<ChatCubit>().getChatSession(_chatId);
@@ -49,10 +54,17 @@ class _ChatScreenState extends State<_ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final String chatId = _chatId;
+    // Making a back button returning to the previous screen and a menu button that opens sideways
     return Scaffold(
       appBar: AppBar(
         title: Text(widget._recipient?['email']),
         automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Column(
         children: [
@@ -68,9 +80,13 @@ class _ChatScreenState extends State<_ChatScreen> {
   Widget _buildMessageList() {
     return BlocBuilder<ChatCubit, ChatState>(
       builder: (context, state) {
-        if (state is ChatLoaded) {
+        if (state is ChatLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is ChatLoaded) {
           return StreamBuilder(
-            stream: context.read<ChatCubit>().getMessages(_chatId),
+            stream: context.read<ChatCubit>().getMessageStream(_chatId),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Center(
@@ -85,9 +101,19 @@ class _ChatScreenState extends State<_ChatScreen> {
                     .map((e) => MessageModel.fromJson(e.data() as Map<String, dynamic>))
                     .toList();
                 return ListView.builder(
+                  reverse: true,
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
-                    return _buildMessageItem(messages[index]);
+                    // If the previous message is from the same sender, don't show the sender's email
+                    int reversedIndex = messages.length - 1 - index;
+                    bool showSender = true;
+                    if (reversedIndex >= 1 && messages[reversedIndex].senderEmail == messages[reversedIndex - 1].senderEmail) {
+                      showSender = false;
+                    }
+                    return _buildMessageItem(
+                      message: messages[reversedIndex],
+                      showSender: showSender
+                    );
                   },
                 );
               } else {
@@ -110,40 +136,86 @@ class _ChatScreenState extends State<_ChatScreen> {
     final String chatId = _chatId;
     final String senderEmail = _auth.currentUser?.email ?? '';
     final String recipientEmail = widget._recipient?['email'] ?? '';
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: messageCtrl,
-              decoration: InputDecoration(
-                hintText: S.of(context).type_message,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                filled: true,
-                fillColor: Colors.grey[200],
-                contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              ),
-            ),
+    return MessageBar(
+      onSend: (content) {
+        // If the message is empty, don't send
+        if (content.isEmpty) {
+          return;
+        }
+        // Send message to the chat session
+        context.read<ChatCubit>().sendMessage(
+            chatId,
+            senderEmail,
+            recipientEmail,
+            content,
+        );
+      },
+      actions: [
+        InkWell(
+          child: const Icon(
+            Icons.add,
+            color: Colors.black,
+            size: 24,
           ),
-          IconButton(
-            icon: const Icon(Icons.send),
-            onPressed: () {
-              final String content = messageCtrl.text;
-              context.read<ChatCubit>().sendMessage(
-                  chatId,
-                  senderEmail,
-                  recipientEmail,
-                  content,
-              );
-              messageCtrl.clear();
+          onTap: () {
+            // Make ripple effect and do something (Not implemented)
+          },
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 8, right: 8),
+          child: InkWell(
+            child: const Icon(
+              Icons.camera_alt,
+              color: Colors.green,
+              size: 24,
+            ),
+            onTap: () {
+              // Make ripple effect and open camera (Not implemented)
+
             },
           ),
-        ],
-      ),
+        ),
+      ],  // Actions
     );
+    // return Padding(
+    //   padding: const EdgeInsets.all(8.0),
+    //   child: Row(
+    //     children: [
+    //       Expanded(
+    //         child: TextField(
+    //           controller: messageCtrl,
+    //           decoration: InputDecoration(
+    //             hintText: S.of(context).type_message,
+    //             border: OutlineInputBorder(
+    //               borderRadius: BorderRadius.circular(24),
+    //             ),
+    //             filled: true,
+    //             fillColor: Theme.of(context).colorScheme.surfaceContainer,
+    //             contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+    //           ),
+    //         ),
+    //       ),
+    //       IconButton(
+    //         icon: const Icon(Icons.send),
+    //         onPressed: () {
+    //           final String content = messageCtrl.text;
+    //           // If the message is empty, don't send
+    //           if (content.isEmpty) {
+    //             return;
+    //           }
+    //           // Send message to the chat session
+    //           context.read<ChatCubit>().sendMessage(
+    //               chatId,
+    //               senderEmail,
+    //               recipientEmail,
+    //               content,
+    //           );
+    //           messageCtrl.clear();
+    //         },
+    //       ),
+    //     ],
+    //   ),
+    // );
   }
 
   String get _chatId {
@@ -154,39 +226,48 @@ class _ChatScreenState extends State<_ChatScreen> {
     return userIds.join('-');
   }
 
-  Widget _buildMessageItem(MessageModel message) {
+  Widget _buildMessageItem({required MessageModel message, required bool showSender}) {
     Alignment alignment;
     Color color;
     CrossAxisAlignment crossAxisAlignment;
     MainAxisAlignment mainAxisAlignment;
+    bool isSender;
     if (message.senderEmail == _auth.currentUser?.email) {
       alignment = Alignment.centerRight;
       color = Colors.blue[100]!;
       crossAxisAlignment = CrossAxisAlignment.end;
       mainAxisAlignment = MainAxisAlignment.end;
+      isSender = true;
     } else {
       alignment = Alignment.centerLeft;
       color = Colors.grey[200]!;
       crossAxisAlignment = CrossAxisAlignment.start;
       mainAxisAlignment = MainAxisAlignment.start;
+      isSender = false;
     }
-    return Container(
-      padding: const EdgeInsets.all(8),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: crossAxisAlignment,
-          mainAxisAlignment: mainAxisAlignment,
-          children: [
-            Text(message.senderEmail.toString() ?? ''),
-            BubbleSpecialThree(
-              text: message.content ?? '',
-              color: color,
-              tail: true,
-            ),
-          ],
-        )
-      ),
+
+    EdgeInsets edgeInsets = EdgeInsets.zero;
+    bool showTail = false;
+    if (showSender) {
+      edgeInsets = const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0);
+      showTail = true;
+    }
+
+    return Column(
+      crossAxisAlignment: crossAxisAlignment,
+      mainAxisAlignment: mainAxisAlignment,
+      children: [
+        if (showSender) Padding(
+          padding: edgeInsets,
+          child: Text(message.senderEmail.toString() ?? ''),
+        ),
+        BubbleSpecialOne(
+          isSender: isSender,
+          text: message.content ?? '',
+          color: color,
+          tail: showTail,
+        ),
+      ],
     );
   }
 }
