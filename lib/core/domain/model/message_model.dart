@@ -2,47 +2,47 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'message_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false, explicitToJson: true)
 class MessageModel {
   final String? id;
-  final String? senderId;
-  final String? receiverId;
+  final String? senderEmail;
+  final String? recipientEmail;
   final String? content;
-  final String? type;
-  final String? status;
+  // final String? type;
+  // final String? status;
   final DateTime? createdAt;
-  final DateTime? updatedAt;
+  // final DateTime? updatedAt;
 
   const MessageModel({
     this.id,
-    this.senderId,
-    this.receiverId,
+    this.senderEmail,
+    this.recipientEmail,
     this.content,
-    this.type,
-    this.status,
+    // this.type,
+    // this.status,
     this.createdAt,
-    this.updatedAt,
+    // this.updatedAt,
   });
 
   MessageModel copyWith({
     String? id,
-    String? senderId,
-    String? receiverId,
+    String? senderEmail,
+    String? recipientEmail,
     String? content,
-    String? type,
-    String? status,
+    // String? type,
+    // String? status,
     DateTime? createdAt,
-    DateTime? updatedAt,
+    // DateTime? updatedAt,
   }) {
     return MessageModel(
       id: id ?? this.id,
-      senderId: senderId ?? this.senderId,
-      receiverId: receiverId ?? this.receiverId,
+      senderEmail: senderEmail ?? this.senderEmail,
+      recipientEmail: recipientEmail ?? this.recipientEmail,
       content: content ?? this.content,
-      type: type ?? this.type,
-      status: status ?? this.status,
+      // type: type ?? this.type,
+      // status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
+      // updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 

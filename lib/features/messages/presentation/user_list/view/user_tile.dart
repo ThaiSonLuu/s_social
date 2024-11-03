@@ -8,7 +8,7 @@ class UserTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String userName = user['username'] ?? "Unknown";
-    final String userEmail = user['e-mail'] ?? "No email";
+    final String userEmail = user['email'] ?? "No email";
 
     return GestureDetector(
       onTap: onTap,

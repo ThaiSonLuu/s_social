@@ -400,6 +400,16 @@ class S {
     );
   }
 
+  /// `Type your message`
+  String get type_message {
+    return Intl.message(
+      'Type your message',
+      name: 'type_message',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Anonymous user`
   String get anonymous {
     return Intl.message(

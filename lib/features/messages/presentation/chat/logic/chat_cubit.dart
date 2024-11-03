@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:s_social/core/domain/model/message_model.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../../core/domain/model/chat_session_model.dart';
 import '../../../../../core/domain/repository/chat_repository.dart';
@@ -19,23 +21,36 @@ class ChatCubit extends Cubit<ChatState> {
     try {
       ChatSessionModel? chatSession = await _chatRepository.getChatSession(chatId);
       if (chatSession == null) {
-        await _chatRepository.createChatSession(ChatSessionModel(chatId: chatId, messages: []));
+        await _chatRepository.createChatSession(ChatSessionModel(
+            chatId: chatId,
+        ));
         chatSession = await _chatRepository.getChatSession(chatId);
       }
-      emit(ChatLoaded(chatSession!));
+      emit(ChatLoaded());
     } catch (e) {
       emit(ChatError(e.toString()));
     }
   }
 
-  Future<void> sendMessage(String chatId, MessageModel message) async {
+  Future<void> sendMessage(String chatId, String senderEmail, String recipientEmail, String content) async {
     emit(ChatLoading());
     try {
+      const uuid = Uuid();
+      final message = MessageModel(
+        id: uuid.v4(),
+        senderEmail: senderEmail,
+        recipientEmail: recipientEmail,
+        content: content,
+        createdAt: DateTime.now(),
+      );
       await _chatRepository.sendMessage(chatId, message);
-      final chatSession = await _chatRepository.getChatSession(chatId);
-      emit(ChatLoaded(chatSession!));
+      emit(ChatLoaded());
     } catch (e) {
       emit(ChatError(e.toString()));
     }
+  }
+
+  Stream<QuerySnapshot> getMessages(String chatId) {
+    return _chatRepository.getMessages(chatId);
   }
 }

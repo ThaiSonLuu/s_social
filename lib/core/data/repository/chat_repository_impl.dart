@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:s_social/core/data/data_source/chat_data_source.dart';
 import 'package:s_social/core/domain/model/chat_session_model.dart';
 import 'package:s_social/core/domain/model/message_model.dart';
@@ -35,5 +36,10 @@ class ChatRepositoryImpl implements ChatRepository {
     } catch (_) {
       throw Exception();
     }
+  }
+
+  @override
+  Stream<QuerySnapshot> getMessages(String chatId) {
+    return _chatDataSource.getMessages(chatId);
   }
 }

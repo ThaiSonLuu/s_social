@@ -3,23 +3,19 @@ import 'package:s_social/core/domain/model/message_model.dart';
 
 part 'chat_session_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false, explicitToJson: true)
 class ChatSessionModel {
   late final String chatId;
-  late final List<MessageModel> messages;
 
   ChatSessionModel({
     required this.chatId,
-    required this.messages,
   });
 
   ChatSessionModel copyWith({
     String? chatId,
-    List<MessageModel>? messages,
   }) {
     return ChatSessionModel(
       chatId: chatId ?? this.chatId,
-      messages: messages ?? this.messages,
     );
   }
 

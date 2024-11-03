@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -29,6 +30,8 @@ class _UserListScreen extends StatefulWidget {
 }
 
 class _UserListScreenState extends State<_UserListScreen> {
+  final _auth = FirebaseAuth.instance;
+  final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
   @override
   void initState() {
     context.read<UserListCubit>().getUserList();
@@ -59,12 +62,17 @@ class _UserListScreenState extends State<_UserListScreen> {
             child: CircularProgressIndicator(),
           );
         } else if (state is UserListLoaded) {
-          return ListView.builder(
+          // Skip the current user
+          return ListView.separated(
             physics: const AlwaysScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: state.users.length,
+            itemCount: state.users.length - 1,
             itemBuilder: (context, index) {
               final user = state.users[index];
+              final String userEmail = user['email'] ?? "No email";
+              if (userEmail == currentUserEmail) {
+                return const SizedBox();
+              }
               return Column (
                 children: [
                   UserTile(
@@ -78,15 +86,14 @@ class _UserListScreenState extends State<_UserListScreen> {
                       );
                     },
                   ),
-                  Divider(
-                    color:
-                    Theme.of(context).colorScheme.onSurface.withAlpha(50),
-                    height: 1,
-                    thickness: 1,
-                  ),
                 ],
               );
             },
+            separatorBuilder: (context, index) => Divider(
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(50),
+              height: 1,
+              thickness: 1,
+            ),
           );
         } else if (state is UserListError) {
           return Center(

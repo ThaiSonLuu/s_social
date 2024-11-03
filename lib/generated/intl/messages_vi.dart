@@ -86,6 +86,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "sign_up_success": MessageLookupByLibrary.simpleMessage(
             "Đăng ký thành công. Vui lòng đăng nhập"),
         "the_password_must_be_longer_than": m1,
+        "type_message":
+            MessageLookupByLibrary.simpleMessage("Nhập tin nhắn của bạn"),
         "vietnamese": MessageLookupByLibrary.simpleMessage("Tiếng Việt")
       };
 }

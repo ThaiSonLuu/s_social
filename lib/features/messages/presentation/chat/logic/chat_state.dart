@@ -11,14 +11,7 @@ final class ChatInitial extends ChatState {}
 
 final class ChatLoading extends ChatState {}
 
-final class ChatLoaded extends ChatState {
-  const ChatLoaded(this.chatSession);
-
-  final ChatSessionModel chatSession;
-
-  @override
-  List<Object?> get props => [chatSession];
-}
+final class ChatLoaded extends ChatState {}
 
 final class ChatError extends ChatState {
   const ChatError(this.error);

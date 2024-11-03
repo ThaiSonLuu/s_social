@@ -15,7 +15,6 @@ class ChatDataSource {
     try {
       final saveChatSession = chatSession.copyWith(
           chatId: chatSession.chatId,
-          messages: chatSession.messages,
       );
       DocumentReference<dynamic> chatDoc = _chatCollection.doc(saveChatSession.chatId);
       chatDoc.set(saveChatSession.toJson());
@@ -25,10 +24,13 @@ class ChatDataSource {
     }
   }
 
-  Future<ChatSessionModel> getChatSession(String chatId) async {
+  Future<ChatSessionModel?> getChatSession(String chatId) async {
     try {
       DocumentReference<dynamic> chatDoc = _chatCollection.doc(chatId);
       final snapShot = await chatDoc.get();
+      if (snapShot.data() == null) {
+        return null;
+      }
       Map<String, dynamic> mapData = snapShot.data();
       final ChatSessionModel foundChat = ChatSessionModel.fromJson(mapData);
       return foundChat;
@@ -39,15 +41,26 @@ class ChatDataSource {
 
   Future<void> sendMessage(String chatId, MessageModel message) async {
     try {
-      DocumentReference<dynamic> chatDoc = _chatCollection.doc(chatId);
-      final snapShot = await chatDoc.get();
-      Map<String, dynamic> mapData = snapShot.data();
-      final ChatSessionModel foundChat = ChatSessionModel.fromJson(mapData);
-      foundChat.messages.add(message);
-      await chatDoc.update(foundChat.toJson());
+      await _chatCollection
+          .doc(chatId)
+          .collection(FirestoreCollectionConstants.messages)
+          .add(message.toJson());
+      // DocumentReference<dynamic> chatDoc = _chatCollection.doc(chatId);
+      // final snapShot = await chatDoc.get();
+      // Map<String, dynamic> mapData = snapShot.data();
+      // final ChatSessionModel foundChat = ChatSessionModel.fromJson(mapData);
+      // foundChat.messages.add(message);
+      // await chatDoc.update(foundChat.toJson());
     } catch (_) {
       rethrow;
     }
   }
 
+  Stream<QuerySnapshot> getMessages(String chatId) {
+    return _chatCollection
+        .doc(chatId)
+        .collection(FirestoreCollectionConstants.messages)
+        .orderBy('createdAt', descending: false)
+        .snapshots();
+  }
 }

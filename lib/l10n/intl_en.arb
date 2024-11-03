@@ -34,6 +34,7 @@
   "change_password_success": "Change password success",
   "old_password_invalid": "Old password invalid",
   "message": "Message",
+  "type_message": "Type your message",
   "anonymous": "Anonymous user",
   "home": "Home",
   "post": "Post",
