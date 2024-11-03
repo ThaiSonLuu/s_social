@@ -31,6 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "an_error_occur":
             MessageLookupByLibrary.simpleMessage("Đã có lỗi xảy ra!"),
         "anonymous": MessageLookupByLibrary.simpleMessage("Người dùng ẩn danh"),
+        "bio": MessageLookupByLibrary.simpleMessage("Tiểu sử"),
         "change_password": MessageLookupByLibrary.simpleMessage("Đổi mật khẩu"),
         "change_password_success":
             MessageLookupByLibrary.simpleMessage("Đổi mật khẩu thành công"),
@@ -82,6 +83,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "save": MessageLookupByLibrary.simpleMessage("Lưu"),
         "settings": MessageLookupByLibrary.simpleMessage("Cài đặt"),
         "share": MessageLookupByLibrary.simpleMessage("Chia sẻ"),
+        "showing_name": MessageLookupByLibrary.simpleMessage("Tên hiển thị"),
         "sign_up": MessageLookupByLibrary.simpleMessage("Đăng ký"),
         "sign_up_success": MessageLookupByLibrary.simpleMessage(
             "Đăng ký thành công. Vui lòng đăng nhập"),

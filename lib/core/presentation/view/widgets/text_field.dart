@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:s_social/gen/assets.gen.dart';
 
 class STextField extends StatelessWidget {
   const STextField({
@@ -11,6 +10,9 @@ class STextField extends StatelessWidget {
     this.hintText,
     this.obscureText = false,
     this.validator,
+    this.minLines,
+    this.maxLines,
+    this.enable,
   });
 
   final TextEditingController controller;
@@ -20,6 +22,9 @@ class STextField extends StatelessWidget {
   final Widget? suffixIcon;
   final bool obscureText;
   final FormFieldValidator<String?>? validator;
+  final int? minLines;
+  final int? maxLines;
+  final bool? enable;
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +40,9 @@ class STextField extends StatelessWidget {
         suffixIcon: suffixIcon,
         errorStyle: const TextStyle(color: Colors.redAccent),
       ),
+      minLines: minLines,
+      maxLines: maxLines,
+      enabled: enable,
       obscureText: obscureText,
       validator: validator,
     );

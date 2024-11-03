@@ -509,6 +509,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Showing name`
+  String get showing_name {
+    return Intl.message(
+      'Showing name',
+      name: 'showing_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bio`
+  String get bio {
+    return Intl.message(
+      'Bio',
+      name: 'bio',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -1,14 +1,18 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:s_social/core/domain/model/user_model.dart';
+import 'package:s_social/core/presentation/view/widgets/text_field.dart';
 import 'package:s_social/core/presentation/view/widgets/text_to_image.dart';
-import 'package:s_social/core/utils/app_router/app_router.dart';
 import 'package:s_social/di/injection_container.dart';
-import 'package:s_social/features/user_profile/presentation/user_profile/logic/s_user_profile_cubit.dart';
+import 'package:s_social/features/user_profile/presentation/edit_user_profile/logic/edit_user_profile_cubit.dart';
 import 'package:s_social/gen/assets.gen.dart';
 import 'package:s_social/generated/l10n.dart';
+import 'package:simple_loading_dialog/simple_loading_dialog.dart';
 
 class EditUserProfileScreen extends StatelessWidget {
   const EditUserProfileScreen({
@@ -23,8 +27,9 @@ class EditUserProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SUserProfileCubit(
+      create: (context) => EditUserProfileCubit(
         userRepository: serviceLocator(),
+        uploadFileRepository: serviceLocator(),
         uid: uid,
       )..getUserInfoByUid(),
       child: const _UserProfileScreen(),
@@ -32,8 +37,20 @@ class EditUserProfileScreen extends StatelessWidget {
   }
 }
 
-class _UserProfileScreen extends StatelessWidget {
+class _UserProfileScreen extends StatefulWidget {
   const _UserProfileScreen();
+
+  @override
+  State<_UserProfileScreen> createState() => _UserProfileScreenState();
+}
+
+class _UserProfileScreenState extends State<_UserProfileScreen> {
+  final ImagePicker _imagePicker = ImagePicker();
+  File? _selectedBackground;
+  File? _selectedAvatar;
+  final TextEditingController _nameCtrl = TextEditingController();
+  final TextEditingController _emailCtrl = TextEditingController();
+  final TextEditingController _bioCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -53,18 +70,23 @@ class _UserProfileScreen extends StatelessWidget {
     final randomInt = Random().nextInt(10);
     final randomBackground = defaultBackgroundImages[randomInt];
 
-    return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: () async {
-          context.read<SUserProfileCubit>().getUserInfoByUid();
-        },
-        child: Padding(
-          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: _buildContent(
-              context: context,
-              randomBackground: randomBackground,
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        body: RefreshIndicator(
+          onRefresh: () async {
+            context.read<EditUserProfileCubit>().getUserInfoByUid();
+          },
+          child: Padding(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: _buildContent(
+                context: context,
+                randomBackground: randomBackground,
+              ),
             ),
           ),
         ),
@@ -76,20 +98,30 @@ class _UserProfileScreen extends StatelessWidget {
     required BuildContext context,
     required AssetGenImage randomBackground,
   }) {
-    return BlocBuilder<SUserProfileCubit, SUserProfileState>(
+    return BlocConsumer<EditUserProfileCubit, EditUserProfileState>(
+      listener: (context, state) {
+        if (state is EditUserProfileUpdated) {
+          context.pop(true);
+        }
+      },
       builder: (context, state) {
+        UserModel? user;
         String? avatarUrl;
         String? backgroundUrl;
         String? username;
         String? email;
         String? bio;
 
-        if (state is SUserProfileLoaded) {
+        if (state is EditUserProfileLoaded) {
+          user = state.user;
           backgroundUrl = state.user.backgroundUrl;
           avatarUrl = state.user.avatarUrl;
           username = state.user.username;
+          _nameCtrl.text = username ?? "";
           email = state.user.email;
+          _emailCtrl.text = email ?? "";
           bio = state.user.bio;
+          _bioCtrl.text = bio ?? "";
         }
 
         return Column(
@@ -100,7 +132,7 @@ class _UserProfileScreen extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 30.0),
                   child: _buildBackgroundImage(
                     context: context,
-                    isLoading: state is SUserProfileLoading,
+                    isLoading: state is EditUserProfileLoading,
                     randomBackground: randomBackground,
                     backgroundUrl: backgroundUrl,
                   ),
@@ -110,7 +142,7 @@ class _UserProfileScreen extends StatelessWidget {
                   bottom: 0.0,
                   child: _buildAvatarImage(
                     context: context,
-                    isLoading: state is SUserProfileLoading,
+                    isLoading: state is EditUserProfileLoading,
                     avatarUrl: avatarUrl,
                     username: username,
                   ),
@@ -123,7 +155,7 @@ class _UserProfileScreen extends StatelessWidget {
                 Positioned(
                   top: 12.0,
                   right: 12.0,
-                  child: _buildEditButton(context),
+                  child: _buildEditButton(context, user),
                 ),
               ],
             ),
@@ -134,7 +166,6 @@ class _UserProfileScreen extends StatelessWidget {
               bio: bio,
             ),
             const SizedBox(height: 12.0),
-            _buildFollowingView(context: context),
           ],
         );
       },
@@ -159,55 +190,91 @@ class _UserProfileScreen extends StatelessWidget {
                     height: double.maxFinite,
                     color: Theme.of(context).colorScheme.surfaceContainer,
                   )
-                : SizedBox(
-                    width: double.maxFinite,
-                    height: double.maxFinite,
-                    child: Image.network(
-                      backgroundUrl ?? "",
-                      fit: BoxFit.fill,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        return Container(
-                          width: 110,
-                          height: 110,
-                          color: Theme.of(context).colorScheme.surfaceContainer,
-                          child: child,
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        return SizedBox(
-                          width: 110,
-                          height: 110,
-                          child: Image.asset(
-                            randomBackground.path,
-                            fit: BoxFit.fill,
-                          ),
-                        );
-                      },
-                      frameBuilder:
-                          (context, child, frame, wasSynchronouslyLoaded) {
-                        return child;
-                      },
-                    ),
-                  ),
+                : (_selectedBackground != null
+                    ? SizedBox(
+                        width: double.maxFinite,
+                        height: double.maxFinite,
+                        child: Image.file(
+                          _selectedBackground!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return SizedBox(
+                              width: 110,
+                              height: 110,
+                              child: Image.asset(
+                                randomBackground.path,
+                                fit: BoxFit.fill,
+                              ),
+                            );
+                          },
+                          frameBuilder:
+                              (context, child, frame, wasSynchronouslyLoaded) {
+                            return child;
+                          },
+                        ),
+                      )
+                    : SizedBox(
+                        width: double.maxFinite,
+                        height: double.maxFinite,
+                        child: Image.network(
+                          backgroundUrl ?? "",
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            return Container(
+                              width: 110,
+                              height: 110,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .surfaceContainer,
+                              child: child,
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return SizedBox(
+                              width: 110,
+                              height: 110,
+                              child: Image.asset(
+                                randomBackground.path,
+                                fit: BoxFit.fill,
+                              ),
+                            );
+                          },
+                          frameBuilder:
+                              (context, child, frame, wasSynchronouslyLoaded) {
+                            return child;
+                          },
+                        ),
+                      )),
             Align(
               alignment: Alignment.center,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
-                  color: Theme.of(context)
-                      .colorScheme
-                      .surfaceContainer
-                      .withOpacity(0.6),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.edit),
-                      const SizedBox(width: 8.0),
-                      Text(S.of(context).edit),
-                    ],
+              child: InkWell(
+                onTap: () async {
+                  final XFile? pickedFile =
+                      await _imagePicker.pickImage(source: ImageSource.gallery);
+                  if (pickedFile != null) {
+                    setState(() {
+                      _selectedBackground = File(pickedFile.path);
+                    });
+                  }
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .surfaceContainer
+                        .withOpacity(0.6),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.edit),
+                        const SizedBox(width: 8.0),
+                        Text(S.of(context).edit),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -246,47 +313,81 @@ class _UserProfileScreen extends StatelessWidget {
                     height: 110,
                     color: Theme.of(context).colorScheme.surfaceContainer,
                   )
-                : Image.network(
-                    avatarUrl ?? "",
-                    width: 110,
-                    height: 110,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      return Container(
+                : (_selectedAvatar != null
+                    ? Image.file(
+                        _selectedAvatar!,
+                        fit: BoxFit.cover,
                         width: 110,
                         height: 110,
-                        color: Theme.of(context).colorScheme.surfaceContainer,
-                        child: child,
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      return SizedBox(
+                        errorBuilder: (context, error, stackTrace) {
+                          return SizedBox(
+                            width: 110,
+                            height: 110,
+                            child: TextToImage(
+                              text: username?[0].toUpperCase() ?? "S",
+                              textSize: 48,
+                            ),
+                          );
+                        },
+                        frameBuilder:
+                            (context, child, frame, wasSynchronouslyLoaded) {
+                          return child;
+                        },
+                      )
+                    : Image.network(
+                        avatarUrl ?? "",
+                        fit: BoxFit.cover,
                         width: 110,
                         height: 110,
-                        child: TextToImage(
-                          text: username?[0].toUpperCase() ?? "S",
-                          textSize: 48,
-                        ),
-                      );
-                    },
-                    frameBuilder:
-                        (context, child, frame, wasSynchronouslyLoaded) {
-                      return child;
-                    },
-                  ),
+                        loadingBuilder: (context, child, loadingProgress) {
+                          return Container(
+                            width: 110,
+                            height: 110,
+                            color:
+                                Theme.of(context).colorScheme.surfaceContainer,
+                            child: child,
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return SizedBox(
+                            width: 110,
+                            height: 110,
+                            child: TextToImage(
+                              text: username?[0].toUpperCase() ?? "S",
+                              textSize: 48,
+                            ),
+                          );
+                        },
+                        frameBuilder:
+                            (context, child, frame, wasSynchronouslyLoaded) {
+                          return child;
+                        },
+                      )),
           ),
           Align(
             alignment: Alignment.center,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.0),
-                color: Theme.of(context)
-                    .colorScheme
-                    .surfaceContainer
-                    .withOpacity(0.6),
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Icon(Icons.edit),
+            child: InkWell(
+              onTap: () async {
+                final XFile? pickedFile =
+                    await _imagePicker.pickImage(source: ImageSource.gallery);
+                if (pickedFile != null) {
+                  setState(() {
+                    _selectedAvatar = File(pickedFile.path);
+                  });
+                }
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .surfaceContainer
+                      .withOpacity(0.6),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Icon(Icons.edit),
+                ),
               ),
             ),
           ),
@@ -315,10 +416,28 @@ class _UserProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildEditButton(BuildContext context) {
+  Widget _buildEditButton(
+    BuildContext context,
+    UserModel? user,
+  ) {
     return InkWell(
-      onTap: () {
-        context.push(RouterUri.editProfile);
+      onTap: () async {
+        if (user != null) {
+          await showSimpleLoadingDialog<String>(
+            context: context,
+            future: () async {
+              await context.read<EditUserProfileCubit>().updateUser(
+                    backgroundImage: _selectedBackground,
+                    avatarImage: _selectedAvatar,
+                    user: user.copyWith(
+                      username: _nameCtrl.text,
+                      bio: _bioCtrl.text,
+                    ),
+                  );
+              return "";
+            },
+          );
+        }
       },
       child: Container(
         clipBehavior: Clip.hardEdge,
@@ -327,9 +446,9 @@ class _UserProfileScreen extends StatelessWidget {
           color:
               Theme.of(context).colorScheme.surfaceContainer.withOpacity(0.6),
         ),
-        child: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text("Save"),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(S.of(context).save),
         ),
       ),
     );
@@ -360,14 +479,11 @@ class _UserProfileScreen extends StatelessWidget {
                     color: Theme.of(context).colorScheme.surfaceContainer,
                   ),
                 )
-              : Text(
-                  username,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge
-                      ?.copyWith(fontWeight: FontWeight.bold),
+              : STextField(
+                  controller: _nameCtrl,
+                  labelText: S.of(context).showing_name,
                 ),
-          const SizedBox(height: 6.0),
+          const SizedBox(height: 24.0),
           email == null
               ? Container(
                   width: 220,
@@ -377,69 +493,20 @@ class _UserProfileScreen extends StatelessWidget {
                     color: Theme.of(context).colorScheme.surfaceContainer,
                   ),
                 )
-              : Text(email,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontWeight: FontWeight.w500)),
+              : STextField(
+                  controller: _emailCtrl,
+                  labelText: S.of(context).email,
+                  enable: false,
+                ),
           if (bio != null) ...[
-            const SizedBox(height: 12.0),
-            Text(bio),
+            const SizedBox(height: 24.0),
+            STextField(
+              controller: _bioCtrl,
+              labelText: S.of(context).bio,
+              minLines: 5,
+              maxLines: 10,
+            ),
           ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFollowingView({
-    required BuildContext context,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainer.withOpacity(0.4),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      margin: const EdgeInsets.all(16.0),
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: Row(
-        children: [
-          _buildFollowingItem(
-            context: context,
-            label: "Follower",
-            content: "1.3K",
-          ),
-          Container(
-            width: 1,
-            height: 50,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-          _buildFollowingItem(
-            context: context,
-            label: "Following",
-            content: "180",
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFollowingItem({
-    required BuildContext context,
-    required String label,
-    required String content,
-  }) {
-    return Expanded(
-      flex: 1,
-      child: Column(
-        children: [
-          Text(
-            label,
-            style: Theme.of(context)
-                .textTheme
-                .bodyLarge
-                ?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          Text(content),
         ],
       ),
     );
