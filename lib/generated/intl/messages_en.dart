@@ -43,6 +43,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "dark_theme": MessageLookupByLibrary.simpleMessage("Dark theme"),
         "do_not_have_account":
             MessageLookupByLibrary.simpleMessage("Don\'t have account?"),
+        "edit": MessageLookupByLibrary.simpleMessage("Edit"),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
         "english": MessageLookupByLibrary.simpleMessage("English"),
         "enter_new_password":
@@ -79,6 +80,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "post_by": MessageLookupByLibrary.simpleMessage("Post by"),
         "re_enter_password":
             MessageLookupByLibrary.simpleMessage("Re-enter password"),
+        "save": MessageLookupByLibrary.simpleMessage("Save"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "share": MessageLookupByLibrary.simpleMessage("Share"),
         "sign_up": MessageLookupByLibrary.simpleMessage("Sign up"),

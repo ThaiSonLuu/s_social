@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:s_social/core/presentation/view/widgets/text_to_image.dart';
+import 'package:s_social/core/utils/app_router/app_router.dart';
 import 'package:s_social/di/injection_container.dart';
-import 'package:s_social/features/user_profile/presentation/logic/s_user_profile_cubit.dart';
+import 'package:s_social/features/user_profile/presentation/user_profile/logic/s_user_profile_cubit.dart';
 import 'package:s_social/gen/assets.gen.dart';
+import 'package:s_social/generated/l10n.dart';
 
 class SUserProfileScreen extends StatelessWidget {
   const SUserProfileScreen({
@@ -25,13 +27,15 @@ class SUserProfileScreen extends StatelessWidget {
         userRepository: serviceLocator(),
         uid: uid,
       )..getUserInfoByUid(),
-      child: const _UserProfileScreen(),
+      child: _UserProfileScreen(uid),
     );
   }
 }
 
 class _UserProfileScreen extends StatelessWidget {
-  const _UserProfileScreen();
+  const _UserProfileScreen(this.uid);
+
+  final String? uid;
 
   @override
   Widget build(BuildContext context) {
@@ -117,6 +121,11 @@ class _UserProfileScreen extends StatelessWidget {
                   top: 12.0,
                   left: 12.0,
                   child: _buildBackIcon(context),
+                ),
+                Positioned(
+                  top: 12.0,
+                  right: 12.0,
+                  child: _buildEditButton(context),
                 ),
               ],
             ),
@@ -246,6 +255,26 @@ class _UserProfileScreen extends StatelessWidget {
         child: const Padding(
           padding: EdgeInsets.all(8.0),
           child: Icon(Icons.arrow_back_ios_new_rounded),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEditButton(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        context.push("${RouterUri.editProfile}/$uid");
+      },
+      child: Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+          color:
+              Theme.of(context).colorScheme.surfaceContainer.withOpacity(0.6),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(S.of(context).edit),
         ),
       ),
     );
