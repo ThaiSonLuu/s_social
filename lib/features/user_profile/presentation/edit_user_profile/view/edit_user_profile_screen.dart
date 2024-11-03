@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:s_social/core/domain/model/user_model.dart';
 import 'package:s_social/core/presentation/view/widgets/text_field.dart';
 import 'package:s_social/core/presentation/view/widgets/text_to_image.dart';
+import 'package:s_social/core/utils/snack_bar.dart';
 import 'package:s_social/di/injection_container.dart';
 import 'package:s_social/features/user_profile/presentation/edit_user_profile/logic/edit_user_profile_cubit.dart';
 import 'package:s_social/gen/assets.gen.dart';
@@ -51,6 +52,8 @@ class _UserProfileScreenState extends State<_UserProfileScreen> {
   final TextEditingController _nameCtrl = TextEditingController();
   final TextEditingController _emailCtrl = TextEditingController();
   final TextEditingController _bioCtrl = TextEditingController();
+
+  UserModel? user;
 
   @override
   Widget build(BuildContext context) {
@@ -103,9 +106,12 @@ class _UserProfileScreenState extends State<_UserProfileScreen> {
         if (state is EditUserProfileUpdated) {
           context.pop(true);
         }
+
+        if (state is EditUserProfileError) {
+          context.showSnackBarFail(text: state.error);
+        }
       },
       builder: (context, state) {
-        UserModel? user;
         String? avatarUrl;
         String? backgroundUrl;
         String? username;

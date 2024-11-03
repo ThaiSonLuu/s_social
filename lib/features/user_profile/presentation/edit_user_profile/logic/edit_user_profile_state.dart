@@ -32,10 +32,13 @@ final class EditUserProfileUpdated extends EditUserProfileState {
 }
 
 final class EditUserProfileError extends EditUserProfileState {
-  const EditUserProfileError(this.error);
+  EditUserProfileError(
+    this.error,
+  );
 
   final String error;
+  final int timeMillis = DateTime.now().millisecondsSinceEpoch;
 
   @override
-  List<Object> get props => [error];
+  List<Object> get props => [error, timeMillis];
 }
