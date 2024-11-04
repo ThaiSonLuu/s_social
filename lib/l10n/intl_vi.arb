@@ -44,5 +44,7 @@
   "comment": "Bình luận",
   "share": "Chia sẻ",
   "edit": "Chỉnh sửa",
-  "save": "Lưu"
+  "save": "Lưu",
+  "showing_name": "Tên hiển thị",
+  "bio": "Tiểu sử"
 }

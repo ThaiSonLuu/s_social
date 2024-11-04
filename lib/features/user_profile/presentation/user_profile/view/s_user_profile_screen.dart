@@ -262,8 +262,12 @@ class _UserProfileScreen extends StatelessWidget {
 
   Widget _buildEditButton(BuildContext context) {
     return InkWell(
-      onTap: () {
-        context.push("${RouterUri.editProfile}/$uid");
+      onTap: () async {
+        final shouldReload =
+            await context.push<bool>("${RouterUri.editProfile}/$uid");
+        if (shouldReload == true && context.mounted) {
+          context.read<SUserProfileCubit>().getUserInfoByUid();
+        }
       },
       child: Container(
         clipBehavior: Clip.hardEdge,

@@ -44,5 +44,7 @@
   "comment": "Comment",
   "share": "Share",
   "edit": "Edit",
-  "save": "Save"
+  "save": "Save",
+  "showing_name": "Showing name",
+  "bio": "Bio"
 }

@@ -32,6 +32,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "an_error_occur":
             MessageLookupByLibrary.simpleMessage("An error occur"),
         "anonymous": MessageLookupByLibrary.simpleMessage("Anonymous user"),
+        "bio": MessageLookupByLibrary.simpleMessage("Bio"),
         "change_password":
             MessageLookupByLibrary.simpleMessage("Change password"),
         "change_password_success":
@@ -83,6 +84,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "share": MessageLookupByLibrary.simpleMessage("Share"),
+        "showing_name": MessageLookupByLibrary.simpleMessage("Showing name"),
         "sign_up": MessageLookupByLibrary.simpleMessage("Sign up"),
         "sign_up_success": MessageLookupByLibrary.simpleMessage(
             "Sign up success. Please login"),
