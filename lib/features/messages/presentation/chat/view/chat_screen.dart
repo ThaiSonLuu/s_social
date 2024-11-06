@@ -137,6 +137,7 @@ class _ChatScreenState extends State<_ChatScreen> {
     final String senderEmail = _auth.currentUser?.email ?? '';
     final String recipientEmail = widget._recipient?['email'] ?? '';
     return MessageBar(
+      messageBarHintText: S.of(context).type_message,
       onSend: (content) {
         // If the message is empty, don't send
         if (content.isEmpty) {
@@ -177,45 +178,6 @@ class _ChatScreenState extends State<_ChatScreen> {
         ),
       ],  // Actions
     );
-    // return Padding(
-    //   padding: const EdgeInsets.all(8.0),
-    //   child: Row(
-    //     children: [
-    //       Expanded(
-    //         child: TextField(
-    //           controller: messageCtrl,
-    //           decoration: InputDecoration(
-    //             hintText: S.of(context).type_message,
-    //             border: OutlineInputBorder(
-    //               borderRadius: BorderRadius.circular(24),
-    //             ),
-    //             filled: true,
-    //             fillColor: Theme.of(context).colorScheme.surfaceContainer,
-    //             contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-    //           ),
-    //         ),
-    //       ),
-    //       IconButton(
-    //         icon: const Icon(Icons.send),
-    //         onPressed: () {
-    //           final String content = messageCtrl.text;
-    //           // If the message is empty, don't send
-    //           if (content.isEmpty) {
-    //             return;
-    //           }
-    //           // Send message to the chat session
-    //           context.read<ChatCubit>().sendMessage(
-    //               chatId,
-    //               senderEmail,
-    //               recipientEmail,
-    //               content,
-    //           );
-    //           messageCtrl.clear();
-    //         },
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 
   String get _chatId {
@@ -253,21 +215,58 @@ class _ChatScreenState extends State<_ChatScreen> {
       showTail = true;
     }
 
-    return Column(
-      crossAxisAlignment: crossAxisAlignment,
-      mainAxisAlignment: mainAxisAlignment,
-      children: [
-        if (showSender) Padding(
-          padding: edgeInsets,
-          child: Text(message.senderEmail.toString() ?? ''),
-        ),
-        BubbleSpecialOne(
-          isSender: isSender,
-          text: message.content ?? '',
-          color: color,
-          tail: showTail,
-        ),
-      ],
+    return GestureDetector(
+      onHorizontalDragEnd: (details) {
+        // Reply to message
+        if (details.primaryVelocity! < 0) {
+          // Swiped left, make message do a swipe left animation
+
+        }
+      },
+      onLongPress: () {
+        // Show a menu to do things to message
+        // Right now straight up delete the message
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(S.of(context).delete_message),
+              content: Text(S.of(context).delete_message_confirmation),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(S.of(context).cancel),
+                ),
+                TextButton(
+                  onPressed: () {
+                    context.read<ChatCubit>().deleteMessage(message.messageId, _chatId);
+                    Navigator.pop(context);
+                  },
+                  child: Text(S.of(context).delete),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      child: Column(
+        crossAxisAlignment: crossAxisAlignment,
+        mainAxisAlignment: mainAxisAlignment,
+        children: [
+          if (showSender) Padding(
+            padding: edgeInsets,
+            child: Text(message.senderEmail.toString() ?? ''),
+          ),
+          BubbleSpecialOne(
+            isSender: isSender,
+            text: message.content ?? '',
+            color: color,
+            tail: showTail,
+          ),
+        ],
+      ),
     );
   }
 }

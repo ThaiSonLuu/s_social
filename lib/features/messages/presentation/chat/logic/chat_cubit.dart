@@ -36,7 +36,7 @@ class ChatCubit extends Cubit<ChatState> {
     try {
       const uuid = Uuid();
       final message = MessageModel(
-        id: uuid.v4(),
+        messageId: uuid.v4(),
         senderEmail: senderEmail,
         recipientEmail: recipientEmail,
         content: content,
@@ -50,5 +50,13 @@ class ChatCubit extends Cubit<ChatState> {
 
   Stream<QuerySnapshot> getMessageStream(String chatId) {
     return _chatRepository.getMessageStream(chatId);
+  }
+
+  Future<void> deleteMessage(String? messageId, String chatId) async {
+    try {
+      await _chatRepository.deleteMessage(messageId, chatId);
+    } catch (e) {
+      emit(ChatError(e.toString()));
+    }
   }
 }

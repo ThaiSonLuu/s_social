@@ -46,4 +46,13 @@ class ChatRepositoryImpl implements ChatRepository {
       throw Exception();
     }
   }
+
+  @override
+  Future<void> deleteMessage(String? messageId, String chatId) {
+    try {
+      return _chatDataSource.deleteMessage(messageId, chatId);
+    } catch (_) {
+      throw Exception();
+    }
+  }
 }

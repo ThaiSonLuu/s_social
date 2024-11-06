@@ -31,6 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "an_error_occur":
             MessageLookupByLibrary.simpleMessage("Đã có lỗi xảy ra!"),
         "anonymous": MessageLookupByLibrary.simpleMessage("Người dùng ẩn danh"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Hủy"),
         "bio": MessageLookupByLibrary.simpleMessage("Tiểu sử"),
         "change_password": MessageLookupByLibrary.simpleMessage("Đổi mật khẩu"),
         "change_password_success":
@@ -40,6 +41,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Xác nhận mật khẩu"),
         "create_now": MessageLookupByLibrary.simpleMessage("Tạo tài khoản"),
         "dark_theme": MessageLookupByLibrary.simpleMessage("Giao diện tối"),
+        "delete": MessageLookupByLibrary.simpleMessage("Xóa"),
+        "delete_message": MessageLookupByLibrary.simpleMessage("Xóa tin nhắn"),
+        "delete_message_confirmation": MessageLookupByLibrary.simpleMessage(
+            "Bạn có chắc chắn muốn xóa tin nhắn này không?"),
         "do_not_have_account":
             MessageLookupByLibrary.simpleMessage("Chưa có tài khoản?"),
         "edit": MessageLookupByLibrary.simpleMessage("Chỉnh sửa"),

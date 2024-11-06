@@ -63,4 +63,16 @@ class ChatDataSource {
         .orderBy('createdAt', descending: false)
         .snapshots();
   }
+
+  Future<void> deleteMessage(String? messageId, String chatId) async {
+    try {
+      await _chatCollection
+          .doc(chatId)
+          .collection(FirestoreCollectionConstants.messages)
+          .doc(messageId)
+          .delete();
+    } catch (_) {
+      rethrow;
+    }
+  }
 }

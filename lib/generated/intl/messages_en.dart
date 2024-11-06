@@ -32,6 +32,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "an_error_occur":
             MessageLookupByLibrary.simpleMessage("An error occur"),
         "anonymous": MessageLookupByLibrary.simpleMessage("Anonymous user"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "bio": MessageLookupByLibrary.simpleMessage("Bio"),
         "change_password":
             MessageLookupByLibrary.simpleMessage("Change password"),
@@ -42,6 +43,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Confirm password"),
         "create_now": MessageLookupByLibrary.simpleMessage("Create now"),
         "dark_theme": MessageLookupByLibrary.simpleMessage("Dark theme"),
+        "delete": MessageLookupByLibrary.simpleMessage("Delete"),
+        "delete_message":
+            MessageLookupByLibrary.simpleMessage("Delete message"),
+        "delete_message_confirmation": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you want to delete this message?"),
         "do_not_have_account":
             MessageLookupByLibrary.simpleMessage("Don\'t have account?"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit"),

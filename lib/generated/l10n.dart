@@ -510,6 +510,46 @@ class S {
     );
   }
 
+  /// `Delete message`
+  String get delete_message {
+    return Intl.message(
+      'Delete message',
+      name: 'delete_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to delete this message?`
+  String get delete_message_confirmation {
+    return Intl.message(
+      'Are you sure you want to delete this message?',
+      name: 'delete_message_confirmation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get delete {
+    return Intl.message(
+      'Delete',
+      name: 'delete',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Showing name`
   String get showing_name {
     return Intl.message(
