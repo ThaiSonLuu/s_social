@@ -44,5 +44,9 @@
   "comment": "Comment",
   "share": "Share",
   "edit": "Edit",
-  "save": "Save"
+  "save": "Save",
+  "delete_message": "Delete message",
+  "delete_message_confirmation": "Are you sure you want to delete this message?",
+  "cancel": "Cancel",
+  "delete": "Delete"
 }
