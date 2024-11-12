@@ -69,7 +69,9 @@ class _ChatScreenState extends State<_ChatScreen> {
       body: Column(
         children: [
           Expanded(
-            child: _buildMessageList(),
+            child: _buildContent(
+              context: context,
+            ),
           ),
           _buildMessageInput(),
         ],
@@ -77,7 +79,7 @@ class _ChatScreenState extends State<_ChatScreen> {
     );
   }
 
-  Widget _buildMessageList() {
+  Widget _buildContent({required BuildContext context}) {
     return BlocBuilder<ChatCubit, ChatState>(
       builder: (context, state) {
         if (state is ChatLoading) {
@@ -85,41 +87,8 @@ class _ChatScreenState extends State<_ChatScreen> {
             child: CircularProgressIndicator(),
           );
         } else if (state is ChatLoaded) {
-          return StreamBuilder(
-            stream: context.read<ChatCubit>().getMessageStream(_chatId),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Center(
-                  child: Text(snapshot.error.toString()),
-                );
-              } else if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (snapshot.hasData) {
-                final messages = snapshot.data!.docs
-                    .map((e) => MessageModel.fromJson(e.data() as Map<String, dynamic>))
-                    .toList();
-                return ListView.builder(
-                  reverse: true,
-                  itemCount: messages.length,
-                  itemBuilder: (context, index) {
-                    // If the previous message is from the same sender, don't show the sender's email
-                    int reversedIndex = messages.length - 1 - index;
-                    bool showSender = true;
-                    if (reversedIndex >= 1 && messages[reversedIndex].senderEmail == messages[reversedIndex - 1].senderEmail) {
-                      showSender = false;
-                    }
-                    return _buildMessageItem(
-                      message: messages[reversedIndex],
-                      showSender: showSender
-                    );
-                  },
-                );
-              } else {
-                return const SizedBox();
-              }
-            },
+          return _buildMessageList(
+            context: context,
           );
         } else if (state is ChatError) {
           return Center(
@@ -128,6 +97,56 @@ class _ChatScreenState extends State<_ChatScreen> {
         } else {
           return const SizedBox();
         }
+      },
+    );
+  }
+
+  Widget _buildMessageList({required BuildContext context}) {
+    return StreamBuilder(
+      stream: context.read<ChatCubit>().getMessageStream(_chatId),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            child: Text(snapshot.error.toString()),
+          );
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (snapshot.hasData) {
+          final messages = snapshot.data!.docs
+            .map((e) => MessageModel.fromJson(e.data() as Map<String, dynamic>))
+            .toList();
+          return _buildMessageListView(
+            messages: messages,
+            context: context
+          );
+        } else {
+          return const SizedBox();
+        }
+      },
+    );
+  }
+  
+  Widget _buildMessageListView({
+    required List<MessageModel> messages,
+    required BuildContext context
+  }) {
+    return ListView.builder(
+      reverse: true,
+      itemCount: messages.length,
+      itemBuilder: (context, index) {
+        // If the previous message is from the same sender, don't show the sender's email
+        int reversedIndex = messages.length - 1 - index;
+        bool showSender = true;
+        if (reversedIndex >= 1 && messages[reversedIndex].senderEmail == messages[reversedIndex - 1].senderEmail) {
+          showSender = false;
+        }
+        return _buildMessageItem(
+            message: messages[reversedIndex],
+            showSender: showSender,
+            msgContext: context
+        );
       },
     );
   }
@@ -188,7 +207,11 @@ class _ChatScreenState extends State<_ChatScreen> {
     return userIds.join('-');
   }
 
-  Widget _buildMessageItem({required MessageModel message, required bool showSender}) {
+  Widget _buildMessageItem({
+    required MessageModel message,
+    required bool showSender,
+    required BuildContext msgContext
+  }) {
     Alignment alignment;
     Color color;
     CrossAxisAlignment crossAxisAlignment;
@@ -241,7 +264,7 @@ class _ChatScreenState extends State<_ChatScreen> {
                 ),
                 TextButton(
                   onPressed: () {
-                    context.read<ChatCubit>().deleteMessage(message.messageId, _chatId);
+                    msgContext.read<ChatCubit>().deleteMessage(message.messageId, _chatId);
                     Navigator.pop(context);
                   },
                   child: Text(S.of(context).delete),
