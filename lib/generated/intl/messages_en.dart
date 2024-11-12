@@ -32,8 +32,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "an_error_occur":
             MessageLookupByLibrary.simpleMessage("An error occur"),
         "anonymous": MessageLookupByLibrary.simpleMessage("Anonymous user"),
-        "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "bio": MessageLookupByLibrary.simpleMessage("Bio"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "change_password":
             MessageLookupByLibrary.simpleMessage("Change password"),
         "change_password_success":

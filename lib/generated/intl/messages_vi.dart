@@ -31,8 +31,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "an_error_occur":
             MessageLookupByLibrary.simpleMessage("Đã có lỗi xảy ra!"),
         "anonymous": MessageLookupByLibrary.simpleMessage("Người dùng ẩn danh"),
-        "cancel": MessageLookupByLibrary.simpleMessage("Hủy"),
         "bio": MessageLookupByLibrary.simpleMessage("Tiểu sử"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Hủy"),
         "change_password": MessageLookupByLibrary.simpleMessage("Đổi mật khẩu"),
         "change_password_success":
             MessageLookupByLibrary.simpleMessage("Đổi mật khẩu thành công"),
