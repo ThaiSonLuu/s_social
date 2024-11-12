@@ -7,7 +7,7 @@ part of 'message_model.dart';
 // **************************************************************************
 
 MessageModel _$MessageModelFromJson(Map<String, dynamic> json) => MessageModel(
-      id: json['id'] as String?,
+      messageId: json['messageId'] as String?,
       senderEmail: json['senderEmail'] as String?,
       recipientEmail: json['recipientEmail'] as String?,
       content: json['content'] as String?,
@@ -25,7 +25,7 @@ Map<String, dynamic> _$MessageModelToJson(MessageModel instance) {
     }
   }
 
-  writeNotNull('id', instance.id);
+  writeNotNull('messageId', instance.messageId);
   writeNotNull('senderEmail', instance.senderEmail);
   writeNotNull('recipientEmail', instance.recipientEmail);
   writeNotNull('content', instance.content);

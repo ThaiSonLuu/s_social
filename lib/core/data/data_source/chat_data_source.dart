@@ -44,13 +44,8 @@ class ChatDataSource {
       await _chatCollection
           .doc(chatId)
           .collection(FirestoreCollectionConstants.messages)
-          .add(message.toJson());
-      // DocumentReference<dynamic> chatDoc = _chatCollection.doc(chatId);
-      // final snapShot = await chatDoc.get();
-      // Map<String, dynamic> mapData = snapShot.data();
-      // final ChatSessionModel foundChat = ChatSessionModel.fromJson(mapData);
-      // foundChat.messages.add(message);
-      // await chatDoc.update(foundChat.toJson());
+          .doc(message.messageId)
+          .set(message.toJson());
     } catch (_) {
       rethrow;
     }
@@ -62,5 +57,17 @@ class ChatDataSource {
         .collection(FirestoreCollectionConstants.messages)
         .orderBy('createdAt', descending: false)
         .snapshots();
+  }
+
+  Future<void> deleteMessage(String? messageId, String chatId) async {
+    try {
+      await _chatCollection
+          .doc(chatId)
+          .collection(FirestoreCollectionConstants.messages)
+          .doc(messageId)
+          .delete();
+    } catch (_) {
+      rethrow;
+    }
   }
 }

@@ -45,6 +45,10 @@
   "share": "Chia sẻ",
   "edit": "Chỉnh sửa",
   "save": "Lưu",
+  "delete_message": "Xóa tin nhắn",
+  "delete_message_confirmation": "Bạn có chắc chắn muốn xóa tin nhắn này không?",
+  "cancel": "Hủy",
+  "delete": "Xóa",
   "showing_name": "Tên hiển thị",
   "bio": "Tiểu sử"
 }
