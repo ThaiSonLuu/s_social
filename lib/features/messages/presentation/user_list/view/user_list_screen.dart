@@ -49,12 +49,12 @@ class _UserListScreenState extends State<_UserListScreen> {
         onRefresh: () async {
           context.read<UserListCubit>().getUserList();
         },
-        child: _buildUserList(),
+        child: _buildUserList(context),
       ),
     );
   }
   
-  Widget _buildUserList() {
+  Widget _buildUserList(BuildContext buildContext) {
     return BlocBuilder<UserListCubit, UserListState>(
       builder: (context, state) {
         if (state is UserListLoading) {
@@ -78,9 +78,9 @@ class _UserListScreenState extends State<_UserListScreen> {
                   children: [
                     UserTile(
                       user: user,
-                      onTap: () {
-                        Navigator.push(
-                          context,
+                      onTap: () async {
+                        final newChat = Navigator.push(
+                          buildContext,
                           MaterialPageRoute(builder: (context) => ChatScreen(
                             recipient: user,
                           )),

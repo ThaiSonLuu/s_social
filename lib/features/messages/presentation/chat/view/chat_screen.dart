@@ -1,5 +1,7 @@
 import 'dart:core';
+import 'dart:io';
 
+import 'package:another_flushbar/flushbar_route.dart';
 import 'package:chat_bubbles/bubbles/bubble_normal.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_one.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
@@ -8,11 +10,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:s_social/core/domain/model/message_model.dart';
 import 'package:s_social/di/injection_container.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../generated/l10n.dart';
+import '../../../../screen/home/view/widget/full_screen_img.dart';
 import '../logic/chat_cubit.dart';
 
 class ChatScreen extends StatelessWidget {
@@ -25,7 +29,7 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ChatCubit(chatRepository: serviceLocator()),
+      create: (context) => ChatCubit(chatRepository: serviceLocator(), uploadFileRepository: serviceLocator()),
       child: _ChatScreen(recipient: recipient),
     );
   }
@@ -45,6 +49,9 @@ class _ChatScreenState extends State<_ChatScreen> {
   final _auth = FirebaseAuth.instance;
   final messageCtrl = TextEditingController();
   final Stream<QuerySnapshot> _messageStream = FirebaseFirestore.instance.collection('messages').snapshots();
+  final List<File> _selectedImages = [];
+  final ImagePicker _imagePicker = ImagePicker();
+
   @override
   void initState() {
     context.read<ChatCubit>().getChatSession(_chatId);
@@ -52,7 +59,7 @@ class _ChatScreenState extends State<_ChatScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext buildContext) {
     final String chatId = _chatId;
     // Making a back button returning to the previous screen and a menu button that opens sideways
     return Scaffold(
@@ -62,7 +69,7 @@ class _ChatScreenState extends State<_ChatScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(buildContext);
           },
         ),
       ),
@@ -70,7 +77,7 @@ class _ChatScreenState extends State<_ChatScreen> {
         children: [
           Expanded(
             child: _buildContent(
-              context: context,
+              buildContext: buildContext,
             ),
           ),
           _buildMessageInput(),
@@ -79,7 +86,7 @@ class _ChatScreenState extends State<_ChatScreen> {
     );
   }
 
-  Widget _buildContent({required BuildContext context}) {
+  Widget _buildContent({required BuildContext buildContext}) {
     return BlocBuilder<ChatCubit, ChatState>(
       builder: (context, state) {
         if (state is ChatLoading) {
@@ -88,7 +95,7 @@ class _ChatScreenState extends State<_ChatScreen> {
           );
         } else if (state is ChatLoaded) {
           return _buildMessageList(
-            context: context,
+            buildContext: buildContext,
           );
         } else if (state is ChatError) {
           return Center(
@@ -101,9 +108,9 @@ class _ChatScreenState extends State<_ChatScreen> {
     );
   }
 
-  Widget _buildMessageList({required BuildContext context}) {
+  Widget _buildMessageList({required BuildContext buildContext}) {
     return StreamBuilder(
-      stream: context.read<ChatCubit>().getMessageStream(_chatId),
+      stream: buildContext.read<ChatCubit>().getMessageStream(_chatId),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(
@@ -119,7 +126,7 @@ class _ChatScreenState extends State<_ChatScreen> {
             .toList();
           return _buildMessageListView(
             messages: messages,
-            context: context
+            buildContext: buildContext
           );
         } else {
           return const SizedBox();
@@ -130,7 +137,7 @@ class _ChatScreenState extends State<_ChatScreen> {
   
   Widget _buildMessageListView({
     required List<MessageModel> messages,
-    required BuildContext context
+    required BuildContext buildContext
   }) {
     return ListView.builder(
       reverse: true,
@@ -145,7 +152,7 @@ class _ChatScreenState extends State<_ChatScreen> {
         return _buildMessageItem(
             message: messages[reversedIndex],
             showSender: showSender,
-            msgContext: context
+            msgContext: buildContext
         );
       },
     );
@@ -155,20 +162,28 @@ class _ChatScreenState extends State<_ChatScreen> {
     final String chatId = _chatId;
     final String senderEmail = _auth.currentUser?.email ?? '';
     final String recipientEmail = widget._recipient?['email'] ?? '';
+    List<String?>? urls = [];
     return MessageBar(
       messageBarHintText: S.of(context).type_message,
-      onSend: (content) {
+      onSend: (content) async {
         // If the message is empty, don't send
-        if (content.isEmpty) {
+        if (content.isEmpty && _selectedImages.isEmpty) {
           return;
         }
+        // Send images if exist to database
+        if (_selectedImages.isNotEmpty) {
+          urls = await context.read<ChatCubit>().uploadImagesToFirebase(_selectedImages);
+        }
         // Send message to the chat session
-        context.read<ChatCubit>().sendMessage(
-            chatId,
-            senderEmail,
-            recipientEmail,
-            content,
+        await context.read<ChatCubit>().sendMessage(
+            chatId: chatId,
+            senderEmail: senderEmail,
+            recipientEmail: recipientEmail,
+            content: content,
+            images: urls,
         );
+        _selectedImages.clear();
+        urls?.clear();
       },
       actions: [
         InkWell(
@@ -184,19 +199,65 @@ class _ChatScreenState extends State<_ChatScreen> {
         Padding(
           padding: const EdgeInsets.only(left: 8, right: 8),
           child: InkWell(
+            onTap: _pickImageFromGallery,
             child: const Icon(
-              Icons.camera_alt,
+              Icons.photo_library_outlined,
               color: Colors.green,
               size: 24,
             ),
-            onTap: () {
-              // Make ripple effect and open camera (Not implemented)
-
-            },
           ),
         ),
       ],  // Actions
     );
+  }
+
+  Future<void> _pickImageFromGallery() async {
+    final String chatId = _chatId;
+    final String senderEmail = _auth.currentUser?.email ?? '';
+    final String recipientEmail = widget._recipient?['email'] ?? '';
+    List<String?>? urls = [];
+
+    _selectedImages.clear();
+    final List<XFile?> pickedFile = await _imagePicker.pickMultiImage(
+      imageQuality: 50,
+      maxHeight: 1920,
+      maxWidth: 1080,
+    );
+    setState(() {
+      if (pickedFile.isNotEmpty) {
+        for (XFile? file in pickedFile) {
+          if (file != null) {
+            _selectedImages.add(File(file.path));
+          }
+        }
+
+        // Showing a elevated button to send the images
+        // This button will be shown only if there are images selected
+        // ElevatedButton(
+        //   onPressed: () {
+        //     // Send images to the chat session
+        //     if (_selectedImages.isNotEmpty) {
+        //       urls = context.read<ChatCubit>().uploadImagesToFirebase(_selectedImages) as List<String?>?;
+        //     }
+        //     context.read<ChatCubit>().sendMessage(
+        //         chatId: chatId,
+        //         senderEmail: senderEmail,
+        //         recipientEmail: recipientEmail,
+        //         content: "",
+        //         images: urls
+        //     );
+        //     _selectedImages.clear();
+        //   },
+        //   child: Text(S.of(context).send),
+        // );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(S.of(context).no_image_selected),
+          ),
+        );
+      }
+    });
   }
 
   String get _chatId {
@@ -264,6 +325,12 @@ class _ChatScreenState extends State<_ChatScreen> {
                 ),
                 TextButton(
                   onPressed: () {
+                    // Checking if its the sender of the message
+                    if (message.senderEmail != _auth.currentUser?.email) {
+                      // Return a snack bar saying you can't delete other people's messages
+                      Navigator.pop(context);
+                      return;
+                    }
                     msgContext.read<ChatCubit>().deleteMessage(message.messageId, _chatId);
                     Navigator.pop(context);
                   },
@@ -288,8 +355,70 @@ class _ChatScreenState extends State<_ChatScreen> {
             color: color,
             tail: showTail,
           ),
+          _buildImageGrid(
+              images: message.images,
+              edgeInsets:  edgeInsets,
+              crossAxisAlignment: crossAxisAlignment,
+              mainAxisAlignment: mainAxisAlignment
+          ),
         ],
       ),
+    );
+  }
+
+  // Make images show up in a grid
+  // Images will start from the left and go to the right
+  // Images will be shown in a grid of 3 with small size
+  Widget _buildImageGrid({
+  required List<String?>? images,
+  required EdgeInsets edgeInsets,
+  required CrossAxisAlignment crossAxisAlignment,
+  required MainAxisAlignment mainAxisAlignment,
+  }) {
+    if (images == null || images.isEmpty) {
+      return const SizedBox();
+    }
+    return Row(
+      crossAxisAlignment: crossAxisAlignment,
+      mainAxisAlignment: mainAxisAlignment,
+      children: [
+        Container(
+          margin: edgeInsets,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width / 3,
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 4.0,
+                mainAxisSpacing: 4.0,
+              ),
+              itemCount: images.length,
+              itemBuilder: (context, index) {
+                int reverseIndex = images.length - 1 - index;
+                return GestureDetector(
+                  onTap: () {
+                    // Show image in full screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            FullScreenImg(imageUrl: images[reverseIndex]!),
+                      ),
+                    );
+                  },
+                  child: Image.network(images[reverseIndex]!, fit: BoxFit.cover),
+                );
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

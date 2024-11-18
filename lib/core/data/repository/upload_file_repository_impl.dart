@@ -17,4 +17,13 @@ class UploadFileRepositoryImpl implements UploadFileRepository {
       return null;
     }
   }
+
+  @override
+  Future<List<String?>?> postMultipleFiles(List<File> imageFiles) async {
+    try {
+      return await _dataSource.postMultipleFiles(imageFiles);
+    } catch (_) {
+      return null;
+    }
+  }
 }

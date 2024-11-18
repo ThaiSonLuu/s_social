@@ -34,10 +34,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "anonymous": MessageLookupByLibrary.simpleMessage("Anonymous user"),
         "bio": MessageLookupByLibrary.simpleMessage("Bio"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "cannot_delete_other_user_message":
+            MessageLookupByLibrary.simpleMessage(
+                "Cannot delete other user message"),
         "change_password":
             MessageLookupByLibrary.simpleMessage("Change password"),
         "change_password_success":
             MessageLookupByLibrary.simpleMessage("Change password success"),
+        "close": MessageLookupByLibrary.simpleMessage("Close"),
         "comment": MessageLookupByLibrary.simpleMessage("Comment"),
         "confirm_password":
             MessageLookupByLibrary.simpleMessage("Confirm password"),
@@ -76,6 +80,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "new_post": MessageLookupByLibrary.simpleMessage("New post"),
         "new_post_box":
             MessageLookupByLibrary.simpleMessage("What\'s on your mind?"),
+        "no_image_selected":
+            MessageLookupByLibrary.simpleMessage("No image selected"),
         "old_password": MessageLookupByLibrary.simpleMessage("Old password"),
         "old_password_invalid":
             MessageLookupByLibrary.simpleMessage("Old password invalid"),
@@ -88,6 +94,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "re_enter_password":
             MessageLookupByLibrary.simpleMessage("Re-enter password"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
+        "send": MessageLookupByLibrary.simpleMessage("Send"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "share": MessageLookupByLibrary.simpleMessage("Share"),
         "showing_name": MessageLookupByLibrary.simpleMessage("Showing name"),

@@ -33,9 +33,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "anonymous": MessageLookupByLibrary.simpleMessage("Người dùng ẩn danh"),
         "bio": MessageLookupByLibrary.simpleMessage("Tiểu sử"),
         "cancel": MessageLookupByLibrary.simpleMessage("Hủy"),
+        "cannot_delete_other_user_message":
+            MessageLookupByLibrary.simpleMessage(
+                "Không thể xóa tin nhắn của người dùng khác"),
         "change_password": MessageLookupByLibrary.simpleMessage("Đổi mật khẩu"),
         "change_password_success":
             MessageLookupByLibrary.simpleMessage("Đổi mật khẩu thành công"),
+        "close": MessageLookupByLibrary.simpleMessage("Đóng"),
         "comment": MessageLookupByLibrary.simpleMessage("Bình luận"),
         "confirm_password":
             MessageLookupByLibrary.simpleMessage("Xác nhận mật khẩu"),
@@ -74,6 +78,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "new_post": MessageLookupByLibrary.simpleMessage("Bài viết mới"),
         "new_post_box":
             MessageLookupByLibrary.simpleMessage("Bạn đang nghĩ gì?"),
+        "no_image_selected": MessageLookupByLibrary.simpleMessage(
+            "Không có hình ảnh nào được chọn"),
         "old_password": MessageLookupByLibrary.simpleMessage("Mật khẩu cũ"),
         "old_password_invalid":
             MessageLookupByLibrary.simpleMessage("Mật khẩu cũ không hợp lệ"),
@@ -86,6 +92,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "re_enter_password":
             MessageLookupByLibrary.simpleMessage("Nhập lại mật khẩu"),
         "save": MessageLookupByLibrary.simpleMessage("Lưu"),
+        "send": MessageLookupByLibrary.simpleMessage("Gửi"),
         "settings": MessageLookupByLibrary.simpleMessage("Cài đặt"),
         "share": MessageLookupByLibrary.simpleMessage("Chia sẻ"),
         "showing_name": MessageLookupByLibrary.simpleMessage("Tên hiển thị"),
