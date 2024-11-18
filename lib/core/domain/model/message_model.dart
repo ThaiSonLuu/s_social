@@ -8,6 +8,7 @@ class MessageModel {
   final String? senderEmail;
   final String? recipientEmail;
   final String? content;
+  final List<String?>? images;
   // final String? type;
   // final String? status;
   final DateTime? createdAt;
@@ -18,6 +19,7 @@ class MessageModel {
     this.senderEmail,
     this.recipientEmail,
     this.content,
+    this.images,
     // this.type,
     // this.status,
     this.createdAt,
@@ -29,6 +31,7 @@ class MessageModel {
     String? senderEmail,
     String? recipientEmail,
     String? content,
+    List<String?>? images,
     // String? type,
     // String? status,
     DateTime? createdAt,
@@ -39,6 +42,7 @@ class MessageModel {
       senderEmail: senderEmail ?? this.senderEmail,
       recipientEmail: recipientEmail ?? this.recipientEmail,
       content: content ?? this.content,
+      images: images ?? this.images,
       // type: type ?? this.type,
       // status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,

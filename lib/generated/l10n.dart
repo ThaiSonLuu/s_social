@@ -569,6 +569,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Cannot delete other user message`
+  String get cannot_delete_other_user_message {
+    return Intl.message(
+      'Cannot delete other user message',
+      name: 'cannot_delete_other_user_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get close {
+    return Intl.message(
+      'Close',
+      name: 'close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No image selected`
+  String get no_image_selected {
+    return Intl.message(
+      'No image selected',
+      name: 'no_image_selected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send`
+  String get send {
+    return Intl.message(
+      'Send',
+      name: 'send',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

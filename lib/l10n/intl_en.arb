@@ -50,5 +50,9 @@
   "cancel": "Cancel",
   "delete": "Delete",
   "showing_name": "Showing name",
-  "bio": "Bio"
+  "bio": "Bio",
+  "cannot_delete_other_user_message": "Cannot delete other user message",
+  "close": "Close",
+  "no_image_selected": "No image selected",
+  "send": "Send"
 }

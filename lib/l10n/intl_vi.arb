@@ -50,5 +50,9 @@
   "cancel": "Hủy",
   "delete": "Xóa",
   "showing_name": "Tên hiển thị",
-  "bio": "Tiểu sử"
+  "bio": "Tiểu sử",
+  "cannot_delete_other_user_message": "Không thể xóa tin nhắn của người dùng khác",
+  "close": "Đóng",
+  "no_image_selected": "Không có hình ảnh nào được chọn",
+  "send": "Gửi"
 }
