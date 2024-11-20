@@ -60,5 +60,7 @@
   "no_title": "Không có tiêu đề",
   "no_message": "Không có thông điệp",
   "mark_all_read": "Đánh dấu tất cả là đã đọc",
-  "time_ago": "{time} trước"
+  "time_ago": "{time} trước",
+  "update_information": "Cập nhật thông tin",
+  "update_avatar_and_other_information": "Vui lòng cập nhật ảnh đại diện và các thông tin khác."
 }

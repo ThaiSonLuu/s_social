@@ -113,6 +113,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "time_ago": m2,
         "type_message":
             MessageLookupByLibrary.simpleMessage("Nhập tin nhắn của bạn"),
+        "update_avatar_and_other_information":
+            MessageLookupByLibrary.simpleMessage(
+                "Vui lòng cập nhật ảnh đại diện và các thông tin khác."),
+        "update_information":
+            MessageLookupByLibrary.simpleMessage("Cập nhật thông tin"),
         "vietnamese": MessageLookupByLibrary.simpleMessage("Tiếng Việt")
       };
 }

@@ -669,6 +669,26 @@ class S {
       args: [time],
     );
   }
+
+  /// `Update user's information`
+  String get update_information {
+    return Intl.message(
+      'Update user\'s information',
+      name: 'update_information',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please update your profile image and others information.`
+  String get update_avatar_and_other_information {
+    return Intl.message(
+      'Please update your profile image and others information.',
+      name: 'update_avatar_and_other_information',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

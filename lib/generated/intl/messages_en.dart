@@ -114,6 +114,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "time_ago": m2,
         "type_message":
             MessageLookupByLibrary.simpleMessage("Type your message"),
+        "update_avatar_and_other_information":
+            MessageLookupByLibrary.simpleMessage(
+                "Please update your profile image and others information."),
+        "update_information":
+            MessageLookupByLibrary.simpleMessage("Update user\'s information"),
         "vietnamese": MessageLookupByLibrary.simpleMessage("Vietnamese")
       };
 }
