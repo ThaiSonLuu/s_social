@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:s_social/core/domain/model/notification_model.dart';
+import 'package:s_social/core/presentation/logic/cubit/app_language/app_language_cubit.dart';
 import 'package:s_social/core/utils/snack_bar.dart';
 import 'package:s_social/di/injection_container.dart';
 import 'package:s_social/features/notifications/presentation/logic/notifications_cubit.dart';
@@ -21,8 +22,20 @@ class NotificationsScreen extends StatelessWidget {
   }
 }
 
-class _NotificationsScreen extends StatelessWidget {
+class _NotificationsScreen extends StatefulWidget {
   const _NotificationsScreen();
+
+  @override
+  State<_NotificationsScreen> createState() => _NotificationsScreenState();
+}
+
+class _NotificationsScreenState extends State<_NotificationsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    timeago.setLocaleMessages("vi", timeago.ViMessages());
+    timeago.setLocaleMessages("en", timeago.EnMessages());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +83,7 @@ class _NotificationsScreen extends StatelessWidget {
       itemCount: notifications.length,
       itemBuilder: (context, index) {
         final notification = notifications[index];
-        final timeAgo = getFormattedTime(notification.time);
+        final timeAgo = getFormattedTime(context, notification.time);
 
         return InkWell(
           onTap: () async {
@@ -121,7 +134,7 @@ class _NotificationsScreen extends StatelessWidget {
   }
 
   // Function to get the time difference as a human-readable string
-  String getFormattedTime(DateTime? time) {
+  String getFormattedTime(BuildContext context, DateTime? time) {
     if (time == null) {
       return "";
     }
@@ -130,7 +143,10 @@ class _NotificationsScreen extends StatelessWidget {
       final now = DateTime.now();
       final difference = now.difference(time);
 
-      String result = timeago.format(time);
+      String result = timeago.format(
+        time,
+        locale: context.read<AppLanguageCubit>().state.languageCode,
+      );
 
       result = result[0].toUpperCase() + result.substring(1);
 
