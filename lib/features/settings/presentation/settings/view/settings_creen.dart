@@ -95,6 +95,7 @@ class _SettingsScreenState extends State<_SettingsScreen> {
                         )
                       : Image.network(
                           avatarUrl,
+                          fit: BoxFit.cover,
                           width: 60,
                           height: 60,
                           loadingBuilder: (context, child, loadingProgress) {

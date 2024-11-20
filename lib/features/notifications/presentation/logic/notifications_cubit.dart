@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:s_social/core/domain/model/notification_model.dart';
 import 'package:s_social/core/domain/repository/notification_repository.dart';
+import 'package:s_social/generated/l10n.dart';
 
 part 'notifications_state.dart';
 
@@ -20,7 +21,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       final notifications = await _repository.getNotifications();
       emit(NotificationsLoaded(notifications));
     } catch (e) {
-      emit(NotificationsError("No notifications available"));
+      emit(NotificationsError(S.current.no_notifications));
     }
   }
 
@@ -28,17 +29,13 @@ class NotificationsCubit extends Cubit<NotificationsState> {
     try {
       await _repository.markAllNotificationsAsRead();
       await _loadNotifications();
-    } catch (e) {
-      emit(NotificationsError(e.toString()));
-    }
+    } catch (_) {}
   }
 
   Future<void> markNotificationAsRead(String id) async {
     try {
       await _repository.markNotificationAsRead(id);
       await _loadNotifications();
-    } catch (e) {
-      emit(NotificationsError(e.toString()));
-    }
+    } catch (_) {}
   }
 }

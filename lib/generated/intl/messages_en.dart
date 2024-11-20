@@ -25,6 +25,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(minLength) =>
       "The password must be longer than ${minLength} characters";
 
+  static String m2(time) => "${time} ago";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "already_have_an_account":
@@ -75,6 +77,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "login_now": MessageLookupByLibrary.simpleMessage("Login now"),
         "logout": MessageLookupByLibrary.simpleMessage("Logout"),
+        "mark_all_read":
+            MessageLookupByLibrary.simpleMessage("Mark all as Read"),
         "message": MessageLookupByLibrary.simpleMessage("Message"),
         "new_password": MessageLookupByLibrary.simpleMessage("New password"),
         "new_post": MessageLookupByLibrary.simpleMessage("New post"),
@@ -82,6 +86,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("What\'s on your mind?"),
         "no_image_selected":
             MessageLookupByLibrary.simpleMessage("No image selected"),
+        "no_message": MessageLookupByLibrary.simpleMessage("No Message"),
+        "no_notifications":
+            MessageLookupByLibrary.simpleMessage("No notifications available."),
+        "no_title": MessageLookupByLibrary.simpleMessage("No Title"),
+        "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
         "old_password": MessageLookupByLibrary.simpleMessage("Old password"),
         "old_password_invalid":
             MessageLookupByLibrary.simpleMessage("Old password invalid"),
@@ -102,6 +111,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sign_up_success": MessageLookupByLibrary.simpleMessage(
             "Sign up success. Please login"),
         "the_password_must_be_longer_than": m1,
+        "time_ago": m2,
         "type_message":
             MessageLookupByLibrary.simpleMessage("Type your message"),
         "vietnamese": MessageLookupByLibrary.simpleMessage("Vietnamese")

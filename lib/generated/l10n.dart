@@ -609,6 +609,66 @@ class S {
       args: [],
     );
   }
+
+  /// `Notifications`
+  String get notifications {
+    return Intl.message(
+      'Notifications',
+      name: 'notifications',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No notifications available.`
+  String get no_notifications {
+    return Intl.message(
+      'No notifications available.',
+      name: 'no_notifications',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Title`
+  String get no_title {
+    return Intl.message(
+      'No Title',
+      name: 'no_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Message`
+  String get no_message {
+    return Intl.message(
+      'No Message',
+      name: 'no_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mark all as Read`
+  String get mark_all_read {
+    return Intl.message(
+      'Mark all as Read',
+      name: 'mark_all_read',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{time} ago`
+  String time_ago(Object time) {
+    return Intl.message(
+      '$time ago',
+      name: 'time_ago',
+      desc: '',
+      args: [time],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

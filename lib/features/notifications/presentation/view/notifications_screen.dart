@@ -28,7 +28,7 @@ class _NotificationsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notifications'),
+        title: Text(S.of(context).notifications),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -46,7 +46,7 @@ class _NotificationsScreen extends StatelessWidget {
         child: BlocBuilder<NotificationsCubit, NotificationsState>(
           builder: (context, state) {
             if (state is NotificationsLoaded) {
-              return _buildNotificationsList(state.notifications);
+              return _buildNotificationsList(context, state.notifications);
             }
 
             if (state is NotificationsError) {
@@ -60,9 +60,10 @@ class _NotificationsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildNotificationsList(List<NotificationModel> notifications) {
+  Widget _buildNotificationsList(
+      BuildContext context, List<NotificationModel> notifications) {
     if (notifications.isEmpty) {
-      return const Center(child: Text('No notifications.'));
+      return Center(child: Text(S.of(context).no_notifications));
     }
 
     return ListView.builder(
@@ -102,13 +103,13 @@ class _NotificationsScreen extends StatelessWidget {
                     )
                   : const CircleAvatar(child: Icon(Icons.notifications)),
               title: Text(
-                notification.title ?? 'No Title',
+                notification.title ?? S.of(context).no_title,
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(notification.message ?? 'No Message'),
+                  Text(notification.message ?? S.of(context).no_message),
                   Text(timeAgo, style: const TextStyle(fontSize: 12)),
                 ],
               ),
