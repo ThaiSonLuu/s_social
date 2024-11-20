@@ -54,5 +54,13 @@
   "cannot_delete_other_user_message": "Không thể xóa tin nhắn của người dùng khác",
   "close": "Đóng",
   "no_image_selected": "Không có hình ảnh nào được chọn",
-  "send": "Gửi"
+  "send": "Gửi",
+  "notifications": "Thông báo",
+  "no_notifications": "Không có thông báo nào.",
+  "no_title": "Không có tiêu đề",
+  "no_message": "Không có thông điệp",
+  "mark_all_read": "Đánh dấu tất cả là đã đọc",
+  "time_ago": "{time} trước",
+  "update_information": "Cập nhật thông tin",
+  "update_avatar_and_other_information": "Vui lòng cập nhật ảnh đại diện và các thông tin khác."
 }

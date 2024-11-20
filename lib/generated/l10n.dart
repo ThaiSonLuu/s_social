@@ -609,6 +609,86 @@ class S {
       args: [],
     );
   }
+
+  /// `Notifications`
+  String get notifications {
+    return Intl.message(
+      'Notifications',
+      name: 'notifications',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No notifications available.`
+  String get no_notifications {
+    return Intl.message(
+      'No notifications available.',
+      name: 'no_notifications',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Title`
+  String get no_title {
+    return Intl.message(
+      'No Title',
+      name: 'no_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Message`
+  String get no_message {
+    return Intl.message(
+      'No Message',
+      name: 'no_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mark all as Read`
+  String get mark_all_read {
+    return Intl.message(
+      'Mark all as Read',
+      name: 'mark_all_read',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{time} ago`
+  String time_ago(Object time) {
+    return Intl.message(
+      '$time ago',
+      name: 'time_ago',
+      desc: '',
+      args: [time],
+    );
+  }
+
+  /// `Update user's information`
+  String get update_information {
+    return Intl.message(
+      'Update user\'s information',
+      name: 'update_information',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please update your profile image and others information.`
+  String get update_avatar_and_other_information {
+    return Intl.message(
+      'Please update your profile image and others information.',
+      name: 'update_avatar_and_other_information',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

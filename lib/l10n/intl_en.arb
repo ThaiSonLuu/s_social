@@ -54,5 +54,13 @@
   "cannot_delete_other_user_message": "Cannot delete other user message",
   "close": "Close",
   "no_image_selected": "No image selected",
-  "send": "Send"
+  "send": "Send",
+  "notifications": "Notifications",
+  "no_notifications": "No notifications available.",
+  "no_title": "No Title",
+  "no_message": "No Message",
+  "mark_all_read": "Mark all as Read",
+  "time_ago": "{time} ago",
+  "update_information": "Update user's information",
+  "update_avatar_and_other_information": "Please update your profile image and others information."
 }

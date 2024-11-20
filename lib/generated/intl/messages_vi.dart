@@ -24,6 +24,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m1(minLength) => "Mật khẩu phải dài hơn ${minLength} ký tự";
 
+  static String m2(time) => "${time} trước";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "already_have_an_account":
@@ -73,6 +75,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "login": MessageLookupByLibrary.simpleMessage("Đăng nhập"),
         "login_now": MessageLookupByLibrary.simpleMessage("Đăng nhập"),
         "logout": MessageLookupByLibrary.simpleMessage("Đăng xuất"),
+        "mark_all_read":
+            MessageLookupByLibrary.simpleMessage("Đánh dấu tất cả là đã đọc"),
         "message": MessageLookupByLibrary.simpleMessage("Tin nhắn"),
         "new_password": MessageLookupByLibrary.simpleMessage("Mật khẩu mới"),
         "new_post": MessageLookupByLibrary.simpleMessage("Bài viết mới"),
@@ -80,6 +84,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Bạn đang nghĩ gì?"),
         "no_image_selected": MessageLookupByLibrary.simpleMessage(
             "Không có hình ảnh nào được chọn"),
+        "no_message":
+            MessageLookupByLibrary.simpleMessage("Không có thông điệp"),
+        "no_notifications":
+            MessageLookupByLibrary.simpleMessage("Không có thông báo nào."),
+        "no_title": MessageLookupByLibrary.simpleMessage("Không có tiêu đề"),
+        "notifications": MessageLookupByLibrary.simpleMessage("Thông báo"),
         "old_password": MessageLookupByLibrary.simpleMessage("Mật khẩu cũ"),
         "old_password_invalid":
             MessageLookupByLibrary.simpleMessage("Mật khẩu cũ không hợp lệ"),
@@ -100,8 +110,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "sign_up_success": MessageLookupByLibrary.simpleMessage(
             "Đăng ký thành công. Vui lòng đăng nhập"),
         "the_password_must_be_longer_than": m1,
+        "time_ago": m2,
         "type_message":
             MessageLookupByLibrary.simpleMessage("Nhập tin nhắn của bạn"),
+        "update_avatar_and_other_information":
+            MessageLookupByLibrary.simpleMessage(
+                "Vui lòng cập nhật ảnh đại diện và các thông tin khác."),
+        "update_information":
+            MessageLookupByLibrary.simpleMessage("Cập nhật thông tin"),
         "vietnamese": MessageLookupByLibrary.simpleMessage("Tiếng Việt")
       };
 }
