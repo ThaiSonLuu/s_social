@@ -35,7 +35,10 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _authCubit = AuthCubit()..checkLogin();
+    _authCubit = AuthCubit(
+      userRepository: serviceLocator(),
+    )..checkLogin();
+
     _appRouter = AppRouter(_authCubit);
     _profileUserCubit = ProfileUserCubit(
       userRepository: serviceLocator(),
