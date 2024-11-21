@@ -6,7 +6,7 @@ part 'notification_model.g.dart';
 class NotificationModel {
   final String? id;
   final String? uid;
-  final String? fcmToken;
+  final List<String>? fcmToken;
   final String? imageUrl;
   final String? title;
   final String? message;
@@ -34,7 +34,7 @@ class NotificationModel {
   NotificationModel copyWith({
     String? id,
     String? uid,
-    String? fcmToken,
+    List<String>? fcmToken,
     String? imageUrl,
     String? title,
     String? message,

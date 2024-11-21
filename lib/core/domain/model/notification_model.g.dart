@@ -10,7 +10,9 @@ NotificationModel _$NotificationModelFromJson(Map<String, dynamic> json) =>
     NotificationModel(
       id: json['id'] as String?,
       uid: json['uid'] as String?,
-      fcmToken: json['fcmToken'] as String?,
+      fcmToken: (json['fcmToken'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       imageUrl: json['imageUrl'] as String?,
       title: json['title'] as String?,
       message: json['message'] as String?,

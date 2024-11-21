@@ -40,7 +40,7 @@ class ProfileUserCubit extends Cubit<ProfileUserState> {
         await _notificationRepository.createNotification(
           NotificationModel(
             uid: user.id,
-            fcmToken: user.fcmTokens?.first ?? "",
+            fcmToken: user.fcmTokens,
             imageUrl: null,
             title: S.current.update_information,
             message: S.current.update_avatar_and_other_information,

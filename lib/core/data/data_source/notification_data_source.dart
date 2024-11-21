@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:s_social/common/app_constants/firestore_collection_constants.dart';
+import 'package:s_social/core/data/data_source/push_notification_data_source.dart';
 import 'package:s_social/core/domain/model/notification_model.dart';
+import 'package:s_social/generated/l10n.dart';
 
 class NotificationDataSource {
   CollectionReference get _notificationCollection {
@@ -11,11 +13,19 @@ class NotificationDataSource {
   }
 
   Future<NotificationModel> createNotification(
-      NotificationModel notification) async {
+    NotificationModel notification,
+  ) async {
     try {
       DocumentReference<dynamic> doc = _notificationCollection.doc();
       final saveNotification = notification.copyWith(id: doc.id);
       await doc.set(saveNotification.toJson());
+      saveNotification.fcmToken?.forEach((fcmToken) {
+        sendFCMMessage(
+          fcmToken: fcmToken,
+          title: saveNotification.title ?? S.current.no_title,
+          body: saveNotification.message ?? S.current.no_message,
+        );
+      });
       return saveNotification;
     } catch (_) {
       rethrow;
@@ -30,6 +40,13 @@ class NotificationDataSource {
         DocumentReference<dynamic> doc = _notificationCollection.doc();
         final saveNotification = notification.copyWith(id: doc.id);
         await doc.set(saveNotification.toJson());
+        saveNotification.fcmToken?.forEach((fcmToken) {
+          sendFCMMessage(
+            fcmToken: fcmToken,
+            title: saveNotification.title ?? S.current.no_title,
+            body: saveNotification.message ?? S.current.no_message,
+          );
+        });
       });
     } catch (_) {
       rethrow;
