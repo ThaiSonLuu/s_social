@@ -44,5 +44,7 @@
   "comment": "Bình luận",
   "share": "Chia sẻ",
   "edit": "Chỉnh sửa",
-  "save": "Lưu"
+  "save": "Lưu",
+  "no_comment_yet": "Chưa có bình luận nào",
+  "write_comment": "Viết bình luận ..."
 }

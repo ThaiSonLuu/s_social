@@ -69,6 +69,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "new_post": MessageLookupByLibrary.simpleMessage("New post"),
         "new_post_box":
             MessageLookupByLibrary.simpleMessage("What\'s on your mind?"),
+        "no_comment_yet":
+            MessageLookupByLibrary.simpleMessage("No comment yet"),
         "old_password": MessageLookupByLibrary.simpleMessage("Old password"),
         "old_password_invalid":
             MessageLookupByLibrary.simpleMessage("Old password invalid"),
@@ -89,6 +91,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "the_password_must_be_longer_than": m1,
         "type_message":
             MessageLookupByLibrary.simpleMessage("Type your message"),
-        "vietnamese": MessageLookupByLibrary.simpleMessage("Vietnamese")
+        "vietnamese": MessageLookupByLibrary.simpleMessage("Vietnamese"),
+        "write_comment":
+            MessageLookupByLibrary.simpleMessage("Write a comment ...")
       };
 }

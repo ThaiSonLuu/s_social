@@ -1,24 +1,41 @@
 import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:s_social/core/domain/model/comment_model.dart';
 import 'package:s_social/core/domain/repository/comment_repository.dart';
+import 'package:s_social/core/domain/repository/upload_file_repository.dart';
+
 import '../../../../core/domain/model/user_model.dart';
-import '../../../../core/domain/repository/upload_file_repository.dart';
 
 class CommentCubit extends Cubit<List<CommentModel>> {
   final CommentRepository commentRepository;
   final UploadFileRepository uploadFileRepository;
   final Map<String, UserModel> userCache = {};
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  CommentCubit(
-      this.commentRepository,
-      this.uploadFileRepository
-      ) : super([]);
+  CommentCubit({
+    required this.commentRepository,
+    required this.uploadFileRepository,
+  }) : super([]);
 
   Future<void> loadComments(String postId) async {
-    final comments = await commentRepository.getComments(postId);
-    emit(comments ?? []);
+    try {
+      final postRef = _firestore.collection('posts').doc(postId);
+      final commentsSnapshot = await postRef.collection('comments').get();
+
+      if (commentsSnapshot.docs.isEmpty) {
+        emit([]);
+      } else {
+        final comments = commentsSnapshot.docs
+            .map((doc) => CommentModel.fromJson(doc.data()))
+            .toList();
+        emit(comments);
+      }
+    } catch (e) {
+      print("Error loading comments: $e");
+      emit([]);
+    }
   }
 
   Future<void> addComment(CommentModel comment) async {

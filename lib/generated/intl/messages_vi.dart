@@ -68,6 +68,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "new_post": MessageLookupByLibrary.simpleMessage("Bài viết mới"),
         "new_post_box":
             MessageLookupByLibrary.simpleMessage("Bạn đang nghĩ gì?"),
+        "no_comment_yet":
+            MessageLookupByLibrary.simpleMessage("Chưa có bình luận nào"),
         "old_password": MessageLookupByLibrary.simpleMessage("Mật khẩu cũ"),
         "old_password_invalid":
             MessageLookupByLibrary.simpleMessage("Mật khẩu cũ không hợp lệ"),
@@ -88,6 +90,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "the_password_must_be_longer_than": m1,
         "type_message":
             MessageLookupByLibrary.simpleMessage("Nhập tin nhắn của bạn"),
-        "vietnamese": MessageLookupByLibrary.simpleMessage("Tiếng Việt")
+        "vietnamese": MessageLookupByLibrary.simpleMessage("Tiếng Việt"),
+        "write_comment":
+            MessageLookupByLibrary.simpleMessage("Viết bình luận ...")
       };
 }

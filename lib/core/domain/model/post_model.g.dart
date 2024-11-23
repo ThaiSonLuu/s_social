@@ -15,9 +15,6 @@ PostModel _$PostModelFromJson(Map<String, dynamic> json) => PostModel(
           ? null
           : DateTime.parse(json['createdAt'] as String),
       like: (json['like'] as num?)?.toInt(),
-      comments: (json['comments'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
       postAnonymous: json['postAnonymous'] as bool?,
     );
 
@@ -28,6 +25,5 @@ Map<String, dynamic> _$PostModelToJson(PostModel instance) => <String, dynamic>{
       'postImage': instance.postImage,
       'createdAt': instance.createdAt?.toIso8601String(),
       'like': instance.like,
-      'comments': instance.comments,
       'postAnonymous': instance.postAnonymous,
     };

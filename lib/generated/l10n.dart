@@ -509,6 +509,26 @@ class S {
       args: [],
     );
   }
+
+  /// `No comment yet`
+  String get no_comment_yet {
+    return Intl.message(
+      'No comment yet',
+      name: 'no_comment_yet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Write a comment ...`
+  String get write_comment {
+    return Intl.message(
+      'Write a comment ...',
+      name: 'write_comment',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

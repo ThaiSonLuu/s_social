@@ -9,7 +9,6 @@ class CommentModel {
   final String? userId;
   final String? commentText;
   final String? commentImg;
-  final List<String>? replyComment;
   final DateTime? createdAt;
 
   CommentModel({
@@ -18,7 +17,6 @@ class CommentModel {
     required this.userId,
     required this.commentText,
     required this.commentImg,
-    required this.replyComment,
     required this.createdAt,
   });
 
@@ -33,17 +31,15 @@ class CommentModel {
     String? userId,
     String? commentText,
     String? commentImg,
-    List<String>? replyComment,
-    DateTime? createAt,
+    DateTime? createdAt,
   }) {
     return CommentModel(
-        id: id ?? this.id,
-        postId: postId ?? this.postId,
-        userId: userId ?? this.userId,
-        commentText: commentText ?? this.commentText,
-        commentImg: commentImg ?? this.commentImg,
-        replyComment: replyComment ?? this.replyComment,
-        createdAt: createdAt ?? this.createdAt,
+      id: id ?? this.id,
+      postId: postId ?? this.postId,
+      userId: userId ?? this.userId,
+      commentText: commentText ?? this.commentText,
+      commentImg: commentImg ?? this.commentImg,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 }

@@ -112,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                       );
                     },
-                    separatorBuilder: (context, index) => const Divider(thickness: 0.2),
+                    separatorBuilder: (context, index) => const SizedBox(height: 0),
                   );
                 },
               ),

@@ -44,5 +44,7 @@
   "comment": "Comment",
   "share": "Share",
   "edit": "Edit",
-  "save": "Save"
+  "save": "Save",
+  "no_comment_yet": "No comment yet",
+  "write_comment": "Write a comment ..."
 }
