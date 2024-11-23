@@ -4,20 +4,22 @@ part 'message_model.g.dart';
 
 @JsonSerializable(includeIfNull: false, explicitToJson: true)
 class MessageModel {
-  final String? id;
+  final String? messageId;
   final String? senderEmail;
   final String? recipientEmail;
   final String? content;
+  final List<String?>? images;
   // final String? type;
   // final String? status;
   final DateTime? createdAt;
   // final DateTime? updatedAt;
 
   const MessageModel({
-    this.id,
+    this.messageId,
     this.senderEmail,
     this.recipientEmail,
     this.content,
+    this.images,
     // this.type,
     // this.status,
     this.createdAt,
@@ -25,20 +27,22 @@ class MessageModel {
   });
 
   MessageModel copyWith({
-    String? id,
+    String? messageId,
     String? senderEmail,
     String? recipientEmail,
     String? content,
+    List<String?>? images,
     // String? type,
     // String? status,
     DateTime? createdAt,
     // DateTime? updatedAt,
   }) {
     return MessageModel(
-      id: id ?? this.id,
+      messageId: messageId ?? this.messageId,
       senderEmail: senderEmail ?? this.senderEmail,
       recipientEmail: recipientEmail ?? this.recipientEmail,
       content: content ?? this.content,
+      images: images ?? this.images,
       // type: type ?? this.type,
       // status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,

@@ -510,6 +510,17 @@ class S {
     );
   }
 
+
+  /// `Delete message`
+  String get delete_message {
+    return Intl.message(
+      'Delete message',
+      name: 'delete_message',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `No comment yet`
   String get no_comment_yet {
     return Intl.message(
@@ -519,6 +530,177 @@ class S {
       args: [],
     );
   }
+
+  /// `Are you sure you want to delete this message?`
+  String get delete_message_confirmation {
+    return Intl.message(
+      'Are you sure you want to delete this message?',
+      name: 'delete_message_confirmation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get delete {
+    return Intl.message(
+      'Delete',
+      name: 'delete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Showing name`
+  String get showing_name {
+    return Intl.message(
+      'Showing name',
+      name: 'showing_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bio`
+  String get bio {
+    return Intl.message(
+      'Bio',
+      name: 'bio',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cannot delete other user message`
+  String get cannot_delete_other_user_message {
+    return Intl.message(
+      'Cannot delete other user message',
+      name: 'cannot_delete_other_user_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get close {
+    return Intl.message(
+      'Close',
+      name: 'close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No image selected`
+  String get no_image_selected {
+    return Intl.message(
+      'No image selected',
+      name: 'no_image_selected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send`
+  String get send {
+    return Intl.message(
+      'Send',
+      name: 'send',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Notifications`
+  String get notifications {
+    return Intl.message(
+      'Notifications',
+      name: 'notifications',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No notifications available.`
+  String get no_notifications {
+    return Intl.message(
+      'No notifications available.',
+      name: 'no_notifications',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Title`
+  String get no_title {
+    return Intl.message(
+      'No Title',
+      name: 'no_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Message`
+  String get no_message {
+    return Intl.message(
+      'No Message',
+      name: 'no_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mark all as Read`
+  String get mark_all_read {
+    return Intl.message(
+      'Mark all as Read',
+      name: 'mark_all_read',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{time} ago`
+  String time_ago(Object time) {
+    return Intl.message(
+      '$time ago',
+      name: 'time_ago',
+      desc: '',
+      args: [time],
+    );
+  }
+
+  /// `Update user's information`
+  String get update_information {
+    return Intl.message(
+      'Update user\'s information',
+      name: 'update_information',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please update your profile image and others information.`
+  String get update_avatar_and_other_information {
+    return Intl.message(
+      'Please update your profile image and others information.',
+      name: 'update_avatar_and_other_information',
+      desc: '',
+      args: [],
+    );
+  }
+}
 
   /// `Write a comment ...`
   String get write_comment {

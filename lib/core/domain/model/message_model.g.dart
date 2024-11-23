@@ -7,10 +7,12 @@ part of 'message_model.dart';
 // **************************************************************************
 
 MessageModel _$MessageModelFromJson(Map<String, dynamic> json) => MessageModel(
-      id: json['id'] as String?,
+      messageId: json['messageId'] as String?,
       senderEmail: json['senderEmail'] as String?,
       recipientEmail: json['recipientEmail'] as String?,
       content: json['content'] as String?,
+      images:
+          (json['images'] as List<dynamic>?)?.map((e) => e as String?).toList(),
       createdAt: json['createdAt'] == null
           ? null
           : DateTime.parse(json['createdAt'] as String),
@@ -25,10 +27,11 @@ Map<String, dynamic> _$MessageModelToJson(MessageModel instance) {
     }
   }
 
-  writeNotNull('id', instance.id);
+  writeNotNull('messageId', instance.messageId);
   writeNotNull('senderEmail', instance.senderEmail);
   writeNotNull('recipientEmail', instance.recipientEmail);
   writeNotNull('content', instance.content);
+  writeNotNull('images', instance.images);
   writeNotNull('createdAt', instance.createdAt?.toIso8601String());
   return val;
 }

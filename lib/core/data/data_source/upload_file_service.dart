@@ -46,4 +46,8 @@ class UpLoadFileDataSource {
 
     throw Exception("An error occur");
   }
+
+  Future<List<String>> postMultipleFiles(List<File> imageFiles) {
+    return Future.wait(imageFiles.map((file) => postFile(file)));
+  }
 }

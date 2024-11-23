@@ -25,6 +25,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(minLength) =>
       "The password must be longer than ${minLength} characters";
 
+  static String m2(time) => "${time} ago";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "already_have_an_account":
@@ -32,15 +34,26 @@ class MessageLookup extends MessageLookupByLibrary {
         "an_error_occur":
             MessageLookupByLibrary.simpleMessage("An error occur"),
         "anonymous": MessageLookupByLibrary.simpleMessage("Anonymous user"),
+        "bio": MessageLookupByLibrary.simpleMessage("Bio"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "cannot_delete_other_user_message":
+            MessageLookupByLibrary.simpleMessage(
+                "Cannot delete other user message"),
         "change_password":
             MessageLookupByLibrary.simpleMessage("Change password"),
         "change_password_success":
             MessageLookupByLibrary.simpleMessage("Change password success"),
+        "close": MessageLookupByLibrary.simpleMessage("Close"),
         "comment": MessageLookupByLibrary.simpleMessage("Comment"),
         "confirm_password":
             MessageLookupByLibrary.simpleMessage("Confirm password"),
         "create_now": MessageLookupByLibrary.simpleMessage("Create now"),
         "dark_theme": MessageLookupByLibrary.simpleMessage("Dark theme"),
+        "delete": MessageLookupByLibrary.simpleMessage("Delete"),
+        "delete_message":
+            MessageLookupByLibrary.simpleMessage("Delete message"),
+        "delete_message_confirmation": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you want to delete this message?"),
         "do_not_have_account":
             MessageLookupByLibrary.simpleMessage("Don\'t have account?"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit"),
@@ -64,11 +77,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "login_now": MessageLookupByLibrary.simpleMessage("Login now"),
         "logout": MessageLookupByLibrary.simpleMessage("Logout"),
+        "mark_all_read":
+            MessageLookupByLibrary.simpleMessage("Mark all as Read"),
         "message": MessageLookupByLibrary.simpleMessage("Message"),
         "new_password": MessageLookupByLibrary.simpleMessage("New password"),
         "new_post": MessageLookupByLibrary.simpleMessage("New post"),
         "new_post_box":
             MessageLookupByLibrary.simpleMessage("What\'s on your mind?"),
+        "no_image_selected":
+            MessageLookupByLibrary.simpleMessage("No image selected"),
+        "no_message": MessageLookupByLibrary.simpleMessage("No Message"),
+        "no_notifications":
+            MessageLookupByLibrary.simpleMessage("No notifications available."),
+        "no_title": MessageLookupByLibrary.simpleMessage("No Title"),
+        "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
         "no_comment_yet":
             MessageLookupByLibrary.simpleMessage("No comment yet"),
         "old_password": MessageLookupByLibrary.simpleMessage("Old password"),
@@ -83,15 +105,23 @@ class MessageLookup extends MessageLookupByLibrary {
         "re_enter_password":
             MessageLookupByLibrary.simpleMessage("Re-enter password"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
+        "send": MessageLookupByLibrary.simpleMessage("Send"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "share": MessageLookupByLibrary.simpleMessage("Share"),
+        "showing_name": MessageLookupByLibrary.simpleMessage("Showing name"),
         "sign_up": MessageLookupByLibrary.simpleMessage("Sign up"),
         "sign_up_success": MessageLookupByLibrary.simpleMessage(
             "Sign up success. Please login"),
         "the_password_must_be_longer_than": m1,
+        "time_ago": m2,
         "type_message":
             MessageLookupByLibrary.simpleMessage("Type your message"),
-        "vietnamese": MessageLookupByLibrary.simpleMessage("Vietnamese"),
+        "update_avatar_and_other_information":
+            MessageLookupByLibrary.simpleMessage(
+                "Please update your profile image and others information."),
+        "update_information":
+            MessageLookupByLibrary.simpleMessage("Update user\'s information"),
+        "vietnamese": MessageLookupByLibrary.simpleMessage("Vietnamese")
         "write_comment":
             MessageLookupByLibrary.simpleMessage("Write a comment ...")
       };
