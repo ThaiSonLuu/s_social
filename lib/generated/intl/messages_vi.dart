@@ -90,6 +90,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Không có thông báo nào."),
         "no_title": MessageLookupByLibrary.simpleMessage("Không có tiêu đề"),
         "notifications": MessageLookupByLibrary.simpleMessage("Thông báo"),
+        "no_comment_yet":
+            MessageLookupByLibrary.simpleMessage("Chưa có bình luận nào"),
         "old_password": MessageLookupByLibrary.simpleMessage("Mật khẩu cũ"),
         "old_password_invalid":
             MessageLookupByLibrary.simpleMessage("Mật khẩu cũ không hợp lệ"),
@@ -119,5 +121,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_information":
             MessageLookupByLibrary.simpleMessage("Cập nhật thông tin"),
         "vietnamese": MessageLookupByLibrary.simpleMessage("Tiếng Việt")
+        "write_comment":
+            MessageLookupByLibrary.simpleMessage("Viết bình luận ...")
       };
 }

@@ -12,6 +12,9 @@ final lightColorScheme = ColorScheme(
   onSurface: Colors.black,
   surfaceContainer: const Color(0xFFE7E7E7),
   surfaceContainerLowest: Colors.lightBlue.shade50,
+  onPrimaryContainer: Color(0xFFCDCDCD),
+  onPrimaryFixed: Color(0xFF000000),
+  onSecondaryFixed: Color(0xFF5A5A5A),
 );
 
 final darkColorScheme = ColorScheme(
@@ -26,4 +29,7 @@ final darkColorScheme = ColorScheme(
   onSurface: Colors.white,
   surfaceContainer: const Color(0xFF363636),
   surfaceContainerLowest: Colors.blue.shade900,
+  onPrimaryContainer: Color(0xFF444444),
+  onPrimaryFixed: Color(0xFFFFFFFF),
+  onSecondaryFixed: Color(0xFFE0E0E0),
 );

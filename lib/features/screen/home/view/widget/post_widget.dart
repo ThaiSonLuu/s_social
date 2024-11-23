@@ -7,6 +7,7 @@ import 'package:s_social/core/domain/model/post_model.dart';
 import 'package:s_social/core/domain/model/user_model.dart';
 import 'package:s_social/core/presentation/logic/cubit/app_language/app_language_cubit.dart';
 import 'package:s_social/features/screen/home/logic/post_cubit.dart';
+import 'package:s_social/features/screen/home/view/post_screen.dart';
 import 'package:s_social/features/screen/home/view/widget/full_screen_img.dart';
 
 import '../../../../../generated/l10n.dart';
@@ -37,14 +38,11 @@ class PostWidget extends StatelessWidget {
     String displayName = postData.postAnonymous == true
         ? S.of(context).anonymous : userData.username ?? 'Unknown User';
 
-    // Format the post creation date
-    String formattedDate = postData.createdAt != null
-        ? DateFormat('dd/MM/yyyy HH:mm').format(postData.createdAt!)
-        : 'Unknown date';
+    String formattedDate = DateFormat('dd/MM/yyyy HH:mm').format(postData.createdAt!);
 
     return Card(
-      elevation: 2,
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      margin: const EdgeInsets.all(0.5),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -69,7 +67,7 @@ class PostWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        displayName, // Show username from UserModel
+                        displayName,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -78,9 +76,9 @@ class PostWidget extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         formattedDate,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey,
+                          color: Theme.of(context).colorScheme.onSecondaryFixed,
                         ),
                       ),
                     ],
@@ -171,7 +169,15 @@ class PostWidget extends StatelessWidget {
                     IconButton(
                       icon: const Icon(Icons.comment_outlined),
                       onPressed: () {
-                        // Logic for commenting on a post
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PostScreen(
+                              postData: postData,
+                              postUserData: userData,
+                            ),
+                          ),
+                        );
                       },
                     ),
                     Text(S.of(context).comment),

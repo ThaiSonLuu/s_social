@@ -510,11 +510,22 @@ class S {
     );
   }
 
+
   /// `Delete message`
   String get delete_message {
     return Intl.message(
       'Delete message',
       name: 'delete_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No comment yet`
+  String get no_comment_yet {
+    return Intl.message(
+      'No comment yet',
+      name: 'no_comment_yet',
       desc: '',
       args: [],
     );
@@ -685,6 +696,17 @@ class S {
     return Intl.message(
       'Please update your profile image and others information.',
       name: 'update_avatar_and_other_information',
+      desc: '',
+      args: [],
+    );
+  }
+}
+
+  /// `Write a comment ...`
+  String get write_comment {
+    return Intl.message(
+      'Write a comment ...',
+      name: 'write_comment',
       desc: '',
       args: [],
     );

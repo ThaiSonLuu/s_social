@@ -137,7 +137,6 @@ class _NewPostState extends State<NewPostScreen> {
                     // postImage: _selectedImg != null ? _selectedImg!.path : null,
                     postImage: imgUrl,
                     createdAt: DateTime.now(),
-                    comments: [],
                     like: 0,
                     postAnonymous: postAnonymous ? true : false,
                   );

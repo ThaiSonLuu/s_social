@@ -10,7 +10,6 @@ class PostModel {
   final String? postImage;
   final DateTime? createdAt;
   final int? like;
-  final List<String>? comments;
   final bool? postAnonymous;
 
   PostModel({
@@ -20,7 +19,7 @@ class PostModel {
     required this.postImage,
     required this.createdAt,
     required this.like,
-    required this.comments,
+    // required this.comments,
     required this.postAnonymous,
   });
 
@@ -36,7 +35,7 @@ class PostModel {
     String? postImage,
     DateTime? createdAt,
     int? like,
-    List<String>? comments,
+    // List<String>? comments,
     bool? postAnonymous,
   }) {
     return PostModel(
@@ -46,7 +45,7 @@ class PostModel {
         postImage: postImage ?? this.postImage,
         createdAt: createdAt ?? this.createdAt,
         like: like ?? this.like,
-        comments: comments ?? this.comments,
+        // comments: comments ?? this.comments,
         postAnonymous: postAnonymous ?? this.postAnonymous,
     );
   }

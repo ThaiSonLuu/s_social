@@ -63,4 +63,6 @@
   "time_ago": "{time} ago",
   "update_information": "Update user's information",
   "update_avatar_and_other_information": "Please update your profile image and others information."
+  "no_comment_yet": "No comment yet",
+  "write_comment": "Write a comment ..."
 }

@@ -9,6 +9,7 @@ import 'package:s_social/core/presentation/logic/cubit/profile_user/profile_user
 import 'package:s_social/core/utils/app_localize/app_theme.dart';
 import 'package:s_social/core/utils/app_router/app_router.dart';
 import 'package:s_social/di/injection_container.dart';
+import 'package:s_social/features/screen/home/logic/comment_cubit.dart';
 import 'package:s_social/features/screen/home/logic/post_cubit.dart';
 import 'package:s_social/generated/l10n.dart';
 
@@ -63,6 +64,12 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(
           create: (context) => PostCubit(
             postRepository: serviceLocator(),
+            uploadFileRepository: serviceLocator(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => CommentCubit(
+            commentRepository: serviceLocator(),
             uploadFileRepository: serviceLocator(),
           ),
         ),

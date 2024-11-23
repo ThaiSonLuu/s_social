@@ -1,67 +1,141 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:s_social/core/domain/model/post_model.dart';
-import 'package:s_social/core/domain/model/user_model.dart';
 import 'package:s_social/core/domain/model/comment_model.dart';
+import 'package:s_social/core/domain/model/user_model.dart';
+import '../../../../../generated/l10n.dart';
+import '../../../../../core/domain/model/post_model.dart';
+import 'full_screen_img.dart';
 
 class CommentWidget extends StatelessWidget {
   final CommentModel commentData;
   final PostModel postData;
   final UserModel userData;
-  final VoidCallback onTap;
 
   const CommentWidget({
     Key? key,
     required this.commentData,
     required this.postData,
     required this.userData,
-    required this.onTap,
   }) : super(key: key);
+
+  String _formatDateTime(DateTime? dateTime) {
+    if (dateTime == null) return 'Unknown date';
+    return DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Format the post creation date
-    String formattedDate = postData.createdAt != null
-        ? DateFormat('dd/MM/yyyy HH:mm').format(postData.createdAt!)
-        : 'Unknown date';
+    String formattedDate = _formatDateTime(commentData.createdAt);
+    String userName = userData.username!;
+    if (postData.userId == userData.id && postData.postAnonymous == true) {
+      userName = S.of(context).anonymous;
+    }
 
-    return Card(
-      elevation: 2,
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Column(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Avatar, username
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
+          // Avatar
+          CircleAvatar(
+            radius: 16,
+            backgroundImage: NetworkImage(
+              userData.avatarUrl ?? 'https://placehold.co/80x80',
+            ),
+          ),
+          const SizedBox(width: 8),
+
+          // Nội dung comment
+          Expanded(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(userData.avatarUrl!),
-                  onBackgroundImageError: (error, stackTrace) {
-                    // Handle error when loading avatar
-                  },
-                ),
-                const SizedBox(width: 10),
-                Expanded(
+                // Container chứa nội dung comment
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainer,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Tên người dùng
                       Text(
-                        userData.username!,
-                        style: const TextStyle(
+                        // postData.userId == userData.id ? userData.username! : S.of(context).anonymous,
+                        userName,
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: 13,
+                          color: Theme.of(context).colorScheme.onPrimaryFixed,
                         ),
                       ),
                       const SizedBox(height: 4),
+                      // Nội dung văn bản comment
+                      if (commentData.commentText?.isNotEmpty ?? false)
+                        Text(
+                          commentData.commentText!,
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: Theme.of(context).colorScheme.onPrimaryFixed,
+                          ),
+                        ),
+                      // Ảnh đính kèm (nếu có)
+                      if (commentData.commentImg?.isNotEmpty ?? false)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: GestureDetector(
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FullScreenImg(
+                                  imageUrl: commentData.commentImg!,
+                                ),
+                              ),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                commentData.commentImg!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => const Center(
+                                  child: Text('Image failed to load'),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                // Hành động (ngày giờ, thích, phản hồi)
+                Padding(
+                  padding: const EdgeInsets.only(left: 12.0, top: 4.0),
+                  child: Row(
+                    children: [
                       Text(
                         formattedDate,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey,
+                          color: Theme.of(context).colorScheme.onPrimaryFixed,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Text(
+                        S.of(context).like,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.onPrimaryFixed,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Text(
+                        'Phản hồi',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.onPrimaryFixed,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
@@ -71,55 +145,34 @@ class CommentWidget extends StatelessWidget {
             ),
           ),
 
-          // Post content
-          if (postData.postContent != null && postData.postContent!.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-              child: Text(
-                postData.postContent!,
-                style: const TextStyle(fontSize: 14),
-              ),
+          // Nút thêm tùy chọn
+          IconButton(
+            icon: Icon(
+              Icons.more_horiz,
+              size: 20,
+              color: Theme.of(context).colorScheme.onPrimaryFixed,
             ),
-
-          // Post image (if available)
-          if (postData.postImage != null && postData.postImage!.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Image.network(
-                postData.postImage!,
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Center(child: Text('Image failed to load'));
-                },
-              ),
-            ),
-
-          // Post actions
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
+            onPressed: () {
+              // Menu tùy chọn
+              showModalBottomSheet(
+                context: context,
+                builder: (context) => Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.thumb_up_alt_outlined),
-                      onPressed: () {
-                        // Logic for liking a post
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.comment_outlined),
-                      onPressed: () {
-                        // Logic for commenting on a post
+                    ListTile(
+                        leading: Icon(Icons.edit,
+                        color: Theme.of(context).colorScheme.onPrimaryFixed,
+                      ),
+                      title: const Text('Chỉnh sửa bình luận'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        // Logic chỉnh sửa
                       },
                     ),
                   ],
                 ),
-              ],
-            ),
+              );
+            },
           ),
         ],
       ),
