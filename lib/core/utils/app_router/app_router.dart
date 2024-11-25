@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:s_social/core/presentation/logic/cubit/auth/auth_cubit.dart';
 import 'package:s_social/core/presentation/view/widgets/bottom_navigation.dart';
 import 'package:s_social/features/auth/presentation/login/view/login_screen.dart';
 import 'package:s_social/features/auth/presentation/sign_up/view/signup_screen.dart';
 import 'package:s_social/features/messages/presentation/user_list/view/user_list_screen.dart';
+import 'package:s_social/features/notifications/presentation/logic/unread_notification_cubit.dart';
 import 'package:s_social/features/notifications/presentation/view/notifications_screen.dart';
 import 'package:s_social/features/screen/home/view/home_screen.dart';
 import 'package:s_social/features/settings/presentation/change_password/view/change_password_screen.dart';
@@ -28,9 +30,10 @@ abstract class RouterUri {
 }
 
 class AppRouter {
-  AppRouter(this.authCubit);
+  AppRouter(this.authCubit, this.unreadNotificationsCubit);
 
   final AuthCubit authCubit;
+  final UnreadNotificationsCubit unreadNotificationsCubit;
 
   late final GoRouter routers = GoRouter(
     routes: [
@@ -48,12 +51,6 @@ class AppRouter {
       ),
       ShellRoute(
         routes: [
-          // GoRoute(
-          //   path: RouterUri.newsFeeds,
-          //   pageBuilder: (context, state) => const NoTransitionPage<void>(
-          //     child: NewsFeedScreen(),
-          //   ),
-          // ),
           GoRoute(
             path: RouterUri.home,
             pageBuilder: (context, state) => const NoTransitionPage<void>(
@@ -78,7 +75,6 @@ class AppRouter {
             path: RouterUri.settings,
             pageBuilder: (context, state) => const NoTransitionPage<void>(
               child: Center(
-                // child: Text("Settings"),
                 child: SettingsScreen(),
               ),
             ),
@@ -86,7 +82,10 @@ class AppRouter {
         ],
         builder: (context, state, child) {
           return Scaffold(
-            bottomNavigationBar: BottomNavigation(),
+            bottomNavigationBar: BlocProvider.value(
+              value: unreadNotificationsCubit,
+              child: BottomNavigation(),
+            ),
             body: child,
           );
         },

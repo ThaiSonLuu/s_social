@@ -9,6 +9,7 @@ import 'package:s_social/core/utils/app_router/app_router.dart';
 import 'package:s_social/core/utils/snack_bar.dart';
 import 'package:s_social/di/injection_container.dart';
 import 'package:s_social/features/auth/presentation/login/logic/login_cubit.dart';
+import 'package:s_social/features/notifications/presentation/logic/unread_notification_cubit.dart';
 import 'package:s_social/gen/assets.gen.dart';
 import 'package:s_social/generated/l10n.dart';
 
@@ -18,7 +19,10 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LoginCubit(userRepository: serviceLocator()),
+      create: (context) => LoginCubit(
+        userRepository: serviceLocator(),
+        notificationRepository: serviceLocator(),
+      ),
       child: const _LoginScreen(),
     );
   }
@@ -60,6 +64,7 @@ class _LoginScreenState extends State<_LoginScreen> {
           if (state is LoginLoaded) {
             context.read<AuthCubit>().login();
             context.read<ProfileUserCubit>().getUserInfo();
+            context.read<UnreadNotificationsCubit>().listenToUnreadCount();
           }
 
           if (state is LoginError) {
@@ -130,9 +135,7 @@ class _LoginScreenState extends State<_LoginScreen> {
                     });
                   },
                   icon: Icon(
-                    isVisiblePassword
-                        ? Icons.visibility
-                        : Icons.visibility_off,
+                    isVisiblePassword ? Icons.visibility : Icons.visibility_off,
                     size: 20,
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
@@ -218,7 +221,8 @@ class _LoginScreenState extends State<_LoginScreen> {
                   onTap: () async {
                     final user = await context.push<User>(RouterUri.signup);
                     if (user != null && mounted) {
-                      context.showSnackBarSuccess(text: S.of(context).sign_up_success);
+                      context.showSnackBarSuccess(
+                          text: S.of(context).sign_up_success);
                     }
                   },
                   child: Text(

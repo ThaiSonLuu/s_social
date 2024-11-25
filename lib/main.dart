@@ -10,6 +10,7 @@ import 'package:s_social/core/presentation/logic/cubit/profile_user/profile_user
 import 'package:s_social/core/utils/app_localize/app_theme.dart';
 import 'package:s_social/core/utils/app_router/app_router.dart';
 import 'package:s_social/di/injection_container.dart';
+import 'package:s_social/features/notifications/presentation/logic/unread_notification_cubit.dart';
 import 'package:s_social/features/screen/home/logic/comment_cubit.dart';
 import 'package:s_social/features/screen/home/logic/post_cubit.dart';
 import 'package:s_social/generated/l10n.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late final AuthCubit _authCubit;
+  late final UnreadNotificationsCubit _unreadNotificationsCubit;
   late final AppRouter _appRouter;
   late final ProfileUserCubit _profileUserCubit;
 
@@ -40,8 +42,11 @@ class _MyAppState extends State<MyApp> {
     _authCubit = AuthCubit(
       userRepository: serviceLocator(),
     )..checkLogin();
+    _unreadNotificationsCubit = UnreadNotificationsCubit(
+      serviceLocator(),
+    )..listenToUnreadCount();
 
-    _appRouter = AppRouter(_authCubit);
+    _appRouter = AppRouter(_authCubit, _unreadNotificationsCubit);
     _profileUserCubit = ProfileUserCubit(
       userRepository: serviceLocator(),
       notificationRepository: serviceLocator(),
@@ -65,6 +70,9 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider(
           create: (context) => _profileUserCubit,
+        ),
+        BlocProvider(
+          create: (context) => _unreadNotificationsCubit,
         ),
         BlocProvider(
           create: (context) => PostCubit(

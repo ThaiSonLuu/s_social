@@ -134,21 +134,19 @@ class NotificationDataSource {
     }
   }
 
-  Future<int> countUnreadNotifications() async {
-    try {
-      final uid = FirebaseAuth.instance.currentUser?.uid;
-      if (uid == null) {
-        return 0;
-      }
+  Stream<int> countUnreadNotifications() {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
 
-      final snapshot = await _notificationCollection
-          .where('uid', isEqualTo: uid)
-          .where('read', isEqualTo: false)
-          .get();
-
-      return snapshot.docs.length;
-    } catch (_) {
-      rethrow;
+    if (uid == null) {
+      // If the user is not logged in, return a stream with 0 unread notifications
+      return Stream.value(0);
     }
+
+    // Use Firestore snapshots to listen for real-time updates
+    return _notificationCollection
+        .where('uid', isEqualTo: uid)
+        .where('read', isEqualTo: false)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
   }
 }
