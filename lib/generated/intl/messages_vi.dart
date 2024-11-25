@@ -82,6 +82,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "new_post": MessageLookupByLibrary.simpleMessage("Bài viết mới"),
         "new_post_box":
             MessageLookupByLibrary.simpleMessage("Bạn đang nghĩ gì?"),
+        "no_comment_yet":
+            MessageLookupByLibrary.simpleMessage("Chưa có bình luận nào"),
         "no_image_selected": MessageLookupByLibrary.simpleMessage(
             "Không có hình ảnh nào được chọn"),
         "no_message":
@@ -90,8 +92,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Không có thông báo nào."),
         "no_title": MessageLookupByLibrary.simpleMessage("Không có tiêu đề"),
         "notifications": MessageLookupByLibrary.simpleMessage("Thông báo"),
-        "no_comment_yet":
-            MessageLookupByLibrary.simpleMessage("Chưa có bình luận nào"),
         "old_password": MessageLookupByLibrary.simpleMessage("Mật khẩu cũ"),
         "old_password_invalid":
             MessageLookupByLibrary.simpleMessage("Mật khẩu cũ không hợp lệ"),
@@ -120,7 +120,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Vui lòng cập nhật ảnh đại diện và các thông tin khác."),
         "update_information":
             MessageLookupByLibrary.simpleMessage("Cập nhật thông tin"),
-        "vietnamese": MessageLookupByLibrary.simpleMessage("Tiếng Việt")
+        "vietnamese": MessageLookupByLibrary.simpleMessage("Tiếng Việt"),
         "write_comment":
             MessageLookupByLibrary.simpleMessage("Viết bình luận ...")
       };
