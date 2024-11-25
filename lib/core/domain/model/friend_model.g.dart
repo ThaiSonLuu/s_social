@@ -7,16 +7,14 @@ part of 'friend_model.dart';
 // **************************************************************************
 
 FriendModel _$FriendModelFromJson(Map<String, dynamic> json) => FriendModel(
-      id: json['id'] as String?,
+      id: json['id'] as String,
       senderId: json['senderId'] as String,
       receiverId: json['receiverId'] as String,
       dateTimeSent: DateTime.parse(json['dateTimeSent'] as String),
-      dateTimeAccepted: json['dateTimeAccepted'] == null
+      dateTimeResponded: json['dateTimeResponded'] == null
           ? null
-          : DateTime.parse(json['dateTimeAccepted'] as String),
-      dateTimeDeclined: json['dateTimeDeclined'] == null
-          ? null
-          : DateTime.parse(json['dateTimeDeclined'] as String),
+          : DateTime.parse(json['dateTimeResponded'] as String),
+      state: $enumDecode(_$FriendStateEnumMap, json['state']),
     );
 
 Map<String, dynamic> _$FriendModelToJson(FriendModel instance) =>
@@ -25,6 +23,12 @@ Map<String, dynamic> _$FriendModelToJson(FriendModel instance) =>
       'senderId': instance.senderId,
       'receiverId': instance.receiverId,
       'dateTimeSent': instance.dateTimeSent.toIso8601String(),
-      'dateTimeAccepted': instance.dateTimeAccepted?.toIso8601String(),
-      'dateTimeDeclined': instance.dateTimeDeclined?.toIso8601String(),
+      'dateTimeResponded': instance.dateTimeResponded?.toIso8601String(),
+      'state': _$FriendStateEnumMap[instance.state]!,
     };
+
+const _$FriendStateEnumMap = {
+  FriendState.pending: 'pending',
+  FriendState.accepted: 'accepted',
+  FriendState.declined: 'declined',
+};

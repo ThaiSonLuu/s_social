@@ -1,56 +1,73 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:s_social/common/app_constants/firestore_collection_constants.dart';
 import 'package:s_social/core/domain/model/friend_model.dart';
 
 class FriendDataSource {
-  CollectionReference get _friendRequestsCollection {
-    return FirebaseFirestore.instance.collection('friendRequests');
-  }
+  final CollectionReference _collection = FirebaseFirestore.instance
+      .collection(FirestoreCollectionConstants.friends);
 
-  Future<void> sendFriendRequest(FriendModel friendRequest) async {
-    final docRef = _friendRequestsCollection.doc();
-    final requestWithId = friendRequest.copyWith(id: docRef.id);
-    await docRef.set(requestWithId.toJson());
-  }
-
-  Future<List<FriendModel>> getFriendRequestsByUser(String userId) async {
-    final querySnapshot = await _friendRequestsCollection
-        .where('receiverId', isEqualTo: userId)
-        .get();
-    return querySnapshot.docs
-        .map((doc) => FriendModel.fromJson(doc.data() as Map<String, dynamic>))
-        .toList();
-  }
-
-  Future<List<FriendModel>> getSentFriendRequests(String senderId) async {
-    final querySnapshot = await _friendRequestsCollection
-        .where('senderId', isEqualTo: senderId)
-        .get();
-    return querySnapshot.docs
-        .map((doc) => FriendModel.fromJson(doc.data() as Map<String, dynamic>))
-        .toList();
-  }
-
-  Future<void> updateFriendRequestStatus({
-    required String requestId,
-    DateTime? acceptedDateTime,
-    DateTime? declinedDateTime,
+  Future<void> sendFriendRequest({
+    required String senderId,
+    required String receiverId,
   }) async {
-    final updateData = <String, dynamic>{};
-    if (acceptedDateTime != null) {
-      updateData['dateTimeAccepted'] = acceptedDateTime.toIso8601String();
-    }
-    if (declinedDateTime != null) {
-      updateData['dateTimeDeclined'] = declinedDateTime.toIso8601String();
-    }
+    final friendRequestDoc = _collection.doc();
+    final friendRequest = FriendModel(
+      id: friendRequestDoc.id,
+      // Use Firestore-generated ID
+      senderId: senderId,
+      receiverId: receiverId,
+      dateTimeSent: DateTime.now(),
+      state: FriendState.pending,
+    );
 
-    await _friendRequestsCollection.doc(requestId).update(updateData);
+    await friendRequestDoc.set(friendRequest.toJson());
+  }
+
+  Future<void> updateFriendRequestState({
+    required String requestId,
+    required FriendState newState,
+  }) async {
+    await _collection.doc(requestId).update({
+      'state': newState.name,
+      if (newState != FriendState.pending)
+        'dateTimeResponded': FieldValue.serverTimestamp(),
+    });
   }
 
   Future<List<FriendModel>> getCurrentUserFriends(String userId) async {
-    final querySnapshot = await _friendRequestsCollection
+    try {
+      final friendRequestsSnapshot = await _collection
+          .where('state', isEqualTo: FriendState.accepted.name)
+          .where('senderId', isEqualTo: userId)
+          .get();
+
+      final receiverRequestsSnapshot = await _collection
+          .where('state', isEqualTo: FriendState.accepted.name)
+          .where('receiverId', isEqualTo: userId)
+          .get();
+
+      final friends = <FriendModel>[];
+
+      // Add sender friends to the list
+      friends.addAll(friendRequestsSnapshot.docs.map(
+          (doc) => FriendModel.fromJson(doc.data() as Map<String, dynamic>)));
+
+      // Add receiver friends to the list
+      friends.addAll(receiverRequestsSnapshot.docs.map(
+          (doc) => FriendModel.fromJson(doc.data() as Map<String, dynamic>)));
+
+      return friends;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<FriendModel>> getPendingFriendRequests(String userId) async {
+    final querySnapshot = await _collection
+        .where('state', isEqualTo: FriendState.pending.name)
         .where('receiverId', isEqualTo: userId)
-        .where('dateTimeAccepted', isNotEqualTo: null)
         .get();
+
     return querySnapshot.docs
         .map((doc) => FriendModel.fromJson(doc.data() as Map<String, dynamic>))
         .toList();

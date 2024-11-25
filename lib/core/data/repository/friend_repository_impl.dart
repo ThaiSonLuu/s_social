@@ -3,40 +3,53 @@ import 'package:s_social/core/domain/model/friend_model.dart';
 import 'package:s_social/core/domain/repository/friend_repository.dart';
 
 class FriendRepositoryImpl implements FriendRepository {
-  final FriendDataSource friendDataSource;
+  final FriendDataSource dataSource;
 
-  FriendRepositoryImpl({required this.friendDataSource});
-
-  @override
-  Future<void> sendFriendRequest(FriendModel friendRequest) {
-    return friendDataSource.sendFriendRequest(friendRequest);
-  }
+  FriendRepositoryImpl({required this.dataSource});
 
   @override
-  Future<List<FriendModel>> getFriendRequestsByUser(String userId) {
-    return friendDataSource.getFriendRequestsByUser(userId);
-  }
-
-  @override
-  Future<List<FriendModel>> getSentFriendRequests(String senderId) {
-    return friendDataSource.getSentFriendRequests(senderId);
-  }
-
-  @override
-  Future<void> updateFriendRequestStatus({
-    required String requestId,
-    DateTime? acceptedDateTime,
-    DateTime? declinedDateTime,
-  }) {
-    return friendDataSource.updateFriendRequestStatus(
-      requestId: requestId,
-      acceptedDateTime: acceptedDateTime,
-      declinedDateTime: declinedDateTime,
+  Future<void> sendFriendRequest({
+    required String senderId,
+    required String receiverId,
+  }) async {
+    // Using Firestore to generate a unique document ID for the friend request
+    await dataSource.sendFriendRequest(
+      senderId: senderId,
+      receiverId: receiverId,
     );
   }
 
   @override
-  Future<List<FriendModel>> getCurrentUserFriends(String userId) {
-    return friendDataSource.getCurrentUserFriends(userId);
+  Future<void> acceptFriendRequest({
+    required String requestId,
+  }) async {
+    // Accept the request by updating the state in Firestore
+    await dataSource.updateFriendRequestState(
+      requestId: requestId,
+      newState: FriendState.accepted,
+    );
+  }
+
+  @override
+  Future<void> declineFriendRequest({
+    required String requestId,
+  }) async {
+    // Decline the request by updating the state in Firestore
+    await dataSource.updateFriendRequestState(
+      requestId: requestId,
+      newState: FriendState.declined,
+    );
+  }
+
+  @override
+  Future<List<FriendModel>> getCurrentUserFriends(String userId) async {
+    // Fetch current user's friends by querying the Firestore collection
+    return await dataSource.getCurrentUserFriends(userId);
+  }
+
+  @override
+  Future<List<FriendModel>> getPendingRequests(String userId) async {
+    // Fetch pending friend requests for the current user
+    return await dataSource.getPendingFriendRequests(userId);
   }
 }

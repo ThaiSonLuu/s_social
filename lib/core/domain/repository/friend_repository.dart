@@ -1,17 +1,20 @@
 import 'package:s_social/core/domain/model/friend_model.dart';
 
 abstract class FriendRepository {
-  Future<void> sendFriendRequest(FriendModel friendRequest);
+  Future<void> sendFriendRequest({
+    required String senderId,
+    required String receiverId,
+  });
 
-  Future<List<FriendModel>> getFriendRequestsByUser(String userId);
-
-  Future<List<FriendModel>> getSentFriendRequests(String senderId);
-
-  Future<void> updateFriendRequestStatus({
+  Future<void> acceptFriendRequest({
     required String requestId,
-    DateTime? acceptedDateTime,
-    DateTime? declinedDateTime,
+  });
+
+  Future<void> declineFriendRequest({
+    required String requestId,
   });
 
   Future<List<FriendModel>> getCurrentUserFriends(String userId);
+
+  Future<List<FriendModel>> getPendingRequests(String userId);
 }
