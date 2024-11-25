@@ -3,8 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:s_social/core/domain/model/notification_model.dart';
 import 'package:s_social/core/domain/model/user_model.dart';
+import 'package:s_social/core/domain/repository/notification_repository.dart';
 import 'package:s_social/core/domain/repository/user_repository.dart';
+import 'package:s_social/core/utils/app_router/app_router.dart';
 import 'package:s_social/generated/l10n.dart';
 
 part 'login_state.dart';
@@ -12,10 +15,13 @@ part 'login_state.dart';
 class LoginCubit extends Cubit<LoginState> {
   LoginCubit({
     required UserRepository userRepository,
+    required NotificationRepository notificationRepository,
   })  : _userRepository = userRepository,
+        _notificationRepository = notificationRepository,
         super(LoginInitial());
 
   final UserRepository _userRepository;
+  final NotificationRepository _notificationRepository;
 
   Future<void> loginWithAccount({
     required String email,
@@ -135,7 +141,7 @@ class LoginCubit extends Cubit<LoginState> {
 
     defaultUserName ??= user.email;
 
-    final foundUser = await _userRepository.getUserById(user.uid);
+    UserModel? foundUser = await _userRepository.getUserById(user.uid);
 
     // If this is the first time login
     if (foundUser == null) {
@@ -146,6 +152,20 @@ class LoginCubit extends Cubit<LoginState> {
           username: defaultUserName,
           avatarUrl: user.photoURL,
           signInType: signInType,
+        ),
+      );
+    }
+
+    if (foundUser == null || (foundUser.avatarUrl?.isEmpty ?? true)) {
+      await _notificationRepository.createNotification(
+        NotificationModel(
+          uid: foundUser!.id,
+          fcmToken: foundUser.fcmTokens,
+          imageUrl: null,
+          title: S.current.update_information,
+          message: S.current.update_avatar_and_other_information,
+          time: DateTime.now(),
+          route: "${RouterUri.editProfile}/${foundUser.id}",
         ),
       );
     }

@@ -84,6 +84,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "new_post": MessageLookupByLibrary.simpleMessage("New post"),
         "new_post_box":
             MessageLookupByLibrary.simpleMessage("What\'s on your mind?"),
+        "no_comment_yet":
+            MessageLookupByLibrary.simpleMessage("No comment yet"),
         "no_image_selected":
             MessageLookupByLibrary.simpleMessage("No image selected"),
         "no_message": MessageLookupByLibrary.simpleMessage("No Message"),
@@ -91,8 +93,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("No notifications available."),
         "no_title": MessageLookupByLibrary.simpleMessage("No Title"),
         "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
-        "no_comment_yet":
-            MessageLookupByLibrary.simpleMessage("No comment yet"),
         "old_password": MessageLookupByLibrary.simpleMessage("Old password"),
         "old_password_invalid":
             MessageLookupByLibrary.simpleMessage("Old password invalid"),
@@ -121,7 +121,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Please update your profile image and others information."),
         "update_information":
             MessageLookupByLibrary.simpleMessage("Update user\'s information"),
-        "vietnamese": MessageLookupByLibrary.simpleMessage("Vietnamese")
+        "vietnamese": MessageLookupByLibrary.simpleMessage("Vietnamese"),
         "write_comment":
             MessageLookupByLibrary.simpleMessage("Write a comment ...")
       };

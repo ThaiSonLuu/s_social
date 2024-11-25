@@ -55,9 +55,9 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
-  Future<int> countUnreadNotifications() async {
+  Stream<int> countUnreadNotifications() {
     try {
-      return await _dataSource.countUnreadNotifications();
+      return _dataSource.countUnreadNotifications();
     } catch (e) {
       rethrow;
     }

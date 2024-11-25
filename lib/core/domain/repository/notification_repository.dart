@@ -11,5 +11,5 @@ abstract class NotificationRepository {
 
   Future<void> markAllNotificationsAsRead();
 
-  Future<int> countUnreadNotifications();
+  Stream<int> countUnreadNotifications();
 }

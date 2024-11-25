@@ -510,22 +510,11 @@ class S {
     );
   }
 
-
   /// `Delete message`
   String get delete_message {
     return Intl.message(
       'Delete message',
       name: 'delete_message',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `No comment yet`
-  String get no_comment_yet {
-    return Intl.message(
-      'No comment yet',
-      name: 'no_comment_yet',
       desc: '',
       args: [],
     );
@@ -700,7 +689,16 @@ class S {
       args: [],
     );
   }
-}
+
+  /// `No comment yet`
+  String get no_comment_yet {
+    return Intl.message(
+      'No comment yet',
+      name: 'no_comment_yet',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `Write a comment ...`
   String get write_comment {

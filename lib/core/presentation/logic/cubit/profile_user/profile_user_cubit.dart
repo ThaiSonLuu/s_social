@@ -35,20 +35,6 @@ class ProfileUserCubit extends Cubit<ProfileUserState> {
       }
 
       emit(ProfileUserLoaded(user));
-
-      if (user.avatarUrl == null) {
-        await _notificationRepository.createNotification(
-          NotificationModel(
-            uid: user.id,
-            fcmToken: user.fcmTokens?.first ?? "",
-            imageUrl: null,
-            title: S.current.update_information,
-            message: S.current.update_avatar_and_other_information,
-            time: DateTime.now(),
-            route: "${RouterUri.editProfile}/${user.id}",
-          ),
-        );
-      }
     } catch (e) {
       emit(ProfileUserError(e.toString()));
     }
