@@ -1,11 +1,15 @@
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:s_social/core/presentation/view/widgets/text_to_image.dart';
 import 'package:s_social/core/utils/app_router/app_router.dart';
+import 'package:s_social/core/utils/extensions/is_current_user.dart';
 import 'package:s_social/di/injection_container.dart';
+import 'package:s_social/features/friends/presentation/logic/count_friend_cubit.dart';
+import 'package:s_social/features/friends/presentation/logic/friend_cubit.dart';
 import 'package:s_social/features/user_profile/presentation/user_profile/logic/s_user_profile_cubit.dart';
 import 'package:s_social/gen/assets.gen.dart';
 import 'package:s_social/generated/l10n.dart';
@@ -14,19 +18,36 @@ class SUserProfileScreen extends StatelessWidget {
   const SUserProfileScreen({
     super.key,
     required this.uid,
-    this.isMyself = false,
   });
 
   final String? uid;
-  final bool isMyself;
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SUserProfileCubit(
-        userRepository: serviceLocator(),
-        uid: uid,
-      )..getUserInfoByUid(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => SUserProfileCubit(
+            userRepository: serviceLocator(),
+            uid: uid,
+          )..getUserInfoByUid(),
+        ),
+        BlocProvider(
+          create: (context) {
+            return CountFriendCubit(
+              serviceLocator(),
+              uid,
+            )..fetchFriendsCount();
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            return FriendCubit(
+              friendRepository: serviceLocator(),
+            );
+          },
+        ),
+      ],
       child: _UserProfileScreen(uid),
     );
   }
@@ -59,6 +80,7 @@ class _UserProfileScreen extends StatelessWidget {
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<SUserProfileCubit>().getUserInfoByUid();
+          context.read<CountFriendCubit>().fetchFriendsCount();
         },
         child: Padding(
           padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
@@ -136,7 +158,19 @@ class _UserProfileScreen extends StatelessWidget {
               bio: bio,
             ),
             const SizedBox(height: 12.0),
-            _buildFollowingView(context: context),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildFriendsView(context),
+                  if (!isCurrentUser(uid ?? "")) ...[
+                    const SizedBox(width: 16.0),
+                    _buildSendRequestButton(),
+                  ]
+                ],
+              ),
+            ),
           ],
         );
       },
@@ -340,57 +374,105 @@ class _UserProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFollowingView({
-    required BuildContext context,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainer.withOpacity(0.4),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      margin: const EdgeInsets.all(16.0),
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: Row(
-        children: [
-          _buildFollowingItem(
-            context: context,
-            label: "Follower",
-            content: "1.3K",
-          ),
-          Container(
-            width: 1,
-            height: 50,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-          _buildFollowingItem(
-            context: context,
-            label: "Following",
-            content: "180",
-          ),
-        ],
+  Widget _buildFriendsView(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: BlocBuilder<CountFriendCubit, CountFriendState>(
+          builder: (context, state) {
+            if (state is CountFriendLoading) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .surfaceContainer
+                      .withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                width: 120.0,
+                height: 40.0,
+              );
+            }
+            if (state is CountFriendLoaded) {
+              return _buildFriendsItem(
+                context: context,
+                label: "Friends",
+                content: "${state.friendsCount}",
+                onTap: () {
+                  // Navigate to the friends list or perform other actions
+                },
+              );
+            }
+            return const SizedBox.shrink(); // Default empty state
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildFollowingItem({
+  Widget _buildFriendsItem({
     required BuildContext context,
     required String label,
     required String content,
+    required VoidCallback onTap,
   }) {
-    return Expanded(
-      flex: 1,
-      child: Column(
-        children: [
-          Text(
-            label,
-            style: Theme.of(context)
-                .textTheme
-                .bodyLarge
-                ?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          Text(content),
-        ],
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainer.withOpacity(0.6),
+        borderRadius: BorderRadius.circular(8.0),
       ),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(width: 10.0),
+              Text(
+                content,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSendRequestButton() {
+    return BlocBuilder<FriendCubit, FriendState>(
+      builder: (context, state) {
+        if (state is FriendLoading) {
+          return const CircularProgressIndicator();
+        }
+
+        if (state is FriendRequestSent) {
+          return ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(),
+            child: const Text("Request Sent"),
+          );
+        }
+
+        return ElevatedButton(
+          onPressed: () async {
+            // Call the sendFriendRequest function
+            context
+                .read<FriendCubit>()
+                .sendFriendRequest(currentUid, uid ?? "");
+          },
+          style: ElevatedButton.styleFrom(),
+          child: const Text("Send Request"),
+        );
+      },
     );
   }
 }
