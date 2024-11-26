@@ -223,13 +223,25 @@ class _ChatScreenState extends State<_ChatScreen> {
       maxHeight: 1920,
       maxWidth: 1080,
     );
-    setState(() {
+    setState(() async {
       if (pickedFile.isNotEmpty) {
         for (XFile? file in pickedFile) {
           if (file != null) {
             _selectedImages.add(File(file.path));
           }
         }
+        urls = await context.read<ChatCubit>().uploadImagesToFirebase(_selectedImages);
+
+        // Send message to the chat session
+        await context.read<ChatCubit>().sendMessage(
+          chatId: chatId,
+          senderEmail: senderEmail,
+          recipientEmail: recipientEmail,
+          content: null,
+          images: urls,
+        );
+        _selectedImages.clear();
+        urls?.clear();
 
         // Showing a elevated button to send the images
         // This button will be shown only if there are images selected
@@ -349,17 +361,20 @@ class _ChatScreenState extends State<_ChatScreen> {
             padding: edgeInsets,
             child: Text(message.senderEmail.toString() ?? ''),
           ),
-          BubbleSpecialOne(
+          message.content != null ? BubbleSpecialOne(
             isSender: isSender,
             text: message.content ?? '',
             color: color,
             tail: showTail,
-          ),
-          _buildImageGrid(
-              images: message.images,
-              edgeInsets:  edgeInsets,
-              crossAxisAlignment: crossAxisAlignment,
-              mainAxisAlignment: mainAxisAlignment
+          ) : Container(),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
+            child: _buildImageGrid(
+                images: message.images,
+                edgeInsets:  edgeInsets,
+                crossAxisAlignment: crossAxisAlignment,
+                mainAxisAlignment: mainAxisAlignment
+            ),
           ),
         ],
       ),
