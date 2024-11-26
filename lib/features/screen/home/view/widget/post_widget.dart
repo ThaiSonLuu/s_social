@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:s_social/core/domain/model/post_model.dart';
 import 'package:s_social/core/domain/model/user_model.dart';
 import 'package:s_social/core/presentation/logic/cubit/app_language/app_language_cubit.dart';
 import 'package:s_social/core/presentation/view/widgets/text_to_image.dart';
+import 'package:s_social/core/utils/app_router/app_router.dart';
 import 'package:s_social/features/screen/home/logic/post_cubit.dart';
 import 'package:s_social/features/screen/home/view/post_screen.dart';
 import 'package:s_social/features/screen/home/view/widget/full_screen_img.dart';
@@ -54,57 +56,63 @@ class PostWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Avatar, username, and post time
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                userData.avatarUrl != null
-                    ? CircleAvatar(
-                        radius: 20,
-                        backgroundImage: NetworkImage(
-                          userData.avatarUrl!,
+          GestureDetector(
+            onTap: () {
+              context.push("${RouterUri.profile}/${userData.id}");
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  userData.avatarUrl != null
+                      ? CircleAvatar(
+                          radius: 20,
+                          backgroundImage: NetworkImage(
+                            userData.avatarUrl!,
+                          ),
+                          onBackgroundImageError: (error, stackTrace) {
+                            // Handle error when loading avatar
+                          },
+                        )
+                      : Container(
+                          width: 40,
+                          height: 40,
+                          clipBehavior: Clip.hardEdge,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                          ),
+                          child: TextToImage(
+                            text: userData.username.toString()[0],
+                            textSize: 16.0,
+                          ),
                         ),
-                        onBackgroundImageError: (error, stackTrace) {
-                          // Handle error when loading avatar
-                        },
-                      )
-                    : Container(
-                        width: 40,
-                        height: 40,
-                        clipBehavior: Clip.hardEdge,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          displayName,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
-                        child: TextToImage(
-                          text: userData.username.toString()[0],
-                          textSize: 16.0,
+                        const SizedBox(height: 4),
+                        Text(
+                          formattedDate,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color:
+                                Theme.of(context).colorScheme.onSecondaryFixed,
+                          ),
                         ),
-                      ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        displayName,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        formattedDate,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Theme.of(context).colorScheme.onSecondaryFixed,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
 
