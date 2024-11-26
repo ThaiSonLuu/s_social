@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:s_social/core/domain/model/user_model.dart';
+import 'package:s_social/core/presentation/view/widgets/text_to_image.dart';
 import 'package:s_social/features/screen/home/view/new_post_screen.dart';
 import 'package:s_social/features/screen/home/view/widget/post_widget.dart';
 import 'package:s_social/core/domain/model/post_model.dart';
@@ -28,6 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.read<ProfileUserCubit>().currentUser;
+    final avatar = user?.avatarUrl;
+    final username = user?.username;
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).home),
@@ -40,13 +44,35 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                const CircleAvatar(),
+                avatar != null
+                    ? CircleAvatar(
+                        radius: 25,
+                        backgroundImage: NetworkImage(
+                          avatar,
+                        ),
+                        onBackgroundImageError: (error, stackTrace) {
+                          // Handle error when loading avatar
+                        },
+                      )
+                    : Container(
+                        width: 50,
+                        height: 50,
+                        clipBehavior: Clip.hardEdge,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: TextToImage(
+                          text: username.toString()[0],
+                          textSize: 16.0,
+                        ),
+                      ),
                 Expanded(
                   child: GestureDetector(
                     onTap: () async {
                       final newPost = await Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => NewPostScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => NewPostScreen()),
                       );
                       if (newPost != null) {
                         context.read<PostCubit>().createPost(newPost);
@@ -62,7 +88,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         child: Text(
                           S.of(context).new_post_box,
-                          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface),
                         ),
                       ),
                     ),
@@ -90,14 +117,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       final post = sortedPosts[index];
 
                       return FutureBuilder<UserModel>(
-                        future: context.read<PostCubit>().getUserById(post.userId!),
+                        future:
+                            context.read<PostCubit>().getUserById(post.userId!),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return const Center(child: CircularProgressIndicator());
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
                           } else if (snapshot.hasError) {
-                            return const Center(child: Text('Error fetching user.'));
+                            return const Center(
+                                child: Text('Error fetching user.'));
                           } else if (!snapshot.hasData) {
-                            return const Center(child: Text('User not found.'));
+                            return const Center(
+                              child: Text('User not found.'),
+                            );
                           }
 
                           final user = snapshot.data!;
@@ -112,7 +145,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                       );
                     },
-                    separatorBuilder: (context, index) => const SizedBox(height: 0),
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 0),
                   );
                 },
               ),

@@ -39,6 +39,8 @@ dependencies:
   http: ^1.2.1
   googleapis: ^13.1.0
   googleapis_auth: ^1.5.1
+  shimmer: ^3.0.0
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:
