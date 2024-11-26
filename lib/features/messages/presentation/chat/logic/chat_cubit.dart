@@ -41,7 +41,7 @@ class ChatCubit extends Cubit<ChatState> {
     required String chatId,
     required String senderEmail,
     required String recipientEmail,
-    required String content,
+    required String? content,
     required List<String?>? images,
   }) async {
     try {
