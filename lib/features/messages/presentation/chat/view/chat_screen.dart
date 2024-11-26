@@ -72,6 +72,15 @@ class _ChatScreenState extends State<_ChatScreen> {
             Navigator.pop(buildContext);
           },
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () {
+              // Open a menu
+
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -393,6 +402,44 @@ class _ChatScreenState extends State<_ChatScreen> {
     if (images == null || images.isEmpty) {
       return const SizedBox();
     }
+    switch (images.length) {
+      case 1:
+        return _buildSingleImage(images[0]!, edgeInsets, crossAxisAlignment, mainAxisAlignment);
+      default:
+        return _buildMultipleImage(images, edgeInsets, crossAxisAlignment, mainAxisAlignment);
+    }
+  }
+
+  Widget _buildSingleImage(String imageUrl, EdgeInsets edgeInsets, CrossAxisAlignment crossAxisAlignment, MainAxisAlignment mainAxisAlignment) {
+    return Row(
+      crossAxisAlignment: crossAxisAlignment,
+      mainAxisAlignment: mainAxisAlignment,
+      children: [
+        Container(
+          margin: edgeInsets,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width / 3,
+          child: GestureDetector(
+            onTap: () {
+              // Show image in full screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      FullScreenImg(imageUrl: imageUrl),
+                ),
+              );
+            },
+            child: Image.network(imageUrl, fit: BoxFit.cover),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMultipleImage(List<String?> images, EdgeInsets edgeInsets, CrossAxisAlignment crossAxisAlignment, MainAxisAlignment mainAxisAlignment) {
     return Row(
       crossAxisAlignment: crossAxisAlignment,
       mainAxisAlignment: mainAxisAlignment,
