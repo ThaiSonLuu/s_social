@@ -91,6 +91,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "no_message": MessageLookupByLibrary.simpleMessage("No Message"),
         "no_notifications":
             MessageLookupByLibrary.simpleMessage("No notifications available."),
+        "no_post_available":
+            MessageLookupByLibrary.simpleMessage("No post a available"),
         "no_title": MessageLookupByLibrary.simpleMessage("No Title"),
         "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
         "old_password": MessageLookupByLibrary.simpleMessage("Old password"),

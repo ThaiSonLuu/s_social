@@ -130,6 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, state) {
         List<PostModel> posts = [];
         bool isLoading = false;
+        bool isError = false;
 
         if (state is PostLoading) {
           isLoading = true;
@@ -139,38 +140,80 @@ class _HomeScreenState extends State<HomeScreen> {
           posts = state.posts;
         }
 
+        if (state is PostError) {
+          isError = true;
+        }
+
         posts.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
 
         return ListView.separated(
           itemCount: posts.length + 1,
           itemBuilder: (context, index) {
             if (isLoading) {
-              Column(
+              return Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   _buildHeaderView(user),
+                  const Divider(
+                    color: Colors.grey,
+                    thickness: 0.5,
+                  ),
+                  const ShimmerPost(),
+                  const Divider(
+                    color: Colors.grey,
+                    thickness: 0.5,
+                  ),
+                  const ShimmerPost(),
+                  const Divider(
+                    color: Colors.grey,
+                    thickness: 0.5,
+                  ),
+                  const ShimmerPost(),
+                ],
+              );
+            }
+
+            if (isError) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildHeaderView(user),
+                  const Divider(
+                    color: Colors.grey,
+                    thickness: 0.5,
+                  ),
+                  SizedBox(
+                    width: double.maxFinite,
+                    height: 500.0,
+                    child: Center(
+                      child: Text(
+                        S.of(context).an_error_occur,
+                        style: const TextStyle(
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               );
             }
 
             if (posts.isEmpty) {
               return Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   _buildHeaderView(user),
                   const Divider(
                     color: Colors.grey,
                     thickness: 0.5,
                   ),
-                  const ShimmerPost(),
-                  const Divider(
-                    color: Colors.grey,
-                    thickness: 0.5,
+                  SizedBox(
+                    width: double.maxFinite,
+                    height: 500.0,
+                    child: Center(
+                      child: Text(S.of(context).no_post_available),
+                    ),
                   ),
-                  const ShimmerPost(),
-                  const Divider(
-                    color: Colors.grey,
-                    thickness: 0.5,
-                  ),
-                  const ShimmerPost(),
                 ],
               );
             }

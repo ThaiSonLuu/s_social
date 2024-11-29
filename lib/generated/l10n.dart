@@ -709,6 +709,16 @@ class S {
       args: [],
     );
   }
+
+  /// `No post a available`
+  String get no_post_available {
+    return Intl.message(
+      'No post a available',
+      name: 'no_post_available',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

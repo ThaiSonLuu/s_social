@@ -64,5 +64,6 @@
   "update_information": "Cập nhật thông tin",
   "update_avatar_and_other_information": "Vui lòng cập nhật ảnh đại diện và các thông tin khác.",
   "no_comment_yet": "Chưa có bình luận nào",
-  "write_comment": "Viết bình luận ..."
+  "write_comment": "Viết bình luận ...",
+  "no_post_available": "Chưa có bài viết nào được đăng"
 }

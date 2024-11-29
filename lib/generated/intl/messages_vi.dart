@@ -90,6 +90,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Không có thông điệp"),
         "no_notifications":
             MessageLookupByLibrary.simpleMessage("Không có thông báo nào."),
+        "no_post_available": MessageLookupByLibrary.simpleMessage(
+            "Chưa có bài viết nào được đăng"),
         "no_title": MessageLookupByLibrary.simpleMessage("Không có tiêu đề"),
         "notifications": MessageLookupByLibrary.simpleMessage("Thông báo"),
         "old_password": MessageLookupByLibrary.simpleMessage("Mật khẩu cũ"),
