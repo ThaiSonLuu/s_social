@@ -26,4 +26,23 @@ class FriendModel {
   Map<String, dynamic> toJson() => _$FriendModelToJson(this);
 }
 
+// State of a friend request
 enum FriendState { pending, accepted, declined }
+
+class FriendStatusModel {
+  final String id;
+  final FriendStatus status;
+
+  FriendStatusModel({
+    required this.id,
+    required this.status,
+  });
+}
+
+// Friend status between two peoples
+enum FriendStatus {
+  notExist, // Don't exist in DB
+  needResponse, // They sent for current user
+  waiting, // Current user sent to them
+  friend, // They are friend
+}

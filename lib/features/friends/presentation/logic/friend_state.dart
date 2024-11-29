@@ -1,34 +1,38 @@
 part of 'friend_cubit.dart';
 
-abstract class FriendState extends Equatable {
-  const FriendState();
+abstract class GetFriendState extends Equatable {
+  const GetFriendState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
-class FriendInitial extends FriendState {}
+class FriendInitial extends GetFriendState {}
 
-class FriendLoading extends FriendState {}
+class FriendLoading extends GetFriendState {}
 
-class FriendRequestSent extends FriendState {}
+class FriendDoneAction extends GetFriendState {
+  final FriendAction action;
 
-class FriendRequestStatusChanged extends FriendState {}
-
-class FriendRequestsLoaded extends FriendState {
-  final List<FriendModel> pendingRequests;
-
-  const FriendRequestsLoaded(this.pendingRequests);
-
-  @override
-  List<Object> get props => [pendingRequests];
+  const FriendDoneAction(this.action);
 }
 
-class FriendError extends FriendState {
-  final String error;
+enum FriendAction { sentRequest, accept }
 
-  const FriendError(this.error);
+class FriendLoaded extends GetFriendState {
+  final FriendStatusModel friendStatus;
+
+  const FriendLoaded(this.friendStatus);
 
   @override
-  List<Object> get props => [error];
+  List<Object?> get props => [friendStatus];
+}
+
+class FriendError extends GetFriendState {
+  final String message;
+
+  const FriendError(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

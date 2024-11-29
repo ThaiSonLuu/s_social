@@ -37,4 +37,12 @@ class SUserProfileCubit extends Cubit<SUserProfileState> {
       emit(SUserProfileError(e.toString()));
     }
   }
+
+  UserModel? get user {
+    if (state is SUserProfileLoaded) {
+      return (state as SUserProfileLoaded).user;
+    }
+
+    return null;
+  }
 }

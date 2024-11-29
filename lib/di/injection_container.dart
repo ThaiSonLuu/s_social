@@ -59,6 +59,6 @@ Future<void> initializeDependencies() async {
   );
 
   serviceLocator.registerLazySingleton<FriendRepository>(
-    () => FriendRepositoryImpl(dataSource: serviceLocator()),
+    () => FriendRepositoryImpl(serviceLocator()),
   );
 }

@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:s_social/core/domain/model/friend_model.dart';
+import 'package:s_social/core/presentation/logic/cubit/profile_user/profile_user_cubit.dart';
 import 'package:s_social/core/presentation/view/widgets/text_to_image.dart';
 import 'package:s_social/core/utils/app_router/app_router.dart';
 import 'package:s_social/core/utils/extensions/is_current_user.dart';
@@ -41,11 +43,11 @@ class SUserProfileScreen extends StatelessWidget {
           },
         ),
         BlocProvider(
-          create: (context) {
-            return FriendCubit(
-              friendRepository: serviceLocator(),
-            );
-          },
+          create: (context) => GetFriendCubit(
+            serviceLocator(),
+            serviceLocator(),
+            uid ?? "",
+          )..getFriendStatusWithUser(),
         ),
       ],
       child: _UserProfileScreen(uid),
@@ -81,6 +83,7 @@ class _UserProfileScreen extends StatelessWidget {
         onRefresh: () async {
           context.read<SUserProfileCubit>().getUserInfoByUid();
           context.read<CountFriendCubit>().fetchFriendsCount();
+          context.read<GetFriendCubit>().getFriendStatusWithUser();
         },
         child: Padding(
           padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
@@ -164,10 +167,6 @@ class _UserProfileScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _buildFriendsView(context),
-                  if (!isCurrentUser(uid ?? "")) ...[
-                    const SizedBox(width: 16.0),
-                    _buildSendRequestButton(),
-                  ]
                 ],
               ),
             ),
@@ -246,6 +245,7 @@ class _UserProfileScreen extends StatelessWidget {
               )
             : Image.network(
                 avatarUrl ?? "",
+                fit: BoxFit.cover,
                 width: 110,
                 height: 110,
                 loadingBuilder: (context, child, loadingProgress) {
@@ -334,22 +334,30 @@ class _UserProfileScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          username == null
-              ? Container(
-                  width: 130,
-                  height: 26,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4.0),
-                    color: Theme.of(context).colorScheme.surfaceContainer,
-                  ),
-                )
-              : Text(
-                  username,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge
-                      ?.copyWith(fontWeight: FontWeight.bold),
-                ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              username == null
+                  ? Container(
+                      width: 130,
+                      height: 26,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4.0),
+                        color: Theme.of(context).colorScheme.surfaceContainer,
+                      ),
+                    )
+                  : Text(
+                      username,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+              const SizedBox(width: 10),
+              _buildFriendView(currentUid, uid ?? "")
+            ],
+          ),
           const SizedBox(height: 6.0),
           email == null
               ? Container(
@@ -365,9 +373,9 @@ class _UserProfileScreen extends StatelessWidget {
                       .textTheme
                       .bodyMedium
                       ?.copyWith(fontWeight: FontWeight.w500)),
-          if (bio != null) ...[
+          if ((bio ?? "").isNotEmpty) ...[
             const SizedBox(height: 12.0),
-            Text(bio),
+            Text(bio!),
           ],
         ],
       ),
@@ -447,31 +455,194 @@ class _UserProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSendRequestButton() {
-    return BlocBuilder<FriendCubit, FriendState>(
+  Widget _buildFriendView(String currentUid, String uid) {
+    return BlocConsumer<GetFriendCubit, GetFriendState>(
+      listener: (context, state) {
+        if (state is FriendDoneAction) {
+          context.read<GetFriendCubit>().sendNotification(
+              action: state.action,
+              currentUser: context.read<ProfileUserCubit>().currentUser,
+              targetUser: context.read<ProfileUserCubit>().currentUser);
+        }
+      },
       builder: (context, state) {
         if (state is FriendLoading) {
-          return const CircularProgressIndicator();
-        }
-
-        if (state is FriendRequestSent) {
-          return ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(),
-            child: const Text("Request Sent"),
+          // Show a loading indicator while processing
+          return SizedBox(
+            width: 16,
+            height: 16,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: Theme.of(context).colorScheme.primary,
+            ),
           );
         }
 
-        return ElevatedButton(
-          onPressed: () async {
-            // Call the sendFriendRequest function
-            context
-                .read<FriendCubit>()
-                .sendFriendRequest(currentUid, uid ?? "");
-          },
-          style: ElevatedButton.styleFrom(),
-          child: const Text("Send Request"),
-        );
+        if (state is FriendLoaded) {
+          final friendStatus = state.friendStatus.status;
+
+          switch (friendStatus) {
+            case FriendStatus.notExist:
+              return ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(12.0), // Increased radius
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 6.0,
+                    horizontal: 12.0, // Smaller button padding
+                  ),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                onPressed: () {
+                  context.read<GetFriendCubit>().sendFriendRequest(
+                        senderId: currentUid,
+                        receiverId: uid,
+                      );
+                },
+                child: const Text(
+                  "Send Request",
+                  style: TextStyle(
+                    fontSize: 10.0, // Smaller text size
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              );
+
+            case FriendStatus.waiting:
+              return ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 6.0,
+                    horizontal: 12.0,
+                  ),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                onPressed: () {
+                  context
+                      .read<GetFriendCubit>()
+                      .declineFriendRequest(state.friendStatus.id);
+                },
+                child: const Text(
+                  "Cancel request",
+                  style: TextStyle(
+                    fontSize: 10.0,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              );
+
+            case FriendStatus.needResponse:
+              // Show Accept and Decline buttons
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      // Green for Accept
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 6.0,
+                        horizontal: 12.0,
+                      ),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    onPressed: () {
+                      context
+                          .read<GetFriendCubit>()
+                          .acceptFriendRequest(state.friendStatus.id);
+                    },
+                    child: const Text(
+                      "Accept",
+                      style: TextStyle(
+                        fontSize: 10.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4), // Smaller spacing
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      // Red for Decline
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 6.0,
+                        horizontal: 12.0,
+                      ),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    onPressed: () {
+                      context
+                          .read<GetFriendCubit>()
+                          .declineFriendRequest(state.friendStatus.id);
+                    },
+                    child: const Text(
+                      "Decline",
+                      style: TextStyle(
+                        fontSize: 10.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+
+            case FriendStatus.friend:
+              return ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 6.0,
+                    horizontal: 12.0,
+                  ),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                onPressed: () {
+                  context
+                      .read<GetFriendCubit>()
+                      .declineFriendRequest(state.friendStatus.id);
+                },
+                child: const Text(
+                  "Unfriend",
+                  style: TextStyle(
+                    fontSize: 10.0,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              );
+
+            default:
+              return const SizedBox.shrink();
+          }
+        }
+
+        // Default state (FriendInitial or unhandled states)
+        return const SizedBox.shrink();
       },
     );
   }
