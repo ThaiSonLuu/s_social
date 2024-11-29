@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<ProfileUserCubit>().currentUser;
+    final user = context.watch<ProfileUserCubit>().currentUser;
     return Scaffold(
       appBar: _buildTopAppBar(),
       body: RefreshIndicator(

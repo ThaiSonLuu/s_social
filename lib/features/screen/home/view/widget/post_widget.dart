@@ -61,14 +61,51 @@ class PostWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          userData.avatarUrl != null
-              ? CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(
-                    userData.avatarUrl!,
-                  ),
-                  onBackgroundImageError: (error, stackTrace) {
-                    // Handle error when loading avatar
+          (userData.avatarUrl ?? "").isNotEmpty
+              ? Image.network(
+                  userData.avatarUrl ?? "",
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      // When the image is fully loaded
+                      return Container(
+                        width: 40,
+                        height: 40,
+                        clipBehavior: Clip.hardEdge,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: child,
+                      );
+                      return child;
+                    } else {
+                      // Show shimmer background during loading
+                      return Shimmer.fromColors(
+                        baseColor: Colors.grey.shade300,
+                        highlightColor: Colors.grey.shade400,
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          clipBehavior: Clip.hardEdge,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    // Show a fallback UI for errors
+                    return Container(
+                      width: 40,
+                      height: 40,
+                      clipBehavior: Clip.hardEdge,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.grey,
+                      ),
+                    );
                   },
                 )
               : Container(
