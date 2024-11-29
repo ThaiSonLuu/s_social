@@ -78,6 +78,7 @@ class _MyAppState extends State<MyApp> {
           create: (context) => PostCubit(
             postRepository: serviceLocator(),
             uploadFileRepository: serviceLocator(),
+            userRepository: serviceLocator(),
           ),
         ),
         BlocProvider(

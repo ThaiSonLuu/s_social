@@ -1,14 +1,11 @@
-import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:s_social/core/domain/model/post_model.dart';
 import 'package:s_social/core/domain/model/user_model.dart';
 import 'package:s_social/core/presentation/view/widgets/text_to_image.dart';
 import 'package:s_social/core/utils/app_router/app_router.dart';
+import 'package:s_social/core/utils/shimmer_loading.dart';
 import 'package:s_social/features/screen/home/view/post_screen.dart';
 import 'package:s_social/features/screen/home/view/widget/full_screen_img.dart';
 import 'package:s_social/generated/l10n.dart';
@@ -17,13 +14,11 @@ import 'package:shimmer/shimmer.dart';
 class PostWidget extends StatelessWidget {
   final PostModel postData;
   final UserModel userData;
-  final VoidCallback onTap;
 
   const PostWidget({
     super.key,
     required this.postData,
     required this.userData,
-    required this.onTap,
   });
 
   @override
@@ -243,6 +238,124 @@ class PostWidget extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class ShimmerPost extends StatelessWidget {
+  const ShimmerPost({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildPostHeader(),
+        _buildPostMessage(),
+        _buildPostImage(),
+        _buildPostAction(),
+      ],
+    );
+  }
+
+  Widget _buildPostHeader() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Shimmer.fromColors(
+            baseColor: Colors.grey.shade300,
+            highlightColor: Colors.grey.shade400,
+            child: Container(
+              width: 40,
+              height: 40,
+              clipBehavior: Clip.hardEdge,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ShimmerLoading(
+                  width: 70,
+                  height: 16,
+                ),
+                SizedBox(height: 4),
+                ShimmerLoading(
+                  width: 50,
+                  height: 14,
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPostMessage() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ShimmerLoading(
+            width: 200,
+            height: 18,
+          ),
+          SizedBox(height: 2.0),
+          ShimmerLoading(
+            width: 240,
+            height: 18,
+          ),
+          SizedBox(height: 2.0),
+          ShimmerLoading(
+            width: 220,
+            height: 18,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPostImage() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+      child: ShimmerLoading(
+        width: double.maxFinite,
+        height: 300,
+      ),
+    );
+  }
+
+  Widget _buildPostAction() {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        _buildActionItem(),
+        _buildActionItem(),
+        _buildActionItem(),
+      ],
+    );
+  }
+
+  Widget _buildActionItem() {
+    return const Expanded(
+      flex: 1,
+      child: Padding(
+        padding: EdgeInsets.all(8.0),
+        child: ShimmerLoading(
+          width: 50,
+          height: 30,
+          borderRadius: 8.0,
         ),
       ),
     );

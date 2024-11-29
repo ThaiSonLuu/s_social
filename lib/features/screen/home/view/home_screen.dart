@@ -4,6 +4,7 @@ import 'package:s_social/core/domain/model/user_model.dart';
 import 'package:s_social/core/presentation/logic/cubit/profile_user/profile_user_cubit.dart';
 import 'package:s_social/core/presentation/view/widgets/text_to_image.dart';
 import 'package:s_social/features/screen/home/logic/post_cubit.dart';
+import 'package:s_social/features/screen/home/logic/post_state.dart';
 import 'package:s_social/features/screen/home/view/new_post_screen.dart';
 import 'package:s_social/features/screen/home/view/widget/post_widget.dart';
 import 'package:s_social/core/domain/model/post_model.dart';
@@ -125,46 +126,73 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildListPostView(UserModel? user) {
-    return BlocBuilder<PostCubit, List<PostModel>>(
-      builder: (context, posts) {
-        if (posts.isEmpty) {
-          return const Center(child: Text('No posts available.'));
+    return BlocBuilder<PostCubit, PostState>(
+      builder: (context, state) {
+        List<PostModel> posts = [];
+        bool isLoading = false;
+
+        if (state is PostLoading) {
+          isLoading = true;
         }
 
-        final sortedPosts = List<PostModel>.from(posts)
-          ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+        if (state is PostLoaded) {
+          posts = state.posts;
+        }
+
+        posts.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
 
         return ListView.separated(
           itemCount: posts.length + 1,
           itemBuilder: (context, index) {
+            if (isLoading) {
+              Column(
+                children: [
+                  _buildHeaderView(user),
+                ],
+              );
+            }
+
+            if (posts.isEmpty) {
+              return Column(
+                children: [
+                  _buildHeaderView(user),
+                  const Divider(
+                    color: Colors.grey,
+                    thickness: 0.5,
+                  ),
+                  const ShimmerPost(),
+                  const Divider(
+                    color: Colors.grey,
+                    thickness: 0.5,
+                  ),
+                  const ShimmerPost(),
+                  const Divider(
+                    color: Colors.grey,
+                    thickness: 0.5,
+                  ),
+                  const ShimmerPost(),
+                ],
+              );
+            }
+
             if (index == 0) {
               return _buildHeaderView(user);
             }
 
-            final post = sortedPosts[index - 1];
+            final post = posts[index - 1];
 
-            return FutureBuilder<UserModel>(
+            return FutureBuilder<UserModel?>(
               future: context.read<PostCubit>().getUserById(post.userId!),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const Center(child: Text('Error fetching user.'));
-                } else if (!snapshot.hasData) {
-                  return const Center(
-                    child: Text('User not found.'),
+                if (snapshot.connectionState == ConnectionState.done &&
+                    snapshot.data != null) {
+                  return PostWidget(
+                    postData: post,
+                    userData: snapshot.data!,
                   );
                 }
 
-                final user = snapshot.data!;
-
-                return PostWidget(
-                  postData: post,
-                  userData: user,
-                  onTap: () {
-                    // Logic to handle post taps (e.g., navigate to detail screen)
-                  },
-                );
+                return const ShimmerPost();
               },
             );
           },
