@@ -12,12 +12,12 @@ class CountFriendInitial extends CountFriendState {}
 class CountFriendLoading extends CountFriendState {}
 
 class CountFriendLoaded extends CountFriendState {
-  final int friendsCount;
+  final List<UserModel> friends;
 
-  const CountFriendLoaded(this.friendsCount);
+  const CountFriendLoaded(this.friends);
 
   @override
-  List<Object> get props => [friendsCount];
+  List<Object> get props => [friends];
 }
 
 class CountFriendError extends CountFriendState {

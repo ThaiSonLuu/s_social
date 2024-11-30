@@ -75,22 +75,10 @@ class _MyAppState extends State<MyApp> {
           create: (context) => _unreadNotificationsCubit,
         ),
         BlocProvider(
-          create: (context) => PostCubit(
-            postRepository: serviceLocator(),
-            uploadFileRepository: serviceLocator(),
-            userRepository: serviceLocator(),
+          create: (context) => ReactionCubit(
+            serviceLocator<ReactionRepository>(),
           ),
         ),
-        BlocProvider(
-          create: (context) => CommentCubit(
-            commentRepository: serviceLocator(),
-            uploadFileRepository: serviceLocator(),
-          ),
-        ),
-        BlocProvider(
-          create: (context) => ReactionCubit(serviceLocator<ReactionRepository>()),
-        ),
-
       ],
       child: BlocBuilder<AppLanguageCubit, AppLanguageState>(
         builder: (context, appLanguageState) {

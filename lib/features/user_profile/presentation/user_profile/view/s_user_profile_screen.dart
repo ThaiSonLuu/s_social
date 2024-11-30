@@ -1,9 +1,11 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:s_social/core/domain/model/friend_model.dart';
+import 'package:s_social/core/domain/model/user_model.dart';
 import 'package:s_social/core/presentation/logic/cubit/profile_user/profile_user_cubit.dart';
 import 'package:s_social/core/presentation/view/widgets/text_to_image.dart';
 import 'package:s_social/core/utils/app_router/app_router.dart';
@@ -41,6 +43,7 @@ class SUserProfileScreen extends StatelessWidget {
         BlocProvider(
           create: (context) {
             return CountFriendCubit(
+              serviceLocator(),
               serviceLocator(),
               uid,
             )..fetchFriendsCount();
@@ -388,41 +391,133 @@ class _UserProfileScreen extends StatelessWidget {
       child: BlocBuilder<CountFriendCubit, CountFriendState>(
         builder: (context, state) {
           if (state is CountFriendLoaded) {
-            return Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            return Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Column(
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      S.of(context).friends,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    Column(
+                      children: [
+                        Text(
+                          S.of(context).friends,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          "${state.friends.length} ${S.of(context).friends.toLowerCase()}",
+                        ),
+                      ],
                     ),
-                    Text(
-                        "${state.friendsCount} ${S.of(context).friends.toLowerCase()}"),
+                    if (!isCurrentUser(uid ?? ""))
+                      _buildFriendView(currentUid, uid ?? "")
                   ],
                 ),
-                if (!isCurrentUser(uid ?? ""))
-                  _buildFriendView(currentUid, uid ?? "")
+                GridView.count(
+                  physics: const NeverScrollableScrollPhysics(),
+                  primary: false,
+                  shrinkWrap: true,
+                  mainAxisSpacing: 8.0,
+                  crossAxisSpacing: 8.0,
+                  crossAxisCount: 3,
+                  childAspectRatio: 0.7,
+                  children: state.friends
+                      .take(6)
+                      .map((e) => _buildUserFriendItem(context, e))
+                      .toList(),
+                ),
               ],
             );
           }
 
-          return const SizedBox(
+          return SizedBox(
             width: double.maxFinite,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ShimmerLoading(width: 70, height: 20),
-                SizedBox(height: 2),
-                ShimmerLoading(width: 65, height: 18),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ShimmerLoading(width: 70, height: 20),
+                        SizedBox(height: 2),
+                        ShimmerLoading(width: 65, height: 18),
+                      ],
+                    ),
+                    if (!isCurrentUser(uid ?? ""))
+                      const ShimmerLoading(
+                        width: 80,
+                        height: 24,
+                        borderRadius: 20,
+                      )
+                  ],
+                ),
+                GridView.count(
+                  physics: const NeverScrollableScrollPhysics(),
+                  primary: false,
+                  shrinkWrap: true,
+                  mainAxisSpacing: 8.0,
+                  crossAxisSpacing: 8.0,
+                  crossAxisCount: 3,
+                  childAspectRatio: 0.7,
+                  children: List.generate(
+                    6,
+                    (index) => const ShimmerLoading(
+                      width: double.maxFinite,
+                      height: double.maxFinite,
+                      borderRadius: 8.0,
+                    ),
+                  ),
+                )
               ],
             ),
           ); // Default empty state
         },
+      ),
+    );
+  }
+
+  Widget _buildUserFriendItem(BuildContext context, UserModel friendUserModel) {
+    return GestureDetector(
+      onTap: () {
+        context.push("${RouterUri.profile}/${friendUserModel.id}");
+      },
+      child: Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+          color: Theme.of(context).colorScheme.surfaceContainer,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Expanded(
+              child: SizedBox(
+                width: double.maxFinite,
+                height: double.maxFinite,
+                child: CacheImage(
+                  imageUrl: friendUserModel.avatarUrl ?? "",
+                  loadingWidth: double.maxFinite,
+                  loadingHeight: double.maxFinite,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text(
+                friendUserModel.username ?? "",
+                style: const TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -771,20 +866,41 @@ class UserProfileShimmer extends StatelessWidget {
         const SizedBox(height: 24),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
             children: [
-              const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ShimmerLoading(width: 70, height: 20),
-                  SizedBox(
-                    height: 2,
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ShimmerLoading(width: 70, height: 20),
+                      SizedBox(
+                        height: 2,
+                      ),
+                      ShimmerLoading(width: 65, height: 18),
+                    ],
                   ),
-                  ShimmerLoading(width: 65, height: 18),
+                  if (!isCurrentUser(uid)) _buildFriendView(),
                 ],
               ),
-              if (!isCurrentUser(uid)) _buildFriendView(),
+              GridView.count(
+                physics: const NeverScrollableScrollPhysics(),
+                primary: false,
+                shrinkWrap: true,
+                mainAxisSpacing: 8.0,
+                crossAxisSpacing: 8.0,
+                crossAxisCount: 3,
+                childAspectRatio: 0.7,
+                children: List.generate(
+                  6,
+                  (index) => const ShimmerLoading(
+                    width: double.maxFinite,
+                    height: double.maxFinite,
+                    borderRadius: 8.0,
+                  ),
+                ),
+              ),
             ],
           ),
         ),

@@ -5,18 +5,54 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:s_social/core/domain/model/comment_model.dart';
 import 'package:s_social/core/domain/model/post_model.dart';
 import 'package:s_social/core/domain/model/user_model.dart';
+import 'package:s_social/di/injection_container.dart';
+import 'package:s_social/features/screen/home/logic/post_cubit.dart';
 import 'package:s_social/features/screen/home/view/widget/comment_widget.dart';
 import '../../../../core/domain/model/reaction_model.dart';
 import '../../../../generated/l10n.dart';
 import '../logic/comment_cubit.dart';
 import '../logic/reaction_cubit.dart';
 
-class PostScreen extends StatefulWidget {
+class PostScreen extends StatelessWidget {
+  const PostScreen({
+    super.key,
+    required this.postData,
+    required this.postUserData,
+  });
+
   final PostModel postData;
   final UserModel? postUserData;
 
-  const PostScreen({
-    super.key,
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => CommentCubit(
+              commentRepository: serviceLocator(),
+              uploadFileRepository: serviceLocator()),
+        ),
+        BlocProvider(
+          create: (context) => PostCubit(
+            postRepository: serviceLocator(),
+            uploadFileRepository: serviceLocator(),
+            userRepository: serviceLocator(),
+          ),
+        ),
+      ],
+      child: _PostScreen(
+        postData: postData,
+        postUserData: postUserData,
+      ),
+    );
+  }
+}
+
+class _PostScreen extends StatefulWidget {
+  final PostModel postData;
+  final UserModel? postUserData;
+
+  const _PostScreen({
     required this.postData,
     required this.postUserData,
   });
@@ -25,7 +61,7 @@ class PostScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _PostScreenState();
 }
 
-class _PostScreenState extends State<PostScreen> {
+class _PostScreenState extends State<_PostScreen> {
   bool isReact = false;
   int reactCount = 0;
 
@@ -53,10 +89,12 @@ class _PostScreenState extends State<PostScreen> {
 
   void _fetchReactCount() async {
     final reactionCubit = context.read<ReactionCubit>();
-    reactionCubit.countReactions(
+    reactionCubit
+        .countReactions(
       widget.postData.id!,
       'posts',
-    ).listen((count) {
+    )
+        .listen((count) {
       if (mounted) {
         setState(() {
           reactCount = count;
@@ -131,13 +169,19 @@ class _PostScreenState extends State<PostScreen> {
                           ),
                         ),
                         StreamBuilder<List<CommentModel>>(
-                          stream: context.read<CommentCubit>().loadComments(widget.postData.id!),
+                          stream: context
+                              .read<CommentCubit>()
+                              .loadComments(widget.postData.id!),
                           builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Center(child: CircularProgressIndicator());
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
                             } else if (snapshot.hasError) {
-                              return const Center(child: Text('Error fetching comments.'));
-                            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return const Center(
+                                  child: Text('Error fetching comments.'));
+                            } else if (!snapshot.hasData ||
+                                snapshot.data!.isEmpty) {
                               return Center(
                                 child: Padding(
                                   padding: const EdgeInsets.all(16.0),
@@ -255,12 +299,14 @@ class _PostSection extends StatelessWidget {
                     IconButton(
                       icon: Icon(
                         isReact ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
-                        color: isReact ? Colors.blue : Theme.of(context).colorScheme.onPrimaryFixed,
+                        color: isReact
+                            ? Colors.blue
+                            : Theme.of(context).colorScheme.onPrimaryFixed,
                       ),
                       onPressed: toggleReact,
                     ),
                     Text(
-                        '$reactCount ${S.of(context).like}',
+                      '$reactCount ${S.of(context).like}',
                       style: TextStyle(
                         fontSize: 15,
                         // color: isReact ? Colors.blue : Theme.of(context).colorScheme.onPrimaryFixed,
