@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +9,7 @@ import 'package:s_social/core/presentation/view/widgets/text_to_image.dart';
 import 'package:s_social/core/utils/app_router/app_router.dart';
 import 'package:s_social/core/utils/extensions/is_current_user.dart';
 import 'package:s_social/core/utils/shimmer_loading.dart';
+import 'package:s_social/core/utils/ui/cache_image.dart';
 import 'package:s_social/di/injection_container.dart';
 import 'package:s_social/features/friends/presentation/logic/count_friend_cubit.dart';
 import 'package:s_social/features/friends/presentation/logic/friend_cubit.dart';
@@ -202,34 +202,15 @@ class _UserProfileScreen extends StatelessWidget {
       width: double.maxFinite,
       child: AspectRatio(
         aspectRatio: 2.2,
-        child: isLoading
-            ? Container(
-                color: Theme.of(context).colorScheme.surfaceContainer,
+        child: (backgroundUrl ?? "").isNotEmpty
+            ? CacheImage(
+                imageUrl: backgroundUrl ?? "",
+                loadingWidth: double.maxFinite,
+                loadingHeight: double.maxFinite,
               )
-            : Image.network(
-                backgroundUrl ?? "",
+            : Image.asset(
+                randomBackground.path,
                 fit: BoxFit.fill,
-                loadingBuilder: (context, child, loadingProgress) {
-                  return Container(
-                    width: 110,
-                    height: 110,
-                    color: Theme.of(context).colorScheme.surfaceContainer,
-                    child: child,
-                  );
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return SizedBox(
-                    width: 110,
-                    height: 110,
-                    child: Image.asset(
-                      randomBackground.path,
-                      fit: BoxFit.fill,
-                    ),
-                  );
-                },
-                frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                  return child;
-                },
               ),
       ),
     );
@@ -253,38 +234,19 @@ class _UserProfileScreen extends StatelessWidget {
         decoration: const BoxDecoration(
           shape: BoxShape.circle,
         ),
-        child: isLoading
-            ? Container(
+        child: (avatarUrl ?? "").isNotEmpty
+            ? SizedBox(
                 width: 110,
                 height: 110,
-                color: Theme.of(context).colorScheme.surfaceContainer,
+                child: CacheImage(
+                  imageUrl: avatarUrl ?? "",
+                  loadingWidth: 110,
+                  loadingHeight: 110,
+                ),
               )
-            : Image.network(
-                avatarUrl ?? "",
-                fit: BoxFit.cover,
-                width: 110,
-                height: 110,
-                loadingBuilder: (context, child, loadingProgress) {
-                  return Container(
-                    width: 110,
-                    height: 110,
-                    color: Theme.of(context).colorScheme.surfaceContainer,
-                    child: child,
-                  );
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return SizedBox(
-                    width: 110,
-                    height: 110,
-                    child: TextToImage(
-                      text: username?[0].toUpperCase() ?? "S",
-                      textSize: 48,
-                    ),
-                  );
-                },
-                frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                  return child;
-                },
+            : TextToImage(
+                text: username?[0].toUpperCase() ?? "S",
+                textSize: 48,
               ),
       ),
     );
