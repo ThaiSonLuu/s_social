@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:s_social/core/domain/model/comment_model.dart';
 import 'package:s_social/core/domain/model/user_model.dart';
+import '../../../../../core/domain/model/reaction_model.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../../../core/domain/model/post_model.dart';
+import '../../logic/reaction_cubit.dart';
 import 'full_screen_img.dart';
 
-class CommentWidget extends StatelessWidget {
+class CommentWidget extends StatefulWidget {
   final CommentModel commentData;
   final PostModel postData;
   final UserModel userData;
@@ -18,6 +21,68 @@ class CommentWidget extends StatelessWidget {
     required this.userData,
   }) : super(key: key);
 
+  @override
+  State<CommentWidget> createState() => _CommentWidgetState();
+}
+
+
+class _CommentWidgetState extends State<CommentWidget> {
+  bool isReact = false;
+  int reactCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchReactStatus();
+    _fetchReactCount();
+  }
+
+  void _fetchReactStatus() async {
+    final reactionCubit = context.read<ReactionCubit>();
+    bool reacted = await reactionCubit.checkUserReacted(
+      widget.commentData.id!,
+      'comments',
+      'like',
+    );
+    if (mounted) {
+      setState(() {
+        isReact = reacted;
+      });
+    }
+  }
+
+  void _fetchReactCount() async {
+    final reactionCubit = context.read<ReactionCubit>();
+    reactionCubit.countReactions(
+      widget.commentData.id!,
+      'comments',
+    ).listen((count) {
+      if (mounted) {
+        setState(() {
+          reactCount = count;
+        });
+      }
+    });
+  }
+
+  void _toggleReact() {
+    final reactionCubit = context.read<ReactionCubit>();
+    reactionCubit.toggleReaction(
+      ReactionModel(
+        userId: widget.userData.id,
+        targetId: widget.commentData.id,
+        targetType: 'comments',
+        reactionType: 'like',
+        isReaction: !isReact,
+        updateTime: DateTime.now(),
+      ),
+    );
+
+    setState(() {
+      isReact = !isReact;
+    });
+  }
+
   String _formatDateTime(DateTime? dateTime) {
     if (dateTime == null) return 'Unknown date';
     return DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
@@ -25,9 +90,9 @@ class CommentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String formattedDate = _formatDateTime(commentData.createdAt);
-    String userName = postData.userId != null
-        ? userData.username.toString()
+    String formattedDate = _formatDateTime(widget.commentData.createdAt);
+    String userName = widget.postData.userId != null
+        ? widget.userData.username.toString()
         : S.of(context).anonymous;
 
     return Padding(
@@ -39,7 +104,7 @@ class CommentWidget extends StatelessWidget {
           CircleAvatar(
             radius: 16,
             backgroundImage: NetworkImage(
-              userData.avatarUrl ?? 'https://placehold.co/80x80',
+              widget.userData.avatarUrl ?? 'https://placehold.co/80x80',
             ),
           ),
           const SizedBox(width: 8),
@@ -71,16 +136,16 @@ class CommentWidget extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       // Nội dung văn bản comment
-                      if (commentData.commentText?.isNotEmpty ?? false)
+                      if (widget.commentData.commentText?.isNotEmpty ?? false)
                         Text(
-                          commentData.commentText!,
+                          widget.commentData.commentText!,
                           style: TextStyle(
                             fontSize: 14,
                             color: Theme.of(context).colorScheme.onPrimaryFixed,
                           ),
                         ),
                       // Ảnh đính kèm (nếu có)
-                      if (commentData.commentImg?.isNotEmpty ?? false)
+                      if (widget.commentData.commentImg?.isNotEmpty ?? false)
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: GestureDetector(
@@ -88,14 +153,14 @@ class CommentWidget extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => FullScreenImg(
-                                  imageUrl: commentData.commentImg!,
+                                  imageUrl: widget.commentData.commentImg!,
                                 ),
                               ),
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(8),
                               child: Image.network(
-                                commentData.commentImg!,
+                                widget.commentData.commentImg!,
                                 fit: BoxFit.cover,
                                 errorBuilder: (_, __, ___) => const Center(
                                   child: Text('Image failed to load'),
@@ -120,21 +185,20 @@ class CommentWidget extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 16),
-                      Text(
-                        S.of(context).like,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Theme.of(context).colorScheme.onPrimaryFixed,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Text(
-                        'Phản hồi',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Theme.of(context).colorScheme.onPrimaryFixed,
-                          fontWeight: FontWeight.bold,
+                      GestureDetector(
+                        onTap: _toggleReact,
+                        child: Row(
+                          children: [
+                            const SizedBox(width: 4),
+                            Text(
+                              '$reactCount ' + S.of(context).like,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: isReact ? Colors.blue : Theme.of(context).colorScheme.onPrimaryFixed,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],

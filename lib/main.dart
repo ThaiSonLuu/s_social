@@ -14,6 +14,8 @@ import 'package:s_social/features/notifications/presentation/logic/unread_notifi
 import 'package:s_social/features/screen/home/logic/comment_cubit.dart';
 import 'package:s_social/features/screen/home/logic/post_cubit.dart';
 import 'package:s_social/generated/l10n.dart';
+import 'package:s_social/features/screen/home/logic/reaction_cubit.dart';
+import 'core/domain/repository/reation_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -87,6 +89,10 @@ class _MyAppState extends State<MyApp> {
             uploadFileRepository: serviceLocator(),
           ),
         ),
+        BlocProvider(
+          create: (context) => ReactionCubit(serviceLocator<ReactionRepository>()),
+        ),
+
       ],
       child: BlocBuilder<AppLanguageCubit, AppLanguageState>(
         builder: (context, appLanguageState) {

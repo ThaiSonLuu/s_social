@@ -6,8 +6,10 @@ import 'package:s_social/core/domain/model/comment_model.dart';
 import 'package:s_social/core/domain/model/post_model.dart';
 import 'package:s_social/core/domain/model/user_model.dart';
 import 'package:s_social/features/screen/home/view/widget/comment_widget.dart';
+import '../../../../core/domain/model/reaction_model.dart';
 import '../../../../generated/l10n.dart';
 import '../logic/comment_cubit.dart';
+import '../logic/reaction_cubit.dart';
 
 class PostScreen extends StatefulWidget {
   final PostModel postData;
@@ -24,10 +26,61 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
+  bool isReact = false;
+  int reactCount = 0;
+
   @override
   void initState() {
     super.initState();
     context.read<CommentCubit>().loadComments(widget.postData.id!);
+    _fetchReactStatus();
+    _fetchReactCount();
+  }
+
+  void _fetchReactStatus() async {
+    final reactionCubit = context.read<ReactionCubit>();
+    bool reacted = await reactionCubit.checkUserReacted(
+      widget.postData.id!,
+      'posts',
+      'like',
+    );
+    if (mounted) {
+      setState(() {
+        isReact = reacted;
+      });
+    }
+  }
+
+  void _fetchReactCount() async {
+    final reactionCubit = context.read<ReactionCubit>();
+    reactionCubit.countReactions(
+      widget.postData.id!,
+      'posts',
+    ).listen((count) {
+      if (mounted) {
+        setState(() {
+          reactCount = count;
+        });
+      }
+    });
+  }
+
+  void _toggleReact() {
+    final reactionCubit = context.read<ReactionCubit>();
+    reactionCubit.toggleReaction(
+      ReactionModel(
+        userId: widget.postUserData?.id,
+        targetId: widget.postData.id,
+        targetType: 'posts',
+        reactionType: 'like',
+        isReaction: !isReact,
+        updateTime: DateTime.now(),
+      ),
+    );
+
+    setState(() {
+      isReact = !isReact;
+    });
   }
 
   @override
@@ -62,6 +115,9 @@ class _PostScreenState extends State<PostScreen> {
                         _PostSection(
                           postData: widget.postData,
                           userData: widget.postUserData,
+                          reactCount: reactCount,
+                          isReact: isReact,
+                          toggleReact: _toggleReact,
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(
@@ -74,9 +130,14 @@ class _PostScreenState extends State<PostScreen> {
                             ),
                           ),
                         ),
-                        BlocBuilder<CommentCubit, List<CommentModel>>(
-                          builder: (context, comments) {
-                            if (comments.isEmpty) {
+                        StreamBuilder<List<CommentModel>>(
+                          stream: context.read<CommentCubit>().loadComments(widget.postData.id!),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return const Center(child: Text('Error fetching comments.'));
+                            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                               return Center(
                                 child: Padding(
                                   padding: const EdgeInsets.all(16.0),
@@ -84,6 +145,7 @@ class _PostScreenState extends State<PostScreen> {
                                 ),
                               );
                             }
+                            List<CommentModel> comments = snapshot.data!;
 
                             return ListView.builder(
                               shrinkWrap: true,
@@ -150,10 +212,16 @@ class _PostScreenState extends State<PostScreen> {
 class _PostSection extends StatelessWidget {
   final PostModel postData;
   final UserModel? userData;
+  final bool isReact;
+  final int reactCount;
+  final VoidCallback toggleReact;
 
   const _PostSection({
     required this.postData,
     required this.userData,
+    required this.reactCount,
+    required this.isReact,
+    required this.toggleReact,
   });
 
   @override
@@ -184,11 +252,21 @@ class _PostSection extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.thumb_up_alt_outlined),
-                    const SizedBox(
-                      width: 10,
+                    IconButton(
+                      icon: Icon(
+                        isReact ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
+                        color: isReact ? Colors.blue : Theme.of(context).colorScheme.onPrimaryFixed,
+                      ),
+                      onPressed: toggleReact,
                     ),
-                    Text('${postData.like} ${S.of(context).like}'),
+                    Text(
+                        '$reactCount ${S.of(context).like}',
+                      style: TextStyle(
+                        fontSize: 15,
+                        // color: isReact ? Colors.blue : Theme.of(context).colorScheme.onPrimaryFixed,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
               ],

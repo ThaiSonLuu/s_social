@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:s_social/core/domain/model/post_model.dart';
@@ -14,8 +15,10 @@ import 'package:s_social/features/screen/home/view/widget/full_screen_img.dart';
 import 'package:s_social/gen/assets.gen.dart';
 import 'package:s_social/generated/l10n.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../../../../core/domain/model/reaction_model.dart';
+import '../../logic/reaction_cubit.dart';
 
-class PostWidget extends StatelessWidget {
+class PostWidget extends StatefulWidget {
   final PostModel postData;
   final UserModel? userData;
 
@@ -26,13 +29,74 @@ class PostWidget extends StatelessWidget {
   });
 
   @override
+  State<PostWidget> createState() => _PostWidgetState();
+}
+
+
+class _PostWidgetState extends State<PostWidget> {
+  bool isReact = false;
+  int reactCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchReactStatus();
+    _fetchReactCount();
+  }
+
+  void _fetchReactStatus() async {
+    final reactionCubit = context.read<ReactionCubit>();
+    bool reacted = await reactionCubit.checkUserReacted(
+      widget.postData.id!,
+      'posts',
+      'like',
+    );
+    if (mounted) {
+      setState(() {
+        isReact = reacted;
+      });
+    }
+  }
+
+  void _fetchReactCount() async {
+    final reactionCubit = context.read<ReactionCubit>();
+    reactionCubit.countReactions(
+      widget.postData.id!,
+      'posts',
+    ).listen((count) {
+      if (mounted) {
+        setState(() {
+          reactCount = count;
+        });
+      }
+    });
+  }
+
+  void _toggleReact() {
+    final reactionCubit = context.read<ReactionCubit>();
+    reactionCubit.toggleReaction(
+      ReactionModel(
+        userId: widget.userData?.id,
+        targetId: widget.postData.id,
+        targetType: 'posts',
+        reactionType: 'like',
+        isReaction: !isReact,
+        updateTime: DateTime.now(),
+      ),
+    );
+
+    setState(() {
+      isReact = !isReact;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    String displayName = postData.userId != null
-        ? (userData?.username).toString()
+    String displayName = widget.postData.userId != null
+        ? (widget.userData?.username).toString()
         : S.of(context).anonymous;
 
-    String formattedDate =
-        DateFormat('dd/MM/yyyy HH:mm').format(postData.createdAt!);
+    String formattedDate = DateFormat('dd/MM/yyyy HH:mm').format(widget.postData.createdAt!);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,8 +104,8 @@ class PostWidget extends StatelessWidget {
         // Avatar, username, and post time
         GestureDetector(
           onTap: () {
-            if (userData != null) {
-              context.push("${RouterUri.profile}/${userData!.id}");
+            if (widget.userData != null) {
+              context.push("${RouterUri.profile}/${widget.userData!.id}");
             }
           },
           child: _buildPostHeader(
@@ -97,7 +161,7 @@ class PostWidget extends StatelessWidget {
   }
 
   Widget _buildPostUserAvatar() {
-    if (postData.userId == null) {
+    if (widget.postData.userId == null) {
       return Container(
         width: 40,
         height: 40,
@@ -110,7 +174,7 @@ class PostWidget extends StatelessWidget {
       );
     }
 
-    if ((userData?.avatarUrl ?? "").isNotEmpty) {
+    if ((widget.userData?.avatarUrl ?? "").isNotEmpty) {
       return Container(
         width: 40,
         height: 40,
@@ -119,7 +183,7 @@ class PostWidget extends StatelessWidget {
           shape: BoxShape.circle,
         ),
         child: CacheImage(
-          imageUrl: userData?.avatarUrl ?? "",
+          imageUrl: widget.userData?.avatarUrl ?? "",
           loadingWidth: 40,
           loadingHeight: 40,
         ),
@@ -133,18 +197,18 @@ class PostWidget extends StatelessWidget {
         shape: BoxShape.circle,
       ),
       child: TextToImage(
-        text: (userData?.username).toString()[0],
+        text: (widget.userData?.username).toString()[0],
         textSize: 16.0,
       ),
     );
   }
 
   Widget _buildPostMessage() {
-    if (postData.postContent != null && postData.postContent!.isNotEmpty) {
+    if (widget.postData.postContent != null && widget.postData.postContent!.isNotEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
         child: Text(
-          postData.postContent!,
+          widget.postData.postContent!,
           style: const TextStyle(fontSize: 14),
         ),
       );
@@ -156,7 +220,7 @@ class PostWidget extends StatelessWidget {
   Widget _buildPostImage({
     required BuildContext context,
   }) {
-    if (postData.postImage != null && postData.postImage!.isNotEmpty) {
+    if (widget.postData.postImage != null && widget.postData.postImage!.isNotEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: GestureDetector(
@@ -165,14 +229,14 @@ class PostWidget extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    FullScreenImg(imageUrl: postData.postImage!),
+                    FullScreenImg(imageUrl: widget.postData.postImage!),
               ),
             );
           },
           child: LayoutBuilder(
             builder: (context, constraints) {
               return CacheImage(
-                imageUrl: postData.postImage ?? "",
+                imageUrl: widget.postData.postImage ?? "",
                 loadingWidth: constraints.maxWidth,
                 loadingHeight: constraints.maxWidth * 0.6,
               );
@@ -192,20 +256,22 @@ class PostWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       children: [
         _buildPostItem(
-          icon: Icons.thumb_up_alt_outlined,
-          label: "${postData.like} ${S.of(context).like}",
-          onTap: () {},
+          icon: isReact ? Icons.thumb_up : Icons.thumb_up_outlined,
+          label: "$reactCount ${S.of(context).like}",
+          color: isReact ? Colors.blue : Theme.of(context).colorScheme.onPrimaryFixed,
+          onTap: _toggleReact,
         ),
         _buildPostItem(
           icon: Icons.comment_outlined,
           label: S.of(context).comment,
+          color: Theme.of(context).colorScheme.onPrimaryFixed,
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => PostScreen(
-                  postData: postData,
-                  postUserData: userData,
+                  postData: widget.postData,
+                  postUserData: widget.userData,
                 ),
               ),
             );
@@ -214,6 +280,7 @@ class PostWidget extends StatelessWidget {
         _buildPostItem(
           icon: Icons.share_outlined,
           label: S.of(context).share,
+          color: Theme.of(context).colorScheme.onPrimaryFixed,
           onTap: () {},
         ),
       ],
@@ -223,6 +290,7 @@ class PostWidget extends StatelessWidget {
   Widget _buildPostItem({
     required IconData icon,
     required String label,
+    required Color color,
     required VoidCallback onTap,
   }) {
     return Expanded(
@@ -235,7 +303,7 @@ class PostWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(icon),
+                Icon(icon, color: color,),
                 const SizedBox(width: 6.0),
                 Text(label),
               ],

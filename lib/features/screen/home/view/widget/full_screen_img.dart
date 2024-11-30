@@ -16,12 +16,24 @@ class FullScreenImg extends StatelessWidget {
       ),
       body: Center(
         child: InteractiveViewer(
-          child: Image.network(
-            imageUrl,
-            fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) {
-              return Center(child: Text('Image failed to load', style: TextStyle(color: Theme.of(context).colorScheme.onSurface)));
-            },
+          maxScale: 10.0,
+          minScale: 1,
+          child: ClipRect(
+            child: Align(
+              alignment: Alignment.center,
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Center(
+                    child: Text(
+                      'Image failed to load',
+                      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
         ),
       ),
