@@ -47,11 +47,30 @@ class PostCubit extends Cubit<PostState> {
     }
   }
 
-  Future<void> createPost(PostModel post) async {
+  Future<PostModel?> createPost(
+    String? userId,
+    String content,
+    File? imageFile,
+  ) async {
     try {
-      await postRepository.createPost(post);
-      await loadPosts();
-    } catch (_) {}
+      String? imgUrl;
+
+      if (imageFile != null) {
+        imgUrl = await uploadImageToFirebase(imageFile);
+      }
+
+      final newPost = PostModel(
+        id: null,
+        userId: userId,
+        postContent: content,
+        postImage: imgUrl,
+        createdAt: DateTime.now(),
+        like: 0,
+      );
+      return await postRepository.createPost(newPost);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<void> deletePost(PostModel postId) async {

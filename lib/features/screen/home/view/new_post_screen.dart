@@ -1,20 +1,43 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:s_social/core/presentation/logic/cubit/profile_user/profile_user_cubit.dart';
-import 'package:s_social/generated/l10n.dart';
-import '../../../../core/domain/model/post_model.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:convert';
-import '../logic/post_cubit.dart';
+import 'package:s_social/core/presentation/logic/cubit/profile_user/profile_user_cubit.dart';
+import 'package:s_social/core/utils/ui/dialog_loading.dart';
+import 'package:s_social/di/injection_container.dart';
+import 'package:s_social/features/screen/home/logic/post_cubit.dart';
+import 'package:s_social/generated/l10n.dart';
 
-class NewPostScreen extends StatefulWidget {
+class NewPostScreen extends StatelessWidget {
+  const NewPostScreen({super.key});
+
   @override
-  _NewPostState createState() => _NewPostState();
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => PostCubit(
+            postRepository: serviceLocator(),
+            uploadFileRepository: serviceLocator(),
+            userRepository: serviceLocator(),
+          ),
+        ),
+      ],
+      child: const _NewPostScreen(),
+    );
+  }
 }
 
-class _NewPostState extends State<NewPostScreen> {
+class _NewPostScreen extends StatefulWidget {
+  const _NewPostScreen();
+
+  @override
+  State<StatefulWidget> createState() => _NewPostState();
+}
+
+class _NewPostState extends State<_NewPostScreen> {
   final TextEditingController _contentController = TextEditingController();
   bool postAnonymous = false;
   String? username;
@@ -51,8 +74,9 @@ class _NewPostState extends State<NewPostScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: Icon(Icons.arrow_back)),
+          onPressed: () => context.pop(),
+          icon: const Icon(Icons.arrow_back),
+        ),
         title: Text(S.of(context).new_post),
         automaticallyImplyLeading: false,
       ),
@@ -72,7 +96,7 @@ class _NewPostState extends State<NewPostScreen> {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(S.of(context).post_by + ': $username'),
+                      Text('${S.of(context).post_by}: $username'),
                       Switch(
                         value: postAnonymous,
                         onChanged: (value) {
@@ -126,28 +150,20 @@ class _NewPostState extends State<NewPostScreen> {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () async {
-                  String? imgUrl;
-
-                  if (_selectedImg != null) {
-                    print('Selected image path: ${_selectedImg!.path}');
-                    imgUrl = await context
-                        .read<PostCubit>()
-                        .uploadImageToFirebase(_selectedImg!);
-                  }
-
-                  DocumentReference docRef =
-                      FirebaseFirestore.instance.collection('posts').doc();
-                  final newPost = PostModel(
-                    id: docRef.id,
-                    userId: postAnonymous ? null : userId,
-                    postContent: _contentController.text,
-                    // postImage: _selectedImg != null ? _selectedImg!.path : null,
-                    postImage: imgUrl,
-                    createdAt: DateTime.now(),
-                    like: 0,
+                  final shouldReload = await context.showDialogLoading<bool>(
+                    future: () async {
+                      final result = await context.read<PostCubit>().createPost(
+                            postAnonymous ? null : userId,
+                            _contentController.text,
+                            _selectedImg,
+                          );
+                      return result != null;
+                    },
                   );
-                  await context.read<PostCubit>().createPost(newPost);
-                  Navigator.pop(context, newPost);
+
+                  if (context.mounted) {
+                    context.pop(shouldReload);
+                  }
                 },
                 child: Text(S.of(context).post),
               ),

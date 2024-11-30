@@ -14,7 +14,7 @@ class PostModel {
   final int? like;
 
   PostModel({
-    required this.id,
+    this.id,
     required this.userId,
     required this.postContent,
     required this.postImage,

@@ -44,15 +44,14 @@ class EditUserProfileCubit extends Cubit<EditUserProfileState> {
     }
   }
 
-  Future<void> updateUser({
+  Future<String?> updateUser({
     File? backgroundImage,
     File? avatarImage,
     required UserModel user,
   }) async {
     try {
       if (_uid == null) {
-        emit(EditUserProfileError(S.current.an_error_occur));
-        return;
+        return S.current.an_error_occur;
       }
 
       if (backgroundImage != null) {
@@ -68,13 +67,12 @@ class EditUserProfileCubit extends Cubit<EditUserProfileState> {
 
       final result = await _userRepository.updateUser(user);
       if (result == null) {
-        emit(EditUserProfileError(S.current.an_error_occur));
-        return;
+        return S.current.an_error_occur;
       }
 
-      emit(EditUserProfileUpdated(result));
+      return null;
     } catch (e) {
-      emit(EditUserProfileError(e.toString()));
+      return S.current.an_error_occur;
     }
   }
 }

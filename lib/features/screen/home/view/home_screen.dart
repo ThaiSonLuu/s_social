@@ -124,12 +124,14 @@ class _HomeScreenState extends State<_HomeScreen> {
           Expanded(
             child: GestureDetector(
               onTap: () async {
-                final newPost = await Navigator.push(
+                final shouldReload = await Navigator.push<bool>(
                   context,
-                  MaterialPageRoute(builder: (context) => NewPostScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const NewPostScreen(),
+                  ),
                 );
-                if (mounted && newPost != null) {
-                  context.read<PostCubit>().createPost(newPost);
+                if (mounted && shouldReload == true) {
+                  context.read<PostCubit>().loadPosts();
                 }
               },
               child: Container(

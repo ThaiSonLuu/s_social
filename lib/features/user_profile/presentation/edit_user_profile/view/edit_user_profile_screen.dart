@@ -11,6 +11,7 @@ import 'package:s_social/core/presentation/view/widgets/text_to_image.dart';
 import 'package:s_social/core/utils/shimmer_loading.dart';
 import 'package:s_social/core/utils/snack_bar.dart';
 import 'package:s_social/core/utils/ui/cache_image.dart';
+import 'package:s_social/core/utils/ui/dialog_loading.dart';
 import 'package:s_social/di/injection_container.dart';
 import 'package:s_social/features/user_profile/presentation/edit_user_profile/logic/edit_user_profile_cubit.dart';
 import 'package:s_social/gen/assets.gen.dart';
@@ -103,16 +104,7 @@ class _UserProfileScreenState extends State<_UserProfileScreen> {
     required BuildContext context,
     required AssetGenImage randomBackground,
   }) {
-    return BlocConsumer<EditUserProfileCubit, EditUserProfileState>(
-      listener: (context, state) {
-        if (state is EditUserProfileUpdated) {
-          context.pop(true);
-        }
-
-        if (state is EditUserProfileError) {
-          context.showSnackBarFail(text: state.error);
-        }
-      },
+    return BlocBuilder<EditUserProfileCubit, EditUserProfileState>(
       builder: (context, state) {
         if (state is EditUserProfileLoading) {
           return const EditUserProfileShimmer();
@@ -359,10 +351,9 @@ class _UserProfileScreenState extends State<_UserProfileScreen> {
     return InkWell(
       onTap: () async {
         if (user != null) {
-          await showSimpleLoadingDialog<String>(
-            context: context,
+          final errorMessage = await context.showDialogLoading<String?>(
             future: () async {
-              await context.read<EditUserProfileCubit>().updateUser(
+              return await context.read<EditUserProfileCubit>().updateUser(
                     backgroundImage: _selectedBackground,
                     avatarImage: _selectedAvatar,
                     user: user.copyWith(
@@ -370,9 +361,16 @@ class _UserProfileScreenState extends State<_UserProfileScreen> {
                       bio: _bioCtrl.text,
                     ),
                   );
-              return "";
             },
           );
+
+          if (context.mounted) {
+            if (errorMessage != null) {
+              context.showSnackBarFail(text: errorMessage);
+            } else {
+              context.pop();
+            }
+          }
         }
       },
       child: Container(
