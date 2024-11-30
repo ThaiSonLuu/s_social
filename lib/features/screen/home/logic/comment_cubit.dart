@@ -19,23 +19,34 @@ class CommentCubit extends Cubit<List<CommentModel>> {
     required this.uploadFileRepository,
   }) : super([]);
 
-  Future<void> loadComments(String postId) async {
-    try {
-      final postRef = _firestore.collection('posts').doc(postId);
-      final commentsSnapshot = await postRef.collection('comments').get();
+  // Future<void> loadComments(String postId) async {
+  //   try {
+  //     final postRef = _firestore.collection('posts').doc(postId);
+  //     final commentsSnapshot = await postRef.collection('comments').get();
+  //
+  //     if (commentsSnapshot.docs.isEmpty) {
+  //       emit([]);
+  //     } else {
+  //       final comments = commentsSnapshot.docs
+  //           .map((doc) => CommentModel.fromJson(doc.data()))
+  //           .toList();
+  //       emit(comments);
+  //     }
+  //   } catch (e) {
+  //     print("Error loading comments: $e");
+  //     emit([]);
+  //   }
+  // }
+  // Sử dụng Stream để nhận bình luận theo thời gian thực
+  Stream<List<CommentModel>> loadComments(String postId) {
+    final postRef = _firestore.collection('posts').doc(postId);
 
-      if (commentsSnapshot.docs.isEmpty) {
-        emit([]);
-      } else {
-        final comments = commentsSnapshot.docs
-            .map((doc) => CommentModel.fromJson(doc.data()))
-            .toList();
-        emit(comments);
-      }
-    } catch (e) {
-      print("Error loading comments: $e");
-      emit([]);
-    }
+    return postRef.collection('comments')
+        .orderBy('createdAt')
+        .snapshots()
+        .map((querySnapshot) {
+      return querySnapshot.docs.map((doc) => CommentModel.fromJson(doc.data())).toList();
+    });
   }
 
   Future<void> addComment(CommentModel comment) async {
