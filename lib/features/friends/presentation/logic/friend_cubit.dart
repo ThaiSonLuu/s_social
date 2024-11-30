@@ -22,14 +22,18 @@ class GetFriendCubit extends Cubit<GetFriendState> {
     this.uid,
   ) : super(FriendInitial());
 
+  Future<FriendStatusModel> _getFriendStatus() async {
+    return await _friendRepository.getFriendStatusWithUser(
+      currentUid,
+      uid,
+    );
+  }
+
   /// Fetches the friend status with a given user.
   Future<void> getFriendStatusWithUser() async {
     emit(FriendLoading());
     try {
-      final friendStatus = await _friendRepository.getFriendStatusWithUser(
-        currentUid,
-        uid,
-      );
+      final friendStatus = await _getFriendStatus();
       emit(FriendLoaded(friendStatus));
     } catch (e) {
       emit(FriendError(S.current.an_error_occur));
@@ -41,6 +45,13 @@ class GetFriendCubit extends Cubit<GetFriendState> {
       {required String senderId, required String receiverId}) async {
     emit(FriendLoading());
     try {
+      final friendStatus = await _getFriendStatus();
+
+      if (friendStatus.status != FriendStatus.notExist) {
+        emit(FriendLoaded(friendStatus));
+        return;
+      }
+
       await _friendRepository.sendFriendRequest(
         senderId: senderId,
         receiverId: receiverId,
@@ -59,6 +70,13 @@ class GetFriendCubit extends Cubit<GetFriendState> {
   Future<void> acceptFriendRequest(String requestId) async {
     emit(FriendLoading());
     try {
+      final friendStatus = await _getFriendStatus();
+
+      if (friendStatus.status != FriendStatus.needResponse) {
+        emit(FriendLoaded(friendStatus));
+        return;
+      }
+
       await _friendRepository.acceptFriendRequest(requestId);
 
       emit(const FriendDoneAction(FriendAction.accept));
@@ -73,6 +91,13 @@ class GetFriendCubit extends Cubit<GetFriendState> {
   Future<void> declineFriendRequest(String requestId) async {
     emit(FriendLoading());
     try {
+      final friendStatus = await _getFriendStatus();
+
+      if (friendStatus.status == FriendStatus.notExist) {
+        emit(FriendLoaded(friendStatus));
+        return;
+      }
+
       await _friendRepository.declineFriendRequest(requestId);
       await getFriendStatusWithUser();
     } catch (e) {

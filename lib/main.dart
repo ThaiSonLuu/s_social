@@ -11,8 +11,6 @@ import 'package:s_social/core/utils/app_localize/app_theme.dart';
 import 'package:s_social/core/utils/app_router/app_router.dart';
 import 'package:s_social/di/injection_container.dart';
 import 'package:s_social/features/notifications/presentation/logic/unread_notification_cubit.dart';
-import 'package:s_social/features/screen/home/logic/comment_cubit.dart';
-import 'package:s_social/features/screen/home/logic/post_cubit.dart';
 import 'package:s_social/generated/l10n.dart';
 import 'package:s_social/features/screen/home/logic/reaction_cubit.dart';
 import 'core/domain/repository/reation_repository.dart';

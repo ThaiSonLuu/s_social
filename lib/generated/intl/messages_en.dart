@@ -29,6 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "accept": MessageLookupByLibrary.simpleMessage("Accept"),
         "already_have_an_account":
             MessageLookupByLibrary.simpleMessage("Already have an account!"),
         "an_error_occur":
@@ -36,6 +37,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "anonymous": MessageLookupByLibrary.simpleMessage("Anonymous user"),
         "bio": MessageLookupByLibrary.simpleMessage("Bio"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "cancel_request":
+            MessageLookupByLibrary.simpleMessage("Cancel request"),
         "cannot_delete_other_user_message":
             MessageLookupByLibrary.simpleMessage(
                 "Cannot delete other user message"),
@@ -49,6 +52,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Confirm password"),
         "create_now": MessageLookupByLibrary.simpleMessage("Create now"),
         "dark_theme": MessageLookupByLibrary.simpleMessage("Dark theme"),
+        "decline": MessageLookupByLibrary.simpleMessage("Decline"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "delete_message":
             MessageLookupByLibrary.simpleMessage("Delete message"),
@@ -67,6 +71,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Enter your email"),
         "enter_your_password":
             MessageLookupByLibrary.simpleMessage("Enter your password"),
+        "friends": MessageLookupByLibrary.simpleMessage("Friends"),
         "hello": m0,
         "hello_user": MessageLookupByLibrary.simpleMessage("Hello user"),
         "home": MessageLookupByLibrary.simpleMessage("Home"),
@@ -108,6 +113,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Re-enter password"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "send": MessageLookupByLibrary.simpleMessage("Send"),
+        "send_message": MessageLookupByLibrary.simpleMessage("Send message"),
+        "send_request": MessageLookupByLibrary.simpleMessage("Send request"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "share": MessageLookupByLibrary.simpleMessage("Share"),
         "showing_name": MessageLookupByLibrary.simpleMessage("Showing name"),
@@ -118,6 +125,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "time_ago": m2,
         "type_message":
             MessageLookupByLibrary.simpleMessage("Type your message"),
+        "unfriend": MessageLookupByLibrary.simpleMessage("Unfriend"),
         "update_avatar_and_other_information":
             MessageLookupByLibrary.simpleMessage(
                 "Please update your profile image and others information."),

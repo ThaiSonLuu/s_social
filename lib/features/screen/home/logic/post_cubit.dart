@@ -22,10 +22,10 @@ class PostCubit extends Cubit<PostState> {
     required this.userRepository,
   }) : super(PostInitial());
 
-  Future<void> loadPosts() async {
+  Future<void> loadPosts({String? userId}) async {
     try {
       emit(PostLoading());
-      final posts = await postRepository.getPosts() ?? [];
+      final posts = await postRepository.getPosts(userId: userId) ?? [];
       final users = await userRepository.getUsersByIds(
           posts.map((e) => e.userId.toString()).toSet().toList());
 
@@ -47,11 +47,30 @@ class PostCubit extends Cubit<PostState> {
     }
   }
 
-  Future<void> createPost(PostModel post) async {
+  Future<PostModel?> createPost(
+    String? userId,
+    String content,
+    File? imageFile,
+  ) async {
     try {
-      await postRepository.createPost(post);
-      await loadPosts();
-    } catch (_) {}
+      String? imgUrl;
+
+      if (imageFile != null) {
+        imgUrl = await uploadImageToFirebase(imageFile);
+      }
+
+      final newPost = PostModel(
+        id: null,
+        userId: userId,
+        postContent: content,
+        postImage: imgUrl,
+        createdAt: DateTime.now(),
+        like: 0,
+      );
+      return await postRepository.createPost(newPost);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<void> deletePost(PostModel postId) async {

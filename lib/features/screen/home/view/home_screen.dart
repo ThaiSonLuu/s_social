@@ -4,22 +4,46 @@ import 'package:s_social/core/domain/model/user_model.dart';
 import 'package:s_social/core/presentation/logic/cubit/profile_user/profile_user_cubit.dart';
 import 'package:s_social/core/presentation/view/widgets/text_to_image.dart';
 import 'package:s_social/core/utils/ui/cache_image.dart';
+import 'package:s_social/di/injection_container.dart';
+import 'package:s_social/features/screen/home/logic/comment_cubit.dart';
 import 'package:s_social/features/screen/home/logic/post_cubit.dart';
 import 'package:s_social/features/screen/home/logic/post_state.dart';
 import 'package:s_social/features/screen/home/view/new_post_screen.dart';
 import 'package:s_social/features/screen/home/view/widget/post_widget.dart';
-import 'package:s_social/core/domain/model/post_model.dart';
 import 'package:s_social/gen/assets.gen.dart';
 import 'package:s_social/generated/l10n.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(providers: [
+      BlocProvider(
+        create: (context) => PostCubit(
+          postRepository: serviceLocator(),
+          uploadFileRepository: serviceLocator(),
+          userRepository: serviceLocator(),
+        ),
+      ),
+      BlocProvider(
+        create: (context) => CommentCubit(
+          commentRepository: serviceLocator(),
+          uploadFileRepository: serviceLocator(),
+        ),
+      )
+    ], child: const _HomeScreen());
+  }
+}
+
+class _HomeScreen extends StatefulWidget {
+  const _HomeScreen({super.key});
 
   @override
   State<StatefulWidget> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<_HomeScreen> {
   @override
   void initState() {
     super.initState();
@@ -100,12 +124,14 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(
             child: GestureDetector(
               onTap: () async {
-                final newPost = await Navigator.push(
+                final shouldReload = await Navigator.push<bool>(
                   context,
-                  MaterialPageRoute(builder: (context) => NewPostScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const NewPostScreen(),
+                  ),
                 );
-                if (mounted && newPost != null) {
-                  context.read<PostCubit>().createPost(newPost);
+                if (mounted && shouldReload == true) {
+                  context.read<PostCubit>().loadPosts();
                 }
               },
               child: Container(
