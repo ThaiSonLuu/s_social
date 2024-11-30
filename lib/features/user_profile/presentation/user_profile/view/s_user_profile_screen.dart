@@ -147,11 +147,12 @@ class _UserProfileScreen extends StatelessWidget {
                   left: 12.0,
                   child: _buildBackIcon(context),
                 ),
-                Positioned(
-                  top: 12.0,
-                  right: 12.0,
-                  child: _buildEditButton(context),
-                ),
+                if (isCurrentUser(uid ?? ""))
+                  Positioned(
+                    top: 12.0,
+                    right: 12.0,
+                    child: _buildEditButton(context),
+                  ),
               ],
             ),
             _buildNameView(
@@ -355,7 +356,8 @@ class _UserProfileScreen extends StatelessWidget {
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
               const SizedBox(width: 10),
-              _buildFriendView(currentUid, uid ?? "")
+              if (!isCurrentUser(uid ?? ""))
+                _buildFriendView(currentUid, uid ?? "")
             ],
           ),
           const SizedBox(height: 6.0),
