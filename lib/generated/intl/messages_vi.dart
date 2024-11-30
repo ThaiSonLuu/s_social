@@ -28,6 +28,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "accept": MessageLookupByLibrary.simpleMessage("Chấp nhận"),
         "already_have_an_account":
             MessageLookupByLibrary.simpleMessage("Đã có tài khoản!"),
         "an_error_occur":
@@ -35,6 +36,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "anonymous": MessageLookupByLibrary.simpleMessage("Người dùng ẩn danh"),
         "bio": MessageLookupByLibrary.simpleMessage("Tiểu sử"),
         "cancel": MessageLookupByLibrary.simpleMessage("Hủy"),
+        "cancel_request": MessageLookupByLibrary.simpleMessage("Hủy yêu cầu"),
         "cannot_delete_other_user_message":
             MessageLookupByLibrary.simpleMessage(
                 "Không thể xóa tin nhắn của người dùng khác"),
@@ -47,6 +49,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Xác nhận mật khẩu"),
         "create_now": MessageLookupByLibrary.simpleMessage("Tạo tài khoản"),
         "dark_theme": MessageLookupByLibrary.simpleMessage("Giao diện tối"),
+        "decline": MessageLookupByLibrary.simpleMessage("Từ chối"),
         "delete": MessageLookupByLibrary.simpleMessage("Xóa"),
         "delete_message": MessageLookupByLibrary.simpleMessage("Xóa tin nhắn"),
         "delete_message_confirmation": MessageLookupByLibrary.simpleMessage(
@@ -64,6 +67,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Nhập email của bạn"),
         "enter_your_password":
             MessageLookupByLibrary.simpleMessage("Nhập mật khẩu của bạn"),
+        "friends": MessageLookupByLibrary.simpleMessage("Bạn bè"),
         "hello": m0,
         "hello_user":
             MessageLookupByLibrary.simpleMessage("Xin chào người dùng"),
@@ -107,6 +111,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Nhập lại mật khẩu"),
         "save": MessageLookupByLibrary.simpleMessage("Lưu"),
         "send": MessageLookupByLibrary.simpleMessage("Gửi"),
+        "send_message": MessageLookupByLibrary.simpleMessage("Gửi tin nhắn"),
+        "send_request": MessageLookupByLibrary.simpleMessage("Gửi yêu cầu"),
         "settings": MessageLookupByLibrary.simpleMessage("Cài đặt"),
         "share": MessageLookupByLibrary.simpleMessage("Chia sẻ"),
         "showing_name": MessageLookupByLibrary.simpleMessage("Tên hiển thị"),
@@ -117,6 +123,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "time_ago": m2,
         "type_message":
             MessageLookupByLibrary.simpleMessage("Nhập tin nhắn của bạn"),
+        "unfriend": MessageLookupByLibrary.simpleMessage("Hủy kết bạn"),
         "update_avatar_and_other_information":
             MessageLookupByLibrary.simpleMessage(
                 "Vui lòng cập nhật ảnh đại diện và các thông tin khác."),

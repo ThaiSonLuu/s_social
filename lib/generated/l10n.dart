@@ -719,6 +719,76 @@ class S {
       args: [],
     );
   }
+
+  /// `Send message`
+  String get send_message {
+    return Intl.message(
+      'Send message',
+      name: 'send_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Friends`
+  String get friends {
+    return Intl.message(
+      'Friends',
+      name: 'friends',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send request`
+  String get send_request {
+    return Intl.message(
+      'Send request',
+      name: 'send_request',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel request`
+  String get cancel_request {
+    return Intl.message(
+      'Cancel request',
+      name: 'cancel_request',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accept`
+  String get accept {
+    return Intl.message(
+      'Accept',
+      name: 'accept',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Decline`
+  String get decline {
+    return Intl.message(
+      'Decline',
+      name: 'decline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unfriend`
+  String get unfriend {
+    return Intl.message(
+      'Unfriend',
+      name: 'unfriend',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

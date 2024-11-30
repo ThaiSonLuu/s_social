@@ -22,10 +22,10 @@ class PostCubit extends Cubit<PostState> {
     required this.userRepository,
   }) : super(PostInitial());
 
-  Future<void> loadPosts() async {
+  Future<void> loadPosts({String? userId}) async {
     try {
       emit(PostLoading());
-      final posts = await postRepository.getPosts() ?? [];
+      final posts = await postRepository.getPosts(userId: userId) ?? [];
       final users = await userRepository.getUsersByIds(
           posts.map((e) => e.userId.toString()).toSet().toList());
 

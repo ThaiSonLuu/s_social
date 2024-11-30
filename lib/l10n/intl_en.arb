@@ -65,5 +65,12 @@
   "update_avatar_and_other_information": "Please update your profile image and others information.",
   "no_comment_yet": "No comment yet",
   "write_comment": "Write a comment ...",
-  "no_post_available": "No post a available"
+  "no_post_available": "No post a available",
+  "send_message": "Send message",
+  "friends": "Friends",
+  "send_request": "Send request",
+  "cancel_request": "Cancel request",
+  "accept": "Accept",
+  "decline": "Decline",
+  "unfriend": "Unfriend"
 }

@@ -11,8 +11,6 @@ import 'package:s_social/core/utils/app_localize/app_theme.dart';
 import 'package:s_social/core/utils/app_router/app_router.dart';
 import 'package:s_social/di/injection_container.dart';
 import 'package:s_social/features/notifications/presentation/logic/unread_notification_cubit.dart';
-import 'package:s_social/features/screen/home/logic/comment_cubit.dart';
-import 'package:s_social/features/screen/home/logic/post_cubit.dart';
 import 'package:s_social/generated/l10n.dart';
 
 void main() async {
@@ -73,19 +71,6 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider(
           create: (context) => _unreadNotificationsCubit,
-        ),
-        BlocProvider(
-          create: (context) => PostCubit(
-            postRepository: serviceLocator(),
-            uploadFileRepository: serviceLocator(),
-            userRepository: serviceLocator(),
-          ),
-        ),
-        BlocProvider(
-          create: (context) => CommentCubit(
-            commentRepository: serviceLocator(),
-            uploadFileRepository: serviceLocator(),
-          ),
         ),
       ],
       child: BlocBuilder<AppLanguageCubit, AppLanguageState>(
