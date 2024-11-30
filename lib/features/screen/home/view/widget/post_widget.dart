@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -6,14 +8,16 @@ import 'package:s_social/core/domain/model/user_model.dart';
 import 'package:s_social/core/presentation/view/widgets/text_to_image.dart';
 import 'package:s_social/core/utils/app_router/app_router.dart';
 import 'package:s_social/core/utils/shimmer_loading.dart';
+import 'package:s_social/core/utils/ui/cache_image.dart';
 import 'package:s_social/features/screen/home/view/post_screen.dart';
 import 'package:s_social/features/screen/home/view/widget/full_screen_img.dart';
+import 'package:s_social/gen/assets.gen.dart';
 import 'package:s_social/generated/l10n.dart';
 import 'package:shimmer/shimmer.dart';
 
 class PostWidget extends StatelessWidget {
   final PostModel postData;
-  final UserModel userData;
+  final UserModel? userData;
 
   const PostWidget({
     super.key,
@@ -23,9 +27,9 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String displayName = postData.postAnonymous == true
-        ? S.of(context).anonymous
-        : userData.username ?? 'Unknown User';
+    String displayName = postData.userId != null
+        ? (userData?.username).toString()
+        : S.of(context).anonymous;
 
     String formattedDate =
         DateFormat('dd/MM/yyyy HH:mm').format(postData.createdAt!);
@@ -36,7 +40,9 @@ class PostWidget extends StatelessWidget {
         // Avatar, username, and post time
         GestureDetector(
           onTap: () {
-            context.push("${RouterUri.profile}/${userData.id}");
+            if (userData != null) {
+              context.push("${RouterUri.profile}/${userData!.id}");
+            }
           },
           child: _buildPostHeader(
             context: context,
@@ -61,65 +67,7 @@ class PostWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          (userData.avatarUrl ?? "").isNotEmpty
-              ? Image.network(
-                  userData.avatarUrl ?? "",
-                  fit: BoxFit.cover,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) {
-                      // When the image is fully loaded
-                      return Container(
-                        width: 40,
-                        height: 40,
-                        clipBehavior: Clip.hardEdge,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: child,
-                      );
-                      return child;
-                    } else {
-                      // Show shimmer background during loading
-                      return Shimmer.fromColors(
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.grey.shade400,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          clipBehavior: Clip.hardEdge,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    // Show a fallback UI for errors
-                    return Container(
-                      width: 40,
-                      height: 40,
-                      clipBehavior: Clip.hardEdge,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.grey,
-                      ),
-                    );
-                  },
-                )
-              : Container(
-                  width: 40,
-                  height: 40,
-                  clipBehavior: Clip.hardEdge,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
-                  child: TextToImage(
-                    text: userData.username.toString()[0],
-                    textSize: 16.0,
-                  ),
-                ),
+          _buildPostUserAvatar(),
           const SizedBox(width: 10),
           Expanded(
             child: Column(
@@ -144,6 +92,49 @@ class PostWidget extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildPostUserAvatar() {
+    if (postData.userId == null) {
+      return Container(
+        width: 40,
+        height: 40,
+        clipBehavior: Clip.hardEdge,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.lightBlue,
+        ),
+        child: Image.asset(Assets.images.anonymous.path),
+      );
+    }
+
+    if ((userData?.avatarUrl ?? "").isNotEmpty) {
+      return Container(
+        width: 40,
+        height: 40,
+        clipBehavior: Clip.hardEdge,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+        ),
+        child: CacheImage(
+          imageUrl: userData?.avatarUrl ?? "",
+          loadingWidth: 40,
+          loadingHeight: 40,
+        ),
+      );
+    }
+    return Container(
+      width: 40,
+      height: 40,
+      clipBehavior: Clip.hardEdge,
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+      ),
+      child: TextToImage(
+        text: (userData?.username).toString()[0],
+        textSize: 16.0,
       ),
     );
   }
@@ -180,35 +171,10 @@ class PostWidget extends StatelessWidget {
           },
           child: LayoutBuilder(
             builder: (context, constraints) {
-              return Image.network(
-                postData.postImage ?? "",
-                fit: BoxFit.contain,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) {
-                    // When the image is fully loaded
-                    return child;
-                  } else {
-                    // Show shimmer background during loading
-                    return Shimmer.fromColors(
-                      baseColor: Colors.grey.shade300,
-                      highlightColor: Colors.grey.shade400,
-                      child: Container(
-                        width: constraints.maxWidth,
-                        height: constraints.maxWidth * 0.6,
-                        color: Colors.white,
-                      ),
-                    );
-                  }
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  // Show a fallback UI for errors
-                  return Container(
-                    width: constraints.maxWidth,
-                    height: constraints.maxWidth * 0.6,
-                    color: Colors.grey.shade300,
-                    child: const Icon(Icons.refresh, size: 48),
-                  );
-                },
+              return CacheImage(
+                imageUrl: postData.postImage ?? "",
+                loadingWidth: constraints.maxWidth,
+                loadingHeight: constraints.maxWidth * 0.6,
               );
             },
           ),

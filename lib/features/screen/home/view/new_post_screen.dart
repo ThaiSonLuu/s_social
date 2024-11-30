@@ -23,7 +23,8 @@ class _NewPostState extends State<NewPostScreen> {
   final ImagePicker _imagePicker = ImagePicker();
 
   Future<void> _pickImageFromGallery() async {
-    final XFile? pickedFile = await _imagePicker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedFile =
+        await _imagePicker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _selectedImg = File(pickedFile.path);
@@ -32,7 +33,8 @@ class _NewPostState extends State<NewPostScreen> {
   }
 
   Future<void> _takePhoto() async {
-    final XFile? pickedFile = await _imagePicker.pickImage(source: ImageSource.camera);
+    final XFile? pickedFile =
+        await _imagePicker.pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       setState(() {
         _selectedImg = File(pickedFile.path);
@@ -49,9 +51,8 @@ class _NewPostState extends State<NewPostScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-            onPressed: ()=> Navigator.pop(context),
-            icon: Icon(Icons.arrow_back)
-        ),
+            onPressed: () => Navigator.pop(context),
+            icon: Icon(Icons.arrow_back)),
         title: Text(S.of(context).new_post),
         automaticallyImplyLeading: false,
       ),
@@ -63,7 +64,9 @@ class _NewPostState extends State<NewPostScreen> {
               BlocBuilder<ProfileUserCubit, ProfileUserState>(
                 builder: (context, state) {
                   if (state is ProfileUserLoaded) {
-                    username = postAnonymous ? S.of(context).anonymous : state.user.username;
+                    username = postAnonymous
+                        ? S.of(context).anonymous
+                        : state.user.username;
                     userId = state.user.id;
                   }
                   return Row(
@@ -75,7 +78,8 @@ class _NewPostState extends State<NewPostScreen> {
                         onChanged: (value) {
                           setState(() {
                             postAnonymous = value;
-                            username = value ? S.of(context).anonymous : username;
+                            username =
+                                value ? S.of(context).anonymous : username;
                           });
                         },
                       ),
@@ -126,19 +130,21 @@ class _NewPostState extends State<NewPostScreen> {
 
                   if (_selectedImg != null) {
                     print('Selected image path: ${_selectedImg!.path}');
-                    imgUrl = await context.read<PostCubit>().uploadImageToFirebase(_selectedImg!);
+                    imgUrl = await context
+                        .read<PostCubit>()
+                        .uploadImageToFirebase(_selectedImg!);
                   }
 
-                  DocumentReference docRef = FirebaseFirestore.instance.collection('posts').doc();
+                  DocumentReference docRef =
+                      FirebaseFirestore.instance.collection('posts').doc();
                   final newPost = PostModel(
                     id: docRef.id,
-                    userId: userId,
+                    userId: postAnonymous ? null : userId,
                     postContent: _contentController.text,
                     // postImage: _selectedImg != null ? _selectedImg!.path : null,
                     postImage: imgUrl,
                     createdAt: DateTime.now(),
                     like: 0,
-                    postAnonymous: postAnonymous ? true : false,
                   );
                   await context.read<PostCubit>().createPost(newPost);
                   Navigator.pop(context, newPost);

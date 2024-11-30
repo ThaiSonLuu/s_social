@@ -6,21 +6,21 @@ import 'package:s_social/core/domain/model/comment_model.dart';
 import 'package:s_social/core/domain/model/post_model.dart';
 import 'package:s_social/core/domain/model/user_model.dart';
 import 'package:s_social/features/screen/home/view/widget/comment_widget.dart';
-import '../../../../core/presentation/logic/cubit/profile_user/profile_user_cubit.dart';
 import '../../../../generated/l10n.dart';
 import '../logic/comment_cubit.dart';
 
 class PostScreen extends StatefulWidget {
   final PostModel postData;
-  final UserModel postUserData;
+  final UserModel? postUserData;
 
-  PostScreen({
+  const PostScreen({
+    super.key,
     required this.postData,
     required this.postUserData,
   });
 
   @override
-  _PostScreenState createState() => _PostScreenState();
+  State<StatefulWidget> createState() => _PostScreenState();
 }
 
 class _PostScreenState extends State<PostScreen> {
@@ -30,11 +30,11 @@ class _PostScreenState extends State<PostScreen> {
     context.read<CommentCubit>().loadComments(widget.postData.id!);
   }
 
-
   @override
   Widget build(BuildContext context) {
-    String? userPostName = widget.postData.postAnonymous == true
-        ? S.of(context).anonymous : widget.postUserData.username;
+    String? userPostName = widget.postData.userId == null
+        ? S.of(context).anonymous
+        : widget.postUserData?.username;
 
     return Scaffold(
       body: LayoutBuilder(
@@ -42,8 +42,8 @@ class _PostScreenState extends State<PostScreen> {
           final double screenHeight = constraints.maxHeight;
           final double appBarHeight = kToolbarHeight;
           final double inputFieldHeight = 60.0;
-          final double contentHeight = screenHeight - appBarHeight -
-              inputFieldHeight;
+          final double contentHeight =
+              screenHeight - appBarHeight - inputFieldHeight;
 
           return Column(
             children: [
@@ -64,7 +64,8 @@ class _PostScreenState extends State<PostScreen> {
                           userData: widget.postUserData,
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 8.0),
                           child: Text(
                             S.of(context).comment,
                             style: const TextStyle(
@@ -91,19 +92,26 @@ class _PostScreenState extends State<PostScreen> {
                               itemBuilder: (context, index) {
                                 final comment = comments[index];
                                 return FutureBuilder<UserModel>(
-                                  future: context.read<CommentCubit>().getUserById(comment.userId!),
+                                  future: context
+                                      .read<CommentCubit>()
+                                      .getUserById(comment.userId!),
                                   builder: (context, snapshot) {
-                                    if (snapshot.connectionState == ConnectionState.waiting) {
-                                      return const Center(child: CircularProgressIndicator());
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const Center(
+                                          child: CircularProgressIndicator());
                                     } else if (snapshot.hasError) {
-                                      return const Center(child: Text('Error fetching user.'));
+                                      return const Center(
+                                          child: Text('Error fetching user.'));
                                     } else if (!snapshot.hasData) {
-                                      return const Center(child: Text('User not found.'));
+                                      return const Center(
+                                          child: Text('User not found.'));
                                     }
 
                                     final userComment = snapshot.data!;
                                     return Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
                                       child: CommentWidget(
                                         commentData: comment,
                                         postData: widget.postData,
@@ -116,7 +124,6 @@ class _PostScreenState extends State<PostScreen> {
                             );
                           },
                         ),
-
                       ],
                     ),
                   ),
@@ -140,9 +147,9 @@ class _PostScreenState extends State<PostScreen> {
   }
 }
 
-  class _PostSection extends StatelessWidget {
+class _PostSection extends StatelessWidget {
   final PostModel postData;
-  final UserModel userData;
+  final UserModel? userData;
 
   const _PostSection({
     required this.postData,
@@ -153,7 +160,8 @@ class _PostScreenState extends State<PostScreen> {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.all(0.5),
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.zero)),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.zero)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -176,9 +184,11 @@ class _PostScreenState extends State<PostScreen> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.thumb_up_alt_outlined),
-                    SizedBox(width: 10,),
-                    Text(postData.like.toString() + ' ' + S.of(context).like),
+                    const Icon(Icons.thumb_up_alt_outlined),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text('${postData.like} ${S.of(context).like}'),
                   ],
                 ),
               ],
@@ -240,7 +250,9 @@ class _CommentInputFieldState extends State<_CommentInputField> {
             onPressed: () async {
               String? imgUrl;
               if (_contentController.text.isNotEmpty) {
-                final postRef = FirebaseFirestore.instance.collection('posts').doc(widget.postId);
+                final postRef = FirebaseFirestore.instance
+                    .collection('posts')
+                    .doc(widget.postId);
                 final commentRef = postRef.collection('comments').doc();
 
                 final newComment = CommentModel(
@@ -258,7 +270,6 @@ class _CommentInputFieldState extends State<_CommentInputField> {
               }
             },
           ),
-
         ],
       ),
     );

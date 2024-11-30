@@ -26,10 +26,9 @@ class CommentWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String formattedDate = _formatDateTime(commentData.createdAt);
-    String userName = userData.username!;
-    if (postData.userId == userData.id && postData.postAnonymous == true) {
-      userName = S.of(context).anonymous;
-    }
+    String userName = postData.userId != null
+        ? userData.username.toString()
+        : S.of(context).anonymous;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -76,8 +75,8 @@ class CommentWidget extends StatelessWidget {
                         Text(
                           commentData.commentText!,
                           style: TextStyle(
-                              fontSize: 14,
-                              color: Theme.of(context).colorScheme.onPrimaryFixed,
+                            fontSize: 14,
+                            color: Theme.of(context).colorScheme.onPrimaryFixed,
                           ),
                         ),
                       // Ảnh đính kèm (nếu có)
@@ -160,7 +159,8 @@ class CommentWidget extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     ListTile(
-                        leading: Icon(Icons.edit,
+                      leading: Icon(
+                        Icons.edit,
                         color: Theme.of(context).colorScheme.onPrimaryFixed,
                       ),
                       title: const Text('Chỉnh sửa bình luận'),

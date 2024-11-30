@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:s_social/core/domain/model/user_model.dart';
 import 'package:s_social/core/presentation/logic/cubit/profile_user/profile_user_cubit.dart';
 import 'package:s_social/core/presentation/view/widgets/text_to_image.dart';
+import 'package:s_social/core/utils/ui/cache_image.dart';
 import 'package:s_social/features/screen/home/logic/post_cubit.dart';
 import 'package:s_social/features/screen/home/logic/post_state.dart';
 import 'package:s_social/features/screen/home/view/new_post_screen.dart';
@@ -71,14 +72,18 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         children: [
           avatar != null
-              ? CircleAvatar(
-                  radius: 25,
-                  backgroundImage: NetworkImage(
-                    avatar,
+              ? Container(
+                  width: 50,
+                  height: 50,
+                  clipBehavior: Clip.hardEdge,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
                   ),
-                  onBackgroundImageError: (error, stackTrace) {
-                    // Handle error when loading avatar
-                  },
+                  child: CacheImage(
+                    imageUrl: avatar,
+                    loadingWidth: 40,
+                    loadingHeight: 40,
+                  ),
                 )
               : Container(
                   width: 50,
@@ -103,19 +108,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   context.read<PostCubit>().createPost(newPost);
                 }
               },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Container(
-                  padding: const EdgeInsets.all(15.0),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    S.of(context).new_post_box,
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface),
-                  ),
+              child: Container(
+                padding: const EdgeInsets.all(15.0),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  S.of(context).new_post_box,
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.onSurface),
                 ),
               ),
             ),
@@ -128,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildListPostView(UserModel? user) {
     return BlocBuilder<PostCubit, PostState>(
       builder: (context, state) {
-        List<PostModel> posts = [];
+        List<ShowPost> showPosts = [];
         bool isLoading = false;
         bool isError = false;
 
@@ -137,17 +139,18 @@ class _HomeScreenState extends State<HomeScreen> {
         }
 
         if (state is PostLoaded) {
-          posts = state.posts;
+          showPosts = state.posts;
         }
 
         if (state is PostError) {
           isError = true;
         }
 
-        posts.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+        showPosts
+            .sort((a, b) => b.post.createdAt!.compareTo(a.post.createdAt!));
 
         return ListView.separated(
-          itemCount: posts.length + 1,
+          itemCount: showPosts.length + 1,
           itemBuilder: (context, index) {
             if (isLoading) {
               return Column(
@@ -198,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             }
 
-            if (posts.isEmpty) {
+            if (showPosts.isEmpty) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -222,21 +225,11 @@ class _HomeScreenState extends State<HomeScreen> {
               return _buildHeaderView(user);
             }
 
-            final post = posts[index - 1];
+            final showPost = showPosts[index - 1];
 
-            return FutureBuilder<UserModel?>(
-              future: context.read<PostCubit>().getUserById(post.userId!),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done &&
-                    snapshot.data != null) {
-                  return PostWidget(
-                    postData: post,
-                    userData: snapshot.data!,
-                  );
-                }
-
-                return const ShimmerPost();
-              },
+            return PostWidget(
+              postData: showPost.post,
+              userData: showPost.user,
             );
           },
           separatorBuilder: (context, index) {

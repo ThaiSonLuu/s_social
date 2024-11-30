@@ -22,6 +22,10 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/anonymous.png
+  AssetGenImage get anonymous =>
+      const AssetGenImage('assets/images/anonymous.png');
+
   /// File path: assets/images/background_default_1.png
   AssetGenImage get backgroundDefault1 =>
       const AssetGenImage('assets/images/background_default_1.png');
@@ -82,6 +86,7 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
+        anonymous,
         backgroundDefault1,
         backgroundDefault10,
         backgroundDefault2,
@@ -137,7 +142,7 @@ class AssetGenImage {
     ImageRepeat repeat = ImageRepeat.noRepeat,
     Rect? centerSlice,
     bool matchTextDirection = false,
-    bool gaplessPlayback = true,
+    bool gaplessPlayback = false,
     bool isAntiAlias = false,
     String? package,
     FilterQuality filterQuality = FilterQuality.low,

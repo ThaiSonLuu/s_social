@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -24,9 +25,23 @@ class PostCubit extends Cubit<PostState> {
   Future<void> loadPosts() async {
     try {
       emit(PostLoading());
-      final posts = await postRepository.getPosts();
-      await Future.delayed(const Duration(seconds: 1));
-      emit(PostLoaded(posts ?? []));
+      final posts = await postRepository.getPosts() ?? [];
+      final users = await userRepository.getUsersByIds(
+          posts.map((e) => e.userId.toString()).toSet().toList());
+
+      final showPosts = posts.map((post) {
+        UserModel? foundUser;
+        for (UserModel user in users ?? []) {
+          if (post.userId == user.id) {
+            foundUser = user;
+            break;
+          }
+        }
+
+        return ShowPost(user: foundUser, post: post);
+      }).toList();
+
+      emit(PostLoaded(showPosts));
     } catch (e) {
       emit(PostError(e.toString()));
     }

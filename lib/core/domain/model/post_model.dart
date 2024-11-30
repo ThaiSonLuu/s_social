@@ -5,12 +5,13 @@ part 'post_model.g.dart';
 @JsonSerializable()
 class PostModel {
   final String? id;
+
+  /// If [userId] null -> Anonymous post
   final String? userId;
   final String? postContent;
   final String? postImage;
   final DateTime? createdAt;
   final int? like;
-  final bool? postAnonymous;
 
   PostModel({
     required this.id,
@@ -20,7 +21,6 @@ class PostModel {
     required this.createdAt,
     required this.like,
     // required this.comments,
-    required this.postAnonymous,
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) =>
@@ -39,14 +39,13 @@ class PostModel {
     bool? postAnonymous,
   }) {
     return PostModel(
-        id: id ?? this.id,
-        userId: userId ?? this.userId,
-        postContent: postContent ?? this.postContent,
-        postImage: postImage ?? this.postImage,
-        createdAt: createdAt ?? this.createdAt,
-        like: like ?? this.like,
-        // comments: comments ?? this.comments,
-        postAnonymous: postAnonymous ?? this.postAnonymous,
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      postContent: postContent ?? this.postContent,
+      postImage: postImage ?? this.postImage,
+      createdAt: createdAt ?? this.createdAt,
+      like: like ?? this.like,
+      // comments: comments ?? this.comments,
     );
   }
 }

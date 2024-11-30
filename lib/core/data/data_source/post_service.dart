@@ -12,9 +12,20 @@ class PostDataSource {
     try {
       QuerySnapshot snapshot;
       if (userId != null) {
-        snapshot = await _postsCollection.where('userId', isEqualTo: userId).get();
+        snapshot = await _postsCollection
+            .where('userId', isEqualTo: userId)
+            .orderBy(
+              "createdAt",
+              descending: true,
+            )
+            .get();
       } else {
-        snapshot = await _postsCollection.get();
+        snapshot = await _postsCollection
+            .orderBy(
+              "createdAt",
+              descending: true,
+            )
+            .get();
       }
 
       return snapshot.docs.map((doc) {

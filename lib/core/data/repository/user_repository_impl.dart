@@ -27,6 +27,15 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
+  Future<List<UserModel>?> getUsersByIds(List<String> ids) async {
+    try {
+      return await _userDataSource.getUsersByIds(ids);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
   Future<UserModel?> updateUser(UserModel user) async {
     try {
       return await _userDataSource.updateUser(user);
