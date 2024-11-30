@@ -5,7 +5,7 @@
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:label="s_social"
+        android:label="S Social"
         android:usesCleartextTraffic="true">
 
         <activity

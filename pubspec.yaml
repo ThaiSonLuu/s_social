@@ -41,6 +41,7 @@ dependencies:
   googleapis_auth: ^1.5.1
   shimmer: ^3.0.0
   cached_network_image: ^3.4.1
+  flutter_native_splash: ^2.4.1
 
 dev_dependencies:
   flutter_test:
@@ -69,3 +70,9 @@ flutter_icons:
   android: true
   ios: true
   image_path: "assets/icons/app_icon.png"
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/icons/app_icon.png
+  android: true
+  ios: true
