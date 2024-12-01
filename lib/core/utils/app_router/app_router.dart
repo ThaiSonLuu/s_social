@@ -7,6 +7,7 @@ import 'package:s_social/core/presentation/logic/cubit/auth/auth_cubit.dart';
 import 'package:s_social/core/presentation/view/widgets/bottom_navigation.dart';
 import 'package:s_social/features/auth/presentation/login/view/login_screen.dart';
 import 'package:s_social/features/auth/presentation/sign_up/view/signup_screen.dart';
+import 'package:s_social/features/messages/presentation/chat/view/chat_screen.dart';
 import 'package:s_social/features/messages/presentation/user_list/view/user_list_screen.dart';
 import 'package:s_social/features/notifications/presentation/logic/unread_notification_cubit.dart';
 import 'package:s_social/features/notifications/presentation/view/notifications_screen.dart';
@@ -60,9 +61,7 @@ class AppRouter {
           GoRoute(
             path: RouterUri.messages,
             pageBuilder: (context, state) => const NoTransitionPage<void>(
-              child: Center(
-                child: UserListScreen(),
-              ),
+              child:  UserListScreen(),
             ),
           ),
           GoRoute(
@@ -108,6 +107,12 @@ class AppRouter {
           child: EditUserProfileScreen(uid: state.pathParameters["uid"]),
         ),
       ),
+      GoRoute(
+        path: RouterUri.chat,
+        pageBuilder: (context, state) => const MaterialPage<void>(
+          child: ChatScreen(),
+        )
+      )
     ],
     initialLocation: RouterUri.login,
     redirect: (context, state) {

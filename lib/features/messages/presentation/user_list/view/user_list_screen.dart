@@ -56,7 +56,7 @@ class _UserListScreenState extends State<_UserListScreen> {
   
   Widget _buildUserList(BuildContext buildContext) {
     return BlocBuilder<UserListCubit, UserListState>(
-      builder: (context, state) {
+      builder: (blocBuilderContext, state) {
         if (state is UserListLoading) {
           return const Center(
             child: CircularProgressIndicator(),
@@ -66,7 +66,7 @@ class _UserListScreenState extends State<_UserListScreen> {
           return ListView.builder(
             physics: const AlwaysScrollableScrollPhysics(),
             itemCount: state.users.length - 1,
-            itemBuilder: (context, index) {
+            itemBuilder: (iBContext, index) {
               final user = state.users[index];
               final String userEmail = user['email'] ?? "No email";
               if (userEmail == currentUserEmail) {
@@ -79,8 +79,8 @@ class _UserListScreenState extends State<_UserListScreen> {
                     UserTile(
                       user: user,
                       onTap: () async {
-                        final newChat = Navigator.push(
-                          buildContext,
+                        final newChat = Navigator.push<bool>(
+                          context,
                           MaterialPageRoute(builder: (context) => ChatScreen(
                             recipient: user,
                           )),

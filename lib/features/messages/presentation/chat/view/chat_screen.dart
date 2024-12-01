@@ -23,7 +23,7 @@ class ChatScreen extends StatelessWidget {
   final Map<String, dynamic>? recipient;
   const ChatScreen({
     super.key,
-    required this.recipient
+    this.recipient
   });
 
   @override
