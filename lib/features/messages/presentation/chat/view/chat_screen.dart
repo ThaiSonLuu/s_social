@@ -15,12 +15,13 @@ import 'package:s_social/core/domain/model/message_model.dart';
 import 'package:s_social/di/injection_container.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../../core/domain/model/user_model.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../../screen/home/view/widget/full_screen_img.dart';
 import '../logic/chat_cubit.dart';
 
 class ChatScreen extends StatelessWidget {
-  final Map<String, dynamic>? recipient;
+  final UserModel? recipient;
   const ChatScreen({
     super.key,
     this.recipient
@@ -36,10 +37,10 @@ class ChatScreen extends StatelessWidget {
 }
 
 class _ChatScreen extends StatefulWidget {
-  const _ChatScreen({required Map<String, dynamic>? recipient}) :
+  const _ChatScreen({required UserModel? recipient}) :
         _recipient = recipient;
 
-  final Map<String, dynamic>? _recipient;
+  final UserModel? _recipient;
   @override
   State<_ChatScreen> createState() => _ChatScreenState();
 }
@@ -64,7 +65,7 @@ class _ChatScreenState extends State<_ChatScreen> {
     // Making a back button returning to the previous screen and a menu button that opens sideways
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget._recipient?['email']),
+        title: Text(widget._recipient?.username ?? ''),
         automaticallyImplyLeading: false,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -170,7 +171,7 @@ class _ChatScreenState extends State<_ChatScreen> {
   Widget _buildMessageInput() {
     final String chatId = _chatId;
     final String senderEmail = _auth.currentUser?.email ?? '';
-    final String recipientEmail = widget._recipient?['email'] ?? '';
+    final String recipientEmail = widget._recipient?.email ?? '';
     List<String?>? urls = [];
     return MessageBar(
       messageBarHintText: S.of(context).type_message,
@@ -223,7 +224,7 @@ class _ChatScreenState extends State<_ChatScreen> {
   Future<void> _pickImageFromGallery() async {
     final String chatId = _chatId;
     final String senderEmail = _auth.currentUser?.email ?? '';
-    final String recipientEmail = widget._recipient?['email'] ?? '';
+    final String recipientEmail = widget._recipient?.email ?? '';
     List<String?>? urls = [];
 
     _selectedImages.clear();
@@ -283,7 +284,7 @@ class _ChatScreenState extends State<_ChatScreen> {
 
   String get _chatId {
     final String currentUserId = _auth.currentUser?.uid ?? '';
-    final String recipientId = widget._recipient?['id'] ?? '';
+    final String recipientId = widget._recipient?.email ?? '';
     List<String> userIds = [currentUserId, recipientId];
     userIds.sort();
     return userIds.join('-');

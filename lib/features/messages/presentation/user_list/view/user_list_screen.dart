@@ -68,7 +68,7 @@ class _UserListScreenState extends State<_UserListScreen> {
             itemCount: state.users.length - 1,
             itemBuilder: (iBContext, index) {
               final user = state.users[index];
-              final String userEmail = user['email'] ?? "No email";
+              final String userEmail = user.email ?? "No email";
               if (userEmail == currentUserEmail) {
                 return const SizedBox();
               }
