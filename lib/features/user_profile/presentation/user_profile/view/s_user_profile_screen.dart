@@ -130,6 +130,7 @@ class _UserProfileScreen extends StatelessWidget {
           );
         }
 
+        UserModel? user;
         String? avatarUrl;
         String? backgroundUrl;
         String? username;
@@ -137,6 +138,7 @@ class _UserProfileScreen extends StatelessWidget {
         String? bio;
 
         if (state is SUserProfileLoaded) {
+          user = state.user;
           backgroundUrl = state.user.backgroundUrl;
           avatarUrl = state.user.avatarUrl;
           username = state.user.username;
@@ -185,6 +187,7 @@ class _UserProfileScreen extends StatelessWidget {
               username: username,
               email: email,
               bio: bio,
+              user: user,
             ),
             const SizedBox(height: 16.0),
             _buildFriendsView(context),
@@ -300,6 +303,7 @@ class _UserProfileScreen extends StatelessWidget {
   }
 
   Widget _buildNameView({
+    UserModel? user,
     required BuildContext context,
     String? username,
     String? email,
@@ -350,7 +354,10 @@ class _UserProfileScreen extends StatelessWidget {
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    if (user == null) return;
+                    context.push("${RouterUri.chat}/$uid", extra: user);
+                  },
                   child: Text(
                     S.of(context).send_message,
                     style: const TextStyle(
