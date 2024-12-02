@@ -15,37 +15,48 @@ import 'package:s_social/core/domain/model/message_model.dart';
 import 'package:s_social/di/injection_container.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../../core/domain/model/user_model.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../../screen/home/view/widget/full_screen_img.dart';
 import '../logic/chat_cubit.dart';
 
 class ChatScreen extends StatelessWidget {
-  final Map<String, dynamic>? recipient;
+  final String? uid;
+  final UserModel? recipient;
   const ChatScreen({
     super.key,
-    this.recipient
+    required this.uid,
+    required this.recipient,
   });
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ChatCubit(chatRepository: serviceLocator(), uploadFileRepository: serviceLocator()),
-      child: _ChatScreen(recipient: recipient),
+      create: (context) => ChatCubit(
+        chatRepository: serviceLocator(),
+        uploadFileRepository: serviceLocator(),
+        userRepository: serviceLocator(),
+        uid: uid,
+      ),
+      child: _ChatScreen(uid: uid, recipient: recipient),
     );
   }
 }
 
 class _ChatScreen extends StatefulWidget {
-  const _ChatScreen({required Map<String, dynamic>? recipient}) :
-        _recipient = recipient;
+  const _ChatScreen({
+    required String? uid,
+    required UserModel? recipient,
+  }) : _uid = uid,
+       _recipient = recipient;
 
-  final Map<String, dynamic>? _recipient;
+  final String? _uid;
+  final UserModel? _recipient;
   @override
   State<_ChatScreen> createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<_ChatScreen> {
-  // Create chat session id by joining the current user id and the recipient id
   final _auth = FirebaseAuth.instance;
   final messageCtrl = TextEditingController();
   final Stream<QuerySnapshot> _messageStream = FirebaseFirestore.instance.collection('messages').snapshots();
@@ -61,10 +72,11 @@ class _ChatScreenState extends State<_ChatScreen> {
   @override
   Widget build(BuildContext buildContext) {
     final String chatId = _chatId;
+
     // Making a back button returning to the previous screen and a menu button that opens sideways
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget._recipient?['email']),
+        title: Text(widget._recipient?.username ?? ''),
         automaticallyImplyLeading: false,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -170,7 +182,7 @@ class _ChatScreenState extends State<_ChatScreen> {
   Widget _buildMessageInput() {
     final String chatId = _chatId;
     final String senderEmail = _auth.currentUser?.email ?? '';
-    final String recipientEmail = widget._recipient?['email'] ?? '';
+    final String recipientEmail = widget._recipient?.email ?? '';
     List<String?>? urls = [];
     return MessageBar(
       messageBarHintText: S.of(context).type_message,
@@ -223,7 +235,7 @@ class _ChatScreenState extends State<_ChatScreen> {
   Future<void> _pickImageFromGallery() async {
     final String chatId = _chatId;
     final String senderEmail = _auth.currentUser?.email ?? '';
-    final String recipientEmail = widget._recipient?['email'] ?? '';
+    final String recipientEmail = widget._recipient?.email ?? '';
     List<String?>? urls = [];
 
     _selectedImages.clear();
@@ -283,7 +295,7 @@ class _ChatScreenState extends State<_ChatScreen> {
 
   String get _chatId {
     final String currentUserId = _auth.currentUser?.uid ?? '';
-    final String recipientId = widget._recipient?['id'] ?? '';
+    final String recipientId = widget._recipient?.email ?? '';
     List<String> userIds = [currentUserId, recipientId];
     userIds.sort();
     return userIds.join('-');
@@ -378,7 +390,7 @@ class _ChatScreenState extends State<_ChatScreen> {
           ) : Container(),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
-            child: _buildImageGrid(
+            child: _buildImages(
                 images: message.images,
                 edgeInsets:  edgeInsets,
                 crossAxisAlignment: crossAxisAlignment,
@@ -390,10 +402,8 @@ class _ChatScreenState extends State<_ChatScreen> {
     );
   }
 
-  // Make images show up in a grid
-  // Images will start from the left and go to the right
-  // Images will be shown in a grid of 3 with small size
-  Widget _buildImageGrid({
+  // Make images show one by one in a column
+  Widget _buildImages({
   required List<String?>? images,
   required EdgeInsets edgeInsets,
   required CrossAxisAlignment crossAxisAlignment,
@@ -402,85 +412,31 @@ class _ChatScreenState extends State<_ChatScreen> {
     if (images == null || images.isEmpty) {
       return const SizedBox();
     }
-    switch (images.length) {
-      case 1:
-        return _buildSingleImage(images[0]!, edgeInsets, crossAxisAlignment, mainAxisAlignment);
-      default:
-        return _buildMultipleImage(images, edgeInsets, crossAxisAlignment, mainAxisAlignment);
-    }
-  }
-
-  Widget _buildSingleImage(String imageUrl, EdgeInsets edgeInsets, CrossAxisAlignment crossAxisAlignment, MainAxisAlignment mainAxisAlignment) {
-    return Row(
+    return Column(
       crossAxisAlignment: crossAxisAlignment,
       mainAxisAlignment: mainAxisAlignment,
-      children: [
-        Container(
-          margin: edgeInsets,
-          width: MediaQuery
-              .of(context)
-              .size
-              .width / 3,
-          child: GestureDetector(
-            onTap: () {
-              // Show image in full screen
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      FullScreenImg(imageUrl: imageUrl),
+      children: images.map((e) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FullScreenImg(
+                  imageUrl: e ?? '',
                 ),
-              );
-            },
-            child: Image.network(imageUrl, fit: BoxFit.cover),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMultipleImage(List<String?> images, EdgeInsets edgeInsets, CrossAxisAlignment crossAxisAlignment, MainAxisAlignment mainAxisAlignment) {
-    return Row(
-      crossAxisAlignment: crossAxisAlignment,
-      mainAxisAlignment: mainAxisAlignment,
-      children: [
-        Container(
-          margin: edgeInsets,
-          width: MediaQuery
-              .of(context)
-              .size
-              .width / 3,
-          child: Directionality(
-            textDirection: TextDirection.rtl,
-            child: GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 4.0,
-                mainAxisSpacing: 4.0,
               ),
-              itemCount: images.length,
-              itemBuilder: (context, index) {
-                int reverseIndex = images.length - 1 - index;
-                return GestureDetector(
-                  onTap: () {
-                    // Show image in full screen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            FullScreenImg(imageUrl: images[reverseIndex]!),
-                      ),
-                    );
-                  },
-                  child: Image.network(images[reverseIndex]!, fit: BoxFit.cover),
-                );
-              },
+            );
+          },
+          child: Container(
+            margin: const EdgeInsets.only(top: 8),
+            child: Image.network(
+              e ?? '',
+              width: 200,
+              height: 200,
             ),
           ),
-        ),
-      ],
+        );
+      }).toList(),
     );
   }
 }

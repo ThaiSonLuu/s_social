@@ -17,6 +17,8 @@ import 'package:s_social/features/settings/presentation/settings/view/settings_c
 import 'package:s_social/features/user_profile/presentation/edit_user_profile/view/edit_user_profile_screen.dart';
 import 'package:s_social/features/user_profile/presentation/user_profile/view/s_user_profile_screen.dart';
 
+import '../../domain/model/user_model.dart';
+
 abstract class RouterUri {
   static const login = "/login";
   static const signup = "/signup";
@@ -108,10 +110,13 @@ class AppRouter {
         ),
       ),
       GoRoute(
-        path: RouterUri.chat,
-        pageBuilder: (context, state) => const MaterialPage<void>(
-          child: ChatScreen(),
-        )
+        path: "${RouterUri.chat}/:uid",
+        pageBuilder: (context, state) {
+          final user = state.extra as UserModel;
+          return MaterialPage<void>(
+            child: ChatScreen(uid: state.pathParameters["uid"], recipient: user),
+          );
+        },
       )
     ],
     initialLocation: RouterUri.login,
