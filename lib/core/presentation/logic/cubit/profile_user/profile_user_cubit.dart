@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:s_social/core/domain/model/notification_model.dart';
 import 'package:s_social/core/domain/model/user_model.dart';
@@ -35,6 +36,15 @@ class ProfileUserCubit extends Cubit<ProfileUserState> {
       }
 
       emit(ProfileUserLoaded(user));
+
+      final currentDeviceToken = await FirebaseMessaging.instance.getToken();
+      if (currentDeviceToken != null) {
+        if ((user.fcmTokens?.isEmpty ?? true) ||
+            user.fcmTokens?.first != currentDeviceToken) {
+          await _userRepository
+              .updateUser(user.copyWith(fcmTokens: [currentDeviceToken]));
+        }
+      }
     } catch (e) {
       emit(ProfileUserError(e.toString()));
     }

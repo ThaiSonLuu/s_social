@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:s_social/common/app_constants/firestore_collection_constants.dart';
 import 'package:s_social/core/data/data_source/push_notification_data_source.dart';
 import 'package:s_social/core/domain/model/notification_model.dart';
+import 'package:s_social/core/utils/app_router/app_router.dart';
 import 'package:s_social/generated/l10n.dart';
 
 class NotificationDataSource {
@@ -21,10 +22,10 @@ class NotificationDataSource {
       await doc.set(saveNotification.toJson());
       saveNotification.fcmToken?.forEach((fcmToken) {
         sendFCMMessage(
-          fcmToken: fcmToken,
-          title: saveNotification.title ?? S.current.no_title,
-          body: saveNotification.message ?? S.current.no_message,
-        );
+            fcmToken: fcmToken,
+            title: saveNotification.title ?? S.current.no_title,
+            body: saveNotification.message ?? S.current.no_message,
+            route: saveNotification.route ?? RouterUri.home);
       });
       return saveNotification;
     } catch (_) {
@@ -45,6 +46,7 @@ class NotificationDataSource {
             fcmToken: fcmToken,
             title: saveNotification.title ?? S.current.no_title,
             body: saveNotification.message ?? S.current.no_message,
+            route: saveNotification.route ?? RouterUri.home,
           );
         });
       });

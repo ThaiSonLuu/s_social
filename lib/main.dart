@@ -2,7 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:s_social/common/app_constants/constants.dart';
 import 'package:s_social/core/presentation/logic/cubit/app_language/app_language_cubit.dart';
 import 'package:s_social/core/presentation/logic/cubit/app_theme/app_theme_cubit.dart';
 import 'package:s_social/core/presentation/logic/cubit/auth/auth_cubit.dart';
@@ -20,7 +22,25 @@ void main() async {
   await initializeDependencies();
   await Firebase.initializeApp();
   await FirebaseMessaging.instance.requestPermission();
+  createNotificationChannel();
+
   runApp(const MyApp());
+}
+
+void createNotificationChannel() async {
+  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    Constants.notificationChannelId,
+    Constants.notificationChannelName,
+    importance: Importance.high,
+  );
+
+  // Create the channel
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
 }
 
 class MyApp extends StatefulWidget {
@@ -53,6 +73,56 @@ class _MyAppState extends State<MyApp> {
     );
 
     _profileUserCubit.getUserInfo();
+
+    _setUpNotification();
+  }
+
+  void _setUpNotification() async {
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+
+    const AndroidInitializationSettings androidSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    const InitializationSettings initializationSettings =
+        InitializationSettings(android: androidSettings);
+
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (details) {
+        print("On click inside notification: ${details.payload}");
+        if (details.payload != null) {
+          _appRouter.routers.push(details.payload!);
+        }
+      },
+    );
+
+    FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      _appRouter.routers.push(event.data["route"]);
+    });
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print("Receive message: ${message.notification?.title}");
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+
+      if (notification != null && android != null) {
+        // Display notification
+        await flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            const NotificationDetails(
+              android: AndroidNotificationDetails(
+                Constants.notificationChannelId,
+                Constants.notificationChannelName,
+                importance: Importance.high,
+                priority: Priority.high,
+              ),
+            ),
+            payload: message.data["route"]);
+      }
+    });
   }
 
   @override

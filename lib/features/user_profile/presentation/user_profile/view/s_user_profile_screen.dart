@@ -527,9 +527,10 @@ class _UserProfileScreen extends StatelessWidget {
       listener: (context, state) {
         if (state is FriendDoneAction) {
           context.read<GetFriendCubit>().sendNotification(
-              action: state.action,
-              currentUser: context.read<ProfileUserCubit>().currentUser,
-              targetUser: context.read<ProfileUserCubit>().currentUser);
+                action: state.action,
+                currentUser: context.read<ProfileUserCubit>().currentUser,
+                targetUser: context.read<SUserProfileCubit>().user,
+              );
         }
       },
       builder: (context, state) {
