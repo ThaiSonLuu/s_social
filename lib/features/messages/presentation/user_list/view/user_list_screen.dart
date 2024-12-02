@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:s_social/features/messages/presentation/user_list/view/user_tile.dart';
 
 import '../../../../../core/utils/app_router/app_router.dart';
+import '../../../../../di/injection_container.dart';
 import '../../../../../generated/l10n.dart';
 import '../../chat/view/chat_screen.dart';
 import '../logic/user_list_cubit.dart';
@@ -16,7 +17,7 @@ class UserListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => UserListCubit(),
+      create: (context) => UserListCubit(userRepository: serviceLocator()),
       child: const _UserListScreen(),
     );
   }
@@ -79,12 +80,7 @@ class _UserListScreenState extends State<_UserListScreen> {
                     UserTile(
                       user: user,
                       onTap: () async {
-                        final newChat = Navigator.push<bool>(
-                          context,
-                          MaterialPageRoute(builder: (context) => ChatScreen(
-                            recipient: user,
-                          )),
-                        );
+                        context.push("${RouterUri.chat}/${user.id}", extra: user);
                       },
                     ),
                   ],
