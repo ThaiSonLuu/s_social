@@ -8,7 +8,9 @@ import 'package:s_social/core/domain/model/user_model.dart';
 import 'package:s_social/di/injection_container.dart';
 import 'package:s_social/features/screen/home/logic/post_cubit.dart';
 import 'package:s_social/features/screen/home/view/widget/comment_widget.dart';
+import 'package:s_social/features/screen/home/view/widget/full_screen_img.dart';
 import '../../../../core/domain/model/reaction_model.dart';
+import '../../../../core/utils/ui/cache_image.dart';
 import '../../../../generated/l10n.dart';
 import '../logic/comment_cubit.dart';
 import '../logic/reaction_cubit.dart';
@@ -284,9 +286,25 @@ class _PostSection extends StatelessWidget {
           if (postData.postImage != null && postData.postImage!.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Image.network(
-                postData.postImage!,
-                fit: BoxFit.cover,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          FullScreenImg(imageUrl: postData.postImage!),
+                    ),
+                  );
+                },
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return CacheImage(
+                      imageUrl: postData.postImage ?? "",
+                      loadingWidth: constraints.maxWidth,
+                      loadingHeight: constraints.maxWidth * 0.6,
+                    );
+                  },
+                ),
               ),
             ),
           Padding(

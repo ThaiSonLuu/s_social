@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:s_social/core/domain/model/comment_model.dart';
 import 'package:s_social/core/domain/model/user_model.dart';
+import 'package:s_social/gen/assets.gen.dart';
 import '../../../../../core/domain/model/reaction_model.dart';
+import '../../../../../core/utils/app_router/app_router.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../../../core/domain/model/post_model.dart';
 import '../../logic/reaction_cubit.dart';
@@ -12,7 +15,7 @@ import 'full_screen_img.dart';
 class CommentWidget extends StatefulWidget {
   final CommentModel commentData;
   final PostModel postData;
-  final UserModel userData;
+  final UserModel? userData;
 
   const CommentWidget({
     Key? key,
@@ -69,8 +72,8 @@ class _CommentWidgetState extends State<CommentWidget> {
     final reactionCubit = context.read<ReactionCubit>();
     reactionCubit.toggleReaction(
       ReactionModel(
-        userId: widget.userData.id,
-        targetId: widget.commentData.id,
+        userId: widget.userData?.id ?? '',
+        targetId: widget.commentData.id!,
         targetType: 'comments',
         reactionType: 'like',
         isReaction: !isReact,
@@ -91,9 +94,8 @@ class _CommentWidgetState extends State<CommentWidget> {
   @override
   Widget build(BuildContext context) {
     String formattedDate = _formatDateTime(widget.commentData.createdAt);
-    String userName = widget.postData.userId != null
-        ? widget.userData.username.toString()
-        : S.of(context).anonymous;
+    String userName = widget.userData?.username ?? S.of(context).anonymous;
+    String avatarUrl = widget.userData?.avatarUrl ?? Assets.images.anonymous.path;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -101,10 +103,15 @@ class _CommentWidgetState extends State<CommentWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Avatar
-          CircleAvatar(
-            radius: 16,
-            backgroundImage: NetworkImage(
-              widget.userData.avatarUrl ?? 'https://placehold.co/80x80',
+          GestureDetector(
+            onTap: () {
+              if (widget.userData != null) {
+                context.push("${RouterUri.profile}/${widget.userData!.id}");
+              }
+            },
+            child: CircleAvatar(
+              radius: 16,
+              backgroundImage: NetworkImage(avatarUrl),
             ),
           ),
           const SizedBox(width: 8),
@@ -125,13 +132,19 @@ class _CommentWidgetState extends State<CommentWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Tên người dùng
-                      Text(
-                        // postData.userId == userData.id ? userData.username! : S.of(context).anonymous,
-                        userName,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                          color: Theme.of(context).colorScheme.onPrimaryFixed,
+                      GestureDetector(
+                        onTap: () {
+                          if (widget.userData != null) {
+                            context.push("${RouterUri.profile}/${widget.userData!.id}");
+                          }
+                        },
+                        child: Text(
+                          userName,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            color: Theme.of(context).colorScheme.onPrimaryFixed,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 4),
