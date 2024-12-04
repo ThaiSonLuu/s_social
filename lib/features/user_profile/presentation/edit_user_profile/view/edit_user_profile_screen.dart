@@ -16,7 +16,6 @@ import 'package:s_social/di/injection_container.dart';
 import 'package:s_social/features/user_profile/presentation/edit_user_profile/logic/edit_user_profile_cubit.dart';
 import 'package:s_social/gen/assets.gen.dart';
 import 'package:s_social/generated/l10n.dart';
-import 'package:simple_loading_dialog/simple_loading_dialog.dart';
 
 class EditUserProfileScreen extends StatelessWidget {
   const EditUserProfileScreen({
@@ -211,6 +210,7 @@ class _UserProfileScreenState extends State<_UserProfileScreen> {
                     : Image.asset(
                         randomBackground.path,
                         fit: BoxFit.fill,
+                        width: double.maxFinite,
                       )),
             Align(
               alignment: Alignment.center,
@@ -271,6 +271,8 @@ class _UserProfileScreenState extends State<_UserProfileScreen> {
         children: [
           Container(
             clipBehavior: Clip.hardEdge,
+            width: 120,
+            height: 120,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
             ),
