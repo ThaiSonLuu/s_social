@@ -9,6 +9,7 @@ import 'package:s_social/core/presentation/logic/cubit/profile_user/profile_user
 import 'package:s_social/core/presentation/view/widgets/text_to_image.dart';
 import 'package:s_social/core/utils/app_router/app_router.dart';
 import 'package:s_social/core/utils/snack_bar.dart';
+import 'package:s_social/core/utils/ui/cache_image.dart';
 import 'package:s_social/features/notifications/presentation/logic/unread_notification_cubit.dart';
 import 'package:s_social/generated/l10n.dart';
 
@@ -83,6 +84,8 @@ class _SettingsScreenState extends State<_SettingsScreen> {
               children: [
                 Container(
                   clipBehavior: Clip.hardEdge,
+                  width: 60,
+                  height: 60,
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                   ),
@@ -94,30 +97,10 @@ class _SettingsScreenState extends State<_SettingsScreen> {
                             text: username?[0].toUpperCase() ?? "S",
                           ),
                         )
-                      : Image.network(
-                          avatarUrl,
-                          fit: BoxFit.cover,
-                          width: 60,
-                          height: 60,
-                          loadingBuilder: (context, child, loadingProgress) {
-                            return Container(
-                              width: 60,
-                              height: 60,
-                              color: Theme.of(context).colorScheme.surface,
-                              child: child,
-                            );
-                          },
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              width: 60,
-                              height: 60,
-                              color: Theme.of(context).colorScheme.surface,
-                            );
-                          },
-                          frameBuilder:
-                              (context, child, frame, wasSynchronouslyLoaded) {
-                            return child;
-                          },
+                      : CacheImage(
+                          imageUrl: avatarUrl,
+                          loadingWidth: 60,
+                          loadingHeight: 60,
                         ),
                 ),
                 const SizedBox(width: 12),
