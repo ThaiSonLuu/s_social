@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:s_social/core/data/data_source/push_notification_data_source.dart';
 import 'package:s_social/core/domain/model/notification_model.dart';
 import 'package:s_social/core/presentation/logic/cubit/app_language/app_language_cubit.dart';
+import 'package:s_social/core/utils/shimmer_loading.dart';
 import 'package:s_social/core/utils/snack_bar.dart';
+import 'package:s_social/core/utils/ui/cache_image.dart';
 import 'package:s_social/di/injection_container.dart';
 import 'package:s_social/features/notifications/presentation/logic/notifications_cubit.dart';
 import 'package:s_social/generated/l10n.dart';
@@ -67,7 +68,7 @@ class _NotificationsScreenState extends State<_NotificationsScreen> {
               return Center(child: Text(state.message));
             }
 
-            return const Center(child: CircularProgressIndicator());
+            return _buildNotificationsLoading(context);
           },
         ),
       ),
@@ -111,9 +112,18 @@ class _NotificationsScreenState extends State<_NotificationsScreen> {
                 : Theme.of(context).colorScheme.surfaceContainerLowest,
             // Lighter background for unread notifications
             child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
               leading: notification.imageUrl != null
-                  ? CircleAvatar(
-                      backgroundImage: NetworkImage(notification.imageUrl!),
+                  ? Container(
+                      clipBehavior: Clip.hardEdge,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: CacheImage(
+                        imageUrl: notification.imageUrl!,
+                        loadingWidth: 50,
+                        loadingHeight: 50,
+                      ),
                     )
                   : const CircleAvatar(child: Icon(Icons.notifications)),
               title: Text(
@@ -128,6 +138,37 @@ class _NotificationsScreenState extends State<_NotificationsScreen> {
                 ],
               ),
             ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildNotificationsLoading(BuildContext context) {
+    return ListView.builder(
+      itemCount: 12,
+      itemBuilder: (context, index) {
+        return ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+          leading: Container(
+            clipBehavior: Clip.hardEdge,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+            ),
+            child: const ShimmerLoading(
+              width: 50,
+              height: 50,
+            ),
+          ),
+          title: const ShimmerLoading(width: 180, height: 20),
+          subtitle: const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 4.0),
+              ShimmerLoading(width: 120, height: 18),
+              SizedBox(height: 4.0),
+              ShimmerLoading(width: 80, height: 14),
+            ],
           ),
         );
       },
