@@ -789,6 +789,26 @@ class S {
       args: [],
     );
   }
+
+  /// `No email`
+  String get no_email {
+    return Intl.message(
+      'No email',
+      name: 'no_email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `sent some images`
+  String get sent_some_images {
+    return Intl.message(
+      'sent some images',
+      name: 'sent_some_images',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

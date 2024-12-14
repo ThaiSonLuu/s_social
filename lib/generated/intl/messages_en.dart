@@ -91,6 +91,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("What\'s on your mind?"),
         "no_comment_yet":
             MessageLookupByLibrary.simpleMessage("No comment yet"),
+        "no_email": MessageLookupByLibrary.simpleMessage("No email"),
         "no_image_selected":
             MessageLookupByLibrary.simpleMessage("No image selected"),
         "no_message": MessageLookupByLibrary.simpleMessage("No Message"),
@@ -115,6 +116,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "send": MessageLookupByLibrary.simpleMessage("Send"),
         "send_message": MessageLookupByLibrary.simpleMessage("Send message"),
         "send_request": MessageLookupByLibrary.simpleMessage("Send request"),
+        "sent_some_images":
+            MessageLookupByLibrary.simpleMessage("sent some images"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "share": MessageLookupByLibrary.simpleMessage("Share"),
         "showing_name": MessageLookupByLibrary.simpleMessage("Showing name"),
