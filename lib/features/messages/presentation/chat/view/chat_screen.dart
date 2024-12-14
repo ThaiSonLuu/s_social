@@ -13,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:s_social/core/domain/model/message_model.dart';
 import 'package:s_social/di/injection_container.dart';
+import 'package:s_social/features/messages/presentation/user_list/logic/user_list_cubit.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../core/domain/model/user_model.dart';
@@ -31,13 +32,24 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ChatCubit(
-        chatRepository: serviceLocator(),
-        uploadFileRepository: serviceLocator(),
-        userRepository: serviceLocator(),
-        uid: uid,
-      ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => UserListCubit(
+            chatRepository: serviceLocator(),
+            friendRepository: serviceLocator(),
+            userRepository: serviceLocator(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => ChatCubit(
+            chatRepository: serviceLocator(),
+            uploadFileRepository: serviceLocator(),
+            userRepository: serviceLocator(),
+            uid: uid,
+          ),
+        ),
+      ],
       child: _ChatScreen(uid: uid, recipient: recipient),
     );
   }
@@ -145,6 +157,15 @@ class _ChatScreenState extends State<_ChatScreen> {
           final messages = snapshot.data!.docs
             .map((e) => MessageModel.fromJson(e.data() as Map<String, dynamic>))
             .toList();
+
+          // Get the latest message
+          final latestMessage = messages.isNotEmpty ? messages.last : null;
+
+          // Update the user chat map
+          if (latestMessage != null) {
+            _updateUserChatMap(context, latestMessage);
+          }
+
           return _buildMessageListView(
             messages: messages,
             buildContext: buildContext
@@ -184,6 +205,7 @@ class _ChatScreenState extends State<_ChatScreen> {
     final String senderEmail = _auth.currentUser?.email ?? '';
     final String recipientEmail = widget._recipient?.email ?? '';
     List<String?>? urls = [];
+
     return MessageBar(
       messageBarHintText: S.of(context).type_message,
       onSend: (content) async {
@@ -191,18 +213,30 @@ class _ChatScreenState extends State<_ChatScreen> {
         if (content.isEmpty && _selectedImages.isEmpty) {
           return;
         }
+
         // Send images if exist to database
         if (_selectedImages.isNotEmpty) {
           urls = await context.read<ChatCubit>().uploadImagesToFirebase(_selectedImages);
         }
+
+        // Create a message model
+        const uuid = Uuid();
+        final message = MessageModel(
+          messageId: uuid.v4(),
+          senderEmail: senderEmail,
+          recipientEmail: recipientEmail,
+          content: content,
+          images: urls,
+          createdAt: DateTime.now(),
+        );
+
         // Send message to the chat session
         await context.read<ChatCubit>().sendMessage(
             chatId: chatId,
-            senderEmail: senderEmail,
-            recipientEmail: recipientEmail,
-            content: content,
-            images: urls,
+            message: message
         );
+
+        // Clear the selected images
         _selectedImages.clear();
         urls?.clear();
       },
@@ -253,36 +287,27 @@ class _ChatScreenState extends State<_ChatScreen> {
         }
         urls = await context.read<ChatCubit>().uploadImagesToFirebase(_selectedImages);
 
-        // Send message to the chat session
-        await context.read<ChatCubit>().sendMessage(
-          chatId: chatId,
+        // Create a message model
+        const uuid = Uuid();
+        final message = MessageModel(
+          messageId: uuid.v4(),
           senderEmail: senderEmail,
           recipientEmail: recipientEmail,
           content: null,
           images: urls,
+          createdAt: DateTime.now(),
         );
+
+        // Send message to the chat session
+        await context.read<ChatCubit>().sendMessage(
+          chatId: chatId,
+          message: message,
+        );
+
+        // Clear the selected images
         _selectedImages.clear();
         urls?.clear();
 
-        // Showing a elevated button to send the images
-        // This button will be shown only if there are images selected
-        // ElevatedButton(
-        //   onPressed: () {
-        //     // Send images to the chat session
-        //     if (_selectedImages.isNotEmpty) {
-        //       urls = context.read<ChatCubit>().uploadImagesToFirebase(_selectedImages) as List<String?>?;
-        //     }
-        //     context.read<ChatCubit>().sendMessage(
-        //         chatId: chatId,
-        //         senderEmail: senderEmail,
-        //         recipientEmail: recipientEmail,
-        //         content: "",
-        //         images: urls
-        //     );
-        //     _selectedImages.clear();
-        //   },
-        //   child: Text(S.of(context).send),
-        // );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -295,7 +320,7 @@ class _ChatScreenState extends State<_ChatScreen> {
 
   String get _chatId {
     final String currentUserId = _auth.currentUser?.uid ?? '';
-    final String recipientId = widget._recipient?.email ?? '';
+    final String recipientId = widget._recipient?.id ?? '';
     List<String> userIds = [currentUserId, recipientId];
     userIds.sort();
     return userIds.join('-');
@@ -438,6 +463,21 @@ class _ChatScreenState extends State<_ChatScreen> {
         );
       }).toList(),
     );
+  }
+
+  void _updateUserChatMap(BuildContext context, MessageModel message) async {
+    final String currentUserId = _auth.currentUser?.uid ?? '';
+    final String recipientId = widget._recipient?.id ?? '';
+    await context.read<UserListCubit>().updateUserChatMap(
+      currentUserId,
+      recipientId,
+      message,
+    );
+  }
+
+  void _getUserList(BuildContext context) async {
+    final String currentUserId = _auth.currentUser?.uid ?? '';
+    await context.read<UserListCubit>().getUserList(currentUserId);
   }
 }
 

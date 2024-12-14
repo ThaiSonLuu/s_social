@@ -11,7 +11,7 @@ class MessageModel {
   final List<String?>? images;
   // final String? type;
   // final String? status;
-  final DateTime? createdAt;
+  final DateTime createdAt;
   // final DateTime? updatedAt;
 
   const MessageModel({
@@ -22,7 +22,7 @@ class MessageModel {
     this.images,
     // this.type,
     // this.status,
-    this.createdAt,
+    required this.createdAt,
     // this.updatedAt,
   });
 
@@ -34,7 +34,7 @@ class MessageModel {
     List<String?>? images,
     // String? type,
     // String? status,
-    DateTime? createdAt,
+    required DateTime createdAt,
     // DateTime? updatedAt,
   }) {
     return MessageModel(

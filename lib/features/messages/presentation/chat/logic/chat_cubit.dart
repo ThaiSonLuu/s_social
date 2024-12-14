@@ -51,21 +51,9 @@ class ChatCubit extends Cubit<ChatState> {
 
   Future<void> sendMessage({
     required String chatId,
-    required String senderEmail,
-    required String recipientEmail,
-    required String? content,
-    required List<String?>? images,
+    required MessageModel message,
   }) async {
     try {
-      const uuid = Uuid();
-      final message = MessageModel(
-        messageId: uuid.v4(),
-        senderEmail: senderEmail,
-        recipientEmail: recipientEmail,
-        content: content,
-        images: images,
-        createdAt: DateTime.now(),
-      );
       await _chatRepository.sendMessage(chatId, message);
     } catch (e) {
       emit(ChatError(e.toString()));

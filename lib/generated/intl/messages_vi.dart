@@ -88,6 +88,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Bạn đang nghĩ gì?"),
         "no_comment_yet":
             MessageLookupByLibrary.simpleMessage("Chưa có bình luận nào"),
+        "no_email": MessageLookupByLibrary.simpleMessage("Không có email"),
         "no_image_selected": MessageLookupByLibrary.simpleMessage(
             "Không có hình ảnh nào được chọn"),
         "no_message":
@@ -113,6 +114,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "send": MessageLookupByLibrary.simpleMessage("Gửi"),
         "send_message": MessageLookupByLibrary.simpleMessage("Gửi tin nhắn"),
         "send_request": MessageLookupByLibrary.simpleMessage("Gửi yêu cầu"),
+        "sent_some_images":
+            MessageLookupByLibrary.simpleMessage("đã gửi một số hình ảnh"),
         "settings": MessageLookupByLibrary.simpleMessage("Cài đặt"),
         "share": MessageLookupByLibrary.simpleMessage("Chia sẻ"),
         "showing_name": MessageLookupByLibrary.simpleMessage("Tên hiển thị"),

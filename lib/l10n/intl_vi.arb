@@ -72,5 +72,7 @@
   "cancel_request": "Hủy yêu cầu",
   "accept": "Chấp nhận",
   "decline": "Từ chối",
-  "unfriend": "Hủy kết bạn"
+  "unfriend": "Hủy kết bạn",
+  "no_email": "Không có email",
+  "sent_some_images": "đã gửi một số hình ảnh"
 }

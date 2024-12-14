@@ -72,5 +72,7 @@
   "cancel_request": "Cancel request",
   "accept": "Accept",
   "decline": "Decline",
-  "unfriend": "Unfriend"
+  "unfriend": "Unfriend",
+  "no_email": "No email",
+  "sent_some_images": "sent some images"
 }

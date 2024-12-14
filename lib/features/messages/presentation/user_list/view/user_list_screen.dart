@@ -2,8 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:s_social/features/messages/presentation/chat/logic/chat_cubit.dart';
 import 'package:s_social/features/messages/presentation/user_list/view/user_tile.dart';
 
+import '../../../../../core/domain/model/message_model.dart';
+import '../../../../../core/domain/model/user_model.dart';
 import '../../../../../core/utils/app_router/app_router.dart';
 import '../../../../../di/injection_container.dart';
 import '../../../../../generated/l10n.dart';
@@ -17,7 +20,11 @@ class UserListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => UserListCubit(userRepository: serviceLocator()),
+        create: (context) => UserListCubit(
+          chatRepository: serviceLocator(),
+          userRepository: serviceLocator(),
+          friendRepository: serviceLocator(),
+        ),
       child: const _UserListScreen(),
     );
   }
@@ -32,10 +39,12 @@ class _UserListScreen extends StatefulWidget {
 
 class _UserListScreenState extends State<_UserListScreen> {
   final _auth = FirebaseAuth.instance;
-  final currentUserEmail = FirebaseAuth.instance.currentUser?.email;
+  final _currentUserEmail = FirebaseAuth.instance.currentUser?.email;
+  final _currentUserUid = FirebaseAuth.instance.currentUser?.uid;
+
   @override
   void initState() {
-    context.read<UserListCubit>().getUserList();
+    context.read<UserListCubit>().getUserList(_currentUserUid);
     super.initState();
   }
 
@@ -48,7 +57,7 @@ class _UserListScreenState extends State<_UserListScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          context.read<UserListCubit>().getUserList();
+          context.read<UserListCubit>().getUserList(_currentUserUid);
         },
         child: _buildUserList(context),
       ),
@@ -58,27 +67,39 @@ class _UserListScreenState extends State<_UserListScreen> {
   Widget _buildUserList(BuildContext buildContext) {
     return BlocBuilder<UserListCubit, UserListState>(
       builder: (blocBuilderContext, state) {
+
         if (state is UserListLoading) {
           return const Center(
             child: CircularProgressIndicator(),
           );
-        } else if (state is UserListLoaded) {
-          // Skip the current user
+        } 
+        
+        if (state is UserListLoaded) {
+          // Cast the userChatMap to a list
+          final userChatMap = state.userChatMap.entries.toList();
+
+          // Sort the userChatMap by the latest message
+          sortUserChatMap(userChatMap);
+
           return ListView.builder(
             physics: const AlwaysScrollableScrollPhysics(),
-            itemCount: state.users.length - 1,
+            itemCount: userChatMap.length,
             itemBuilder: (iBContext, index) {
-              final user = state.users[index];
-              final String userEmail = user.email ?? "No email";
-              if (userEmail == currentUserEmail) {
+              final user = userChatMap[index].key;
+              final String userEmail = user.email ?? S.of(context).no_email;
+
+              // Skip the current user
+              if (userEmail == _currentUserEmail) {
                 return const SizedBox();
               }
+
               return Container(
                 padding: const EdgeInsets.all(8),
                 child: Column (
                   children: [
                     UserTile(
                       user: user,
+                      latestMessage: userChatMap[index].value,
                       onTap: () async {
                         context.push("${RouterUri.chat}/${user.id}", extra: user);
                       },
@@ -88,7 +109,14 @@ class _UserListScreenState extends State<_UserListScreen> {
               );
             },
           );
-        } else if (state is UserListError) {
+        }
+
+        if (state is UserListUpdated) {
+          final userChatMap = state.userChatMap.entries.toList();
+          sortUserChatMap(userChatMap);
+        }
+        
+        if (state is UserListError) {
           return Center(
             child: Text('Error: ${state.error}'),
           );
@@ -97,5 +125,30 @@ class _UserListScreenState extends State<_UserListScreen> {
         }
       },
     );
+  }
+  
+  String _getChatId(String? currentUserId, String? otherUserId) {
+    if (currentUserId == null || otherUserId == null) {
+      return '';
+    }
+    final chatId = [currentUserId, otherUserId].toList()..sort();
+    return chatId.join();
+  }
+
+  void sortUserChatMap(List<MapEntry<UserModel, MessageModel?>> userChatMap) {
+    userChatMap.sort((a, b) {
+      final aMessage = a.value;
+      final bMessage = b.value;
+      if (aMessage == null && bMessage == null) {
+        return 0;
+      }
+      if (aMessage == null) {
+        return 1;
+      }
+      if (bMessage == null) {
+        return -1;
+      }
+      return bMessage.createdAt.compareTo(aMessage.createdAt);
+    });
   }
 }
