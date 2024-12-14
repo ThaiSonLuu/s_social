@@ -14,6 +14,7 @@ import 'package:s_social/features/screen/home/view/post_screen.dart';
 import 'package:s_social/features/screen/home/view/widget/full_screen_img.dart';
 import 'package:s_social/gen/assets.gen.dart';
 import 'package:s_social/generated/l10n.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../../core/domain/model/reaction_model.dart';
 import '../../logic/reaction_cubit.dart';
@@ -89,6 +90,24 @@ class _PostWidgetState extends State<PostWidget> {
       isReact = !isReact;
     });
   }
+
+  void _sharePost() {
+    final String? postContent = widget.postData.postContent;
+    final String? postImage = widget.postData.postImage;
+
+    // Nếu không có nội dung hoặc ảnh, hiển thị thông báo lỗi
+    if ((postContent == null || postContent.isEmpty) &&
+        (postImage == null || postImage.isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("No Post")),
+      );
+      return;
+    }
+    String shareUrl = "https://s0social.page.link/post?id=${widget.postData.id}";
+    String shareMessage = "Truy cập vào mạng xã hội S_social tại đây: $shareUrl";
+    Share.share(shareMessage, subject: "Chia sẻ bài viết từ S_social");
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -281,7 +300,7 @@ class _PostWidgetState extends State<PostWidget> {
           icon: Icons.share_outlined,
           label: S.of(context).share,
           color: Theme.of(context).colorScheme.onPrimaryFixed,
-          onTap: () {},
+          onTap: _sharePost,
         ),
       ],
     );
