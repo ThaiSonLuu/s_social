@@ -44,7 +44,7 @@ class UserTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(userName),
-                _buildLastMessage(context, latestMessage),
+                _buildLastMessage(context, latestMessage, userEmail),
               ],
             ),
           ],
@@ -87,14 +87,14 @@ class UserTile extends StatelessWidget {
     );
   }
   
-  Widget _buildLastMessage(BuildContext context, MessageModel? latestMessage) {
+  Widget _buildLastMessage(BuildContext context, MessageModel? latestMessage, String userEmail) {
     if (latestMessage == null) {
       return const SizedBox();
     }
 
     if (latestMessage.content != null) {
       return Text(
-        latestMessage.content!,
+        latestMessage.senderEmail == userEmail ? latestMessage.content! : "You: ${latestMessage.content}",
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
